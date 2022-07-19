@@ -1,5 +1,5 @@
 # Boyaki
-AWS Workshop social media application.
+AWS Workshop full-stack social media application.
 
 
 ## GraphQL Queries/Mutations
