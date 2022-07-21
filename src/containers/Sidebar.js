@@ -23,16 +23,18 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router';
 import { orange } from '@mui/material/colors';
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import { getPost } from '../graphql/queries';
 
 const drawerWidth = 340;
 const MAX_POST_CONTENT_LENGTH = 140;
 
 
 
-const Sidebar = ({activeListItem}) => {
+const Sidebar = ({activeListItem, getPosts}) => {
     const navigate = useNavigate();
     const { userId } = useParams();
     const { user } = useAuthenticator();
+    const { signOut } = useAuthenticator()
 
     const [value, setValue] = useState('');
     const [isError, setIsError] = useState(false);
@@ -116,18 +118,19 @@ const Sidebar = ({activeListItem}) => {
         const res = await API.graphql(graphqlOperation(createPost, { input: {
           type: 'Post',
           content: value,
+          owner: user.username,
           timestamp: Math.floor(Date.now() / 1000),
         }})); 
-    
         console.log(res)
         setValue('');
+        getPosts();
       }
-    
-      const signOut = () => {
-        Auth.signOut()
-          .then(data => console.log(data))
-          .catch(err => console.log(err));
-      }
+
+      // const signOut = () => {
+      //   Auth.signOut()
+      //     .then(data => console.log(data)) && navigate('/')
+      //     .catch(err => console.log(err));
+      // }
 
     return (
         <>

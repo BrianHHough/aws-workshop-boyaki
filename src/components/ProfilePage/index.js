@@ -29,6 +29,8 @@ import { createPost } from '../../graphql/mutations';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router';
 
+import PostBox from '../PostBox';
+
 const SUBSCRIPTION = 'SUBSCRIPTION';
 const INITIAL_QUERY = 'INITIAL_QUERY';
 const ADDITIONAL_QUERY = 'ADDITIONAL_QUERY';
@@ -151,43 +153,9 @@ const ProfilePage = ({activeListItem}) => {
             }
         });
         return () => subscription.unsubscribe();
-      }, []);
+        // when there is a change in URL, run this side script
+      }, [userId]); 
 
-
-
-    const PostBox = ({ text, username, createdAt, timestamp }) => {
-        const UsernameChar = username.slice(0,1);
-        return (
-          <>
-            <ThemeProvider theme={theme}>
-              <div style={theme.box}>
-
-                <Avatar style={theme.avatar}>
-                    {UsernameChar.toUpperCase()}
-                </Avatar>
-
-                <div style={theme.postBody}>
-
-                  <div style={theme.ownerAndTime}>
-                    
-                    <p style={theme.textOwnerAndTime}>
-                        {username} 
-                        {" • "}
-                        {moment(createdAt).fromNow()}
-                    </p>
-                  </div>
-
-                  <p style={theme.text}>
-                      {text}
-                  </p>
-
-                </div>
-
-              </div>
-            </ThemeProvider>
-          </>
-        );
-      };
 
     return (
         <>

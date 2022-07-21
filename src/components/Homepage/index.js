@@ -32,17 +32,32 @@ export function HomePage(){
                 {/* <div>Hey you're logged in</div>
                 <h1>Hello, {user.username}</h1>
                 <button onClick={signOut}>Sign out</button> */}
-                <Sidebar/>
+                {/* <Sidebar/> */}
                 
                 {window.location.pathname === '/feed' ?
+                  <>
+                  
                   <PostList/>
+                  </>
                   : 
-                  ""
+                  <>
+                  {window.location.pathname === `/${user.username}` ?
+                    <div>
+                      <Sidebar/>
+                      <ProfilePage/>
+                    </div>
+                    : 
+                    <div>
+                      <Sidebar/>
+                      <ProfilePage/>
+                    </div>
+                  }
+                  </>
                 }
 
                 {/* {window.location.pathname === `${user.username}` ? */}
                 {/* {user.username === userId  */}
-                {window.location.pathname === `/${user.username}` ?
+                {/* {window.location.pathname === `/${user.username}` ?
                   <div>
                     <ProfilePage/>
                   </div>
@@ -50,7 +65,7 @@ export function HomePage(){
                   <div>
                     <ProfilePage/>
                   </div>
-                }
+                } */}
               </>
             )}
         </Authenticator>

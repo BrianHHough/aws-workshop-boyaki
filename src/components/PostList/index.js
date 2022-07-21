@@ -27,6 +27,9 @@ import { onCreatePost } from '../../graphql/subscriptions';
 import { createPost } from '../../graphql/mutations';
 import { useNavigate } from 'react-router-dom';
 
+import Sidebar from "../../containers/Sidebar"
+import PostBox from '../PostBox';
+
 const SUBSCRIPTION = 'SUBSCRIPTION';
 const INITIAL_QUERY = 'INITIAL_QUERY';
 const ADDITIONAL_QUERY = 'ADDITIONAL_QUERY';
@@ -157,42 +160,45 @@ const PostList = ({activeListItem}) => {
     //     }
     //   ];
 
-    const PostBox = ({ text, username, createdAt, timestamp }) => {
-        const UsernameChar = username.slice(0,1);
-        return (
-          <>
-            <ThemeProvider theme={theme}>
-              <div style={theme.box}>
+    // const PostBox = ({ text, username, createdAt, timestamp }) => {
+    //     const UsernameChar = username.slice(0,1);
+    //     return (
+    //       <>
+    //         <ThemeProvider theme={theme}>
+    //           <div style={theme.box}>
 
-                <Avatar style={theme.avatar}>
-                    {UsernameChar.toUpperCase()}
-                </Avatar>
+    //             <Avatar style={theme.avatar}>
+    //                 {UsernameChar.toUpperCase()}
+    //             </Avatar>
 
-                <div style={theme.postBody}>
+    //             <div style={theme.postBody}>
 
-                  <div style={theme.ownerAndTime}>
+    //               <div style={theme.ownerAndTime}>
                     
-                    <p style={theme.textOwnerAndTime}>
-                        {username} 
-                        {" • "}
-                        {moment(createdAt).fromNow()}
-                    </p>
-                  </div>
+    //                 <p style={theme.textOwnerAndTime}>
+    //                     {username} 
+    //                     {" • "}
+    //                     {moment(createdAt).fromNow()}
+    //                 </p>
+    //               </div>
 
-                  <p style={theme.text}>
-                      {text}
-                  </p>
+    //               <p style={theme.text}>
+    //                   {text}
+    //               </p>
 
-                </div>
+    //             </div>
 
-              </div>
-            </ThemeProvider>
-          </>
-        );
-      };
+    //           </div>
+    //         </ThemeProvider>
+    //       </>
+    //     );
+    //   };
 
     return (
         <>
+        <Sidebar
+          getPosts={e => getPosts()}
+        />
         <ThemeProvider theme={theme}>
                 <div style={theme.postlist} id="PostListCon">
                 <div style={theme.header}>
