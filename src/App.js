@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import Amplify, { Auth } from 'aws-amplify';
-import { AmplifySignUp, AmplifySignOut, withAuthenticator } from '@aws-amplify/ui-react';
-import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
-import { useTheme } from "@aws-amplify/ui-react";
+import React from 'react';
+import Amplify from 'aws-amplify';
 import { useAuthenticator } from "@aws-amplify/ui-react";
 
 import {Login} from "./components/Login"
@@ -13,7 +10,7 @@ import {
   Route,
   BrowserRouter } from 'react-router-dom';
 
-import { createTheme, ThemeProvider, styled } from "@mui/material/styles"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
 import CssBaseline from '@mui/material/CssBaseline';
 import { red } from '@mui/material/colors';
 // import Checkbox from '@mui/material/Checkbox';
@@ -43,6 +40,8 @@ const theme = createTheme({
     },
 });
 
+
+
 // const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
 //   color: theme.status.danger,
 //   '&.Mui-checked': {
@@ -61,7 +60,7 @@ function App() {
               <BrowserRouter>
                 <Routes> {/* No longer Switch */}
                   <Route path='/' element={<HomePage/>} />
-                  <Route path='/global-timeline' element={<HomePage/>} />
+                  <Route path='/feed' element={<HomePage/>} />
                   <Route path='/:userId' element={<HomePage/>} />
                   <Route path="/*" element={<Navigate to="/" />} />
                   {/* <Navigate path='*' to="/" /> */}

@@ -24,28 +24,25 @@ type Post @model
         queryField: "listPostsSortedByTimestamp"
         sortKeyFields: ["timestamp"] # sort posts by time overall
     )
-  likes: [Like] @hasMany(
-    indexName: "LikesByPost",
-    fields: ["id"]
-  )
+  # likes: [Like] @hasMany(
+  #   indexName: "LikesByPost",
+  #   fields: ["id"]
+  # )
 }
 
-type Like @model 
-@auth(rules: [
-  { allow: owner, ownerField: "createdBy", provider: userPools, operations: [read, update] }
-  { allow: private, provider: userPools, operations: [read, update] }
-  { allow: public, operations: [read] }
-])
-{
-  id: ID!
-  like: Int!
-  numberLikes: Int 
-  liked: Boolean 
-  likeUserId: String 
-  likeUserHandle: String 
-  createdAt: AWSDateTime 
-  post: Post @belongsTo(fields: ["postID"])
-  postID: ID @index(
-    name: "likesByPost"
-  )
-}
+# type Like @model 
+# @auth(rules: [
+#   { allow: owner, ownerField: "createdBy", provider: userPools, operations: [read, update, delete] }
+#   { allow: private, provider: userPools, operations: [read, update] }
+#   { allow: public, operations: [read] }
+# ])
+# {
+#   id: ID!
+#   likeUserId: String! # anonymous users cannot like a post
+#   likeUserHandle: String 
+#   createdAt: AWSDateTime 
+#   post: Post @belongsTo(fields: ["postID"])
+#   postID: ID @index(
+#     name: "likesByPost"
+#   )
+# }
