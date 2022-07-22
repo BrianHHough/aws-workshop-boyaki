@@ -30,6 +30,27 @@ type Post @model
   # )
 }
 
+type FollowRelationship @model
+	@auth(rules: [
+		{allow: owner, ownerField: "followerId", provider: userPools, operations:[read, create, delete]},
+		{allow: private, provider: userPools, operations:[read]}
+	])
+{
+  # id: ID
+  followeeId: ID! # username of person being followed (someone else) 
+    # @index ( 
+    #   name: "SortByFolloweeId"
+    #   sortKeyFields: ["followerId"]
+    # )
+	followerId: ID! @primaryKey(sortKeyFields: ["followeeId"]) # me
+  
+  # followerId: ID! @index (  # username of person doing the following (me)
+  #     name: "SortByFollowerId"
+  #     sortKeyFields: ["followeeId"]
+  #   )
+	timestamp: Int! 
+}
+
 # type Like @model 
 # @auth(rules: [
 #   { allow: owner, ownerField: "createdBy", provider: userPools, operations: [read, update, delete] }
@@ -46,3 +67,4 @@ type Post @model
 #     name: "likesByPost"
 #   )
 # }
+

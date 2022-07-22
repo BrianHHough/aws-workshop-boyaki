@@ -22,10 +22,9 @@ import PublicIcon from '@mui/icons-material/Public';
 
 import {Auth, API, graphqlOperation } from 'aws-amplify';
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { listPostsBySpecificOwner } from '../../graphql/queries';
+import { listPostsBySpecificOwner, getFollowRelationship } from '../../graphql/queries';
 import { onCreatePost } from '../../graphql/subscriptions';
-
-import { createPost } from '../../graphql/mutations';
+import { createFollowRelationship, deleteFollowRelationship } from '../../graphql/mutations';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router';
 
@@ -57,6 +56,9 @@ const ProfilePage = ({activeListItem}) => {
     const [postsSub, setPostsSub] = useState([]);
     const [nextToken, setNextToken] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [currentUser, setCurrentUser] = useState(null);
+    const [isFollowing, setIsFollowing] = useState(false);
 
     const theme = createTheme({
         header: {
@@ -102,6 +104,20 @@ const ProfilePage = ({activeListItem}) => {
         },
         ownerAndTime: {
           display: "flex"
+        },
+        AnotherUserInfo: {
+          display: "flex"
+        },
+        ButtonCon: {
+          position: "relative",
+          marginLeft: "20px"
+        },
+        FollowButton: {
+          height: "30px",
+          top: "50%",
+          transform: "translateY(-50%)",
+          position: "absolute",
+          borderRadius: "7px",
         }
     });
 
@@ -129,32 +145,104 @@ const ProfilePage = ({activeListItem}) => {
             dispatch({ type: type, posts: postData.data.listPostsBySpecificOwner.items })
             setNextToken(postData.data.listPostsBySpecificOwner.nextToken);
             // dispatch(posts)
-            // console.log(posts)
+            console.log(posts)
         } catch (err) {console.log('error fetching posts')}
+    }
+
+    const getIsFollowing = async ({followerId, followeeId}) => {
+      const res = await API.graphql(graphqlOperation(getFollowRelationship,{
+        followeeId: followeeId, // username of person being followed (someone else)
+        followerId: followerId, // username of person doing the following (me)
+      }));
+      console.log(res)
+      return res.data.getFollowRelationship !== null
+    }
+
+    useEffect(() => {
+      getIsFollowing();
+    }, []);
+
+    const getAdditionalPosts = () => {
+      if (nextToken === null) return; //Reached the last page
+      getPostsBySpecifiedUser(ADDITIONAL_QUERY, nextToken);
+    }
+
+    const follow = async () => {
+      console.log('follow')
+      const input = {
+        // id: `${userId}::${currentUser.username}`,
+        followeeId: userId, // someone else
+        followerId: currentUser.username, // me
+        timestamp: Math.floor(Date.now() / 1000),
+      }
+      const res = await API.graphql(graphqlOperation(createFollowRelationship, {input: input}));
+      if(!res.data.createFollowRelationship.errors) setIsFollowing(true);
+      console.log(res);
+    }
+
+    const unfollow = async() => {
+      console.log('unfollow');
+      const input = {
+        // id: `${userId}::${currentUser.username}`,
+        followeeId: userId, // someone else
+        followerId: currentUser.username, // me
+        // timestamp: '1658437217'
+      }
+      const res = await API.graphql(graphqlOperation(deleteFollowRelationship,{input: input}));
+      if(!res.data.deleteFollowRelationship.errors) setIsFollowing(false);
+      console.log(res)
     }
 
     useEffect(() => {
         getPostsBySpecifiedUser()
       }, [postsSub])
 
-      const getAdditionalPosts = () => {
-        if (nextToken === null) return; //Reached the last page
-        getPostsBySpecifiedUser(ADDITIONAL_QUERY, nextToken);
-      }
 
-      useEffect(() => {
+      
+    useEffect(() => {
+      const init = async() => {
+
+        const currentUser = await Auth.currentAuthenticatedUser();
+        setCurrentUser(currentUser);
+
+        // setFollowing based on inputs
+
+        // setIsFollowing(await getIsFollowing({
+        //   // relationshipID: ID,
+        //   id: `${currentUser.username}::${userId}`
+        //   // followeeId: userId,
+        //   // followerId: currentUser.username
+        // }));
+
+        const result = await getIsFollowing({
+          followeeId: userId, // username of person being followed (someone else)
+          followerId: user.username, 
+        })
+
+        setIsFollowing(result);
+        console.log(user.username, userId);
+
+        // setIsFollowing(await getIsFollowing({
+        //   // relationshipID: ID,
+        //   id: `${currentUser.username}::${userId}`,
+        //   followeeId: userId,
+        //   followerId: currentUser.username
+        // }));
+
         getPostsBySpecifiedUser(INITIAL_QUERY);
-    
-        const subscription = API.graphql(graphqlOperation(onCreatePost)).subscribe({
-          next: (msg) => {
-            const post = msg.value.data.onCreatePost;
-                if (post.owner !== userId) return;
-                dispatch({ type: SUBSCRIPTION, post: post });
-            }
-        });
-        return () => subscription.unsubscribe();
-        // when there is a change in URL, run this side script
-      }, [userId]); 
+      }
+      init()
+
+      const subscription = API.graphql(graphqlOperation(onCreatePost)).subscribe({
+        next: (msg) => {
+          const post = msg.value.data.onCreatePost;
+              if (post.owner !== userId) return;
+              dispatch({ type: SUBSCRIPTION, post: post });
+          }
+      });
+      return () => subscription.unsubscribe();
+      // when there is a change in URL, run this side script
+    }, [userId]); 
 
 
     return (
@@ -163,9 +251,36 @@ const ProfilePage = ({activeListItem}) => {
                 <div style={theme.postlist} id="PostListCon">
                 <div style={theme.header}>
                 {user.username === userId ?
+                    <>
                     <h1>My Posts</h1>
+                    </>
                     :
+                    <div style={theme.AnotherUserInfo}>
                     <h1>{userId}'s Posts</h1>
+                    {/* {console.log(user.username)} */}
+                    <>
+                    <div style={theme.ButtonCon}>
+                      
+                      {(currentUser && userId !== user.username ) &&
+                      ( isFollowing ?
+                        <button 
+                          style={theme.FollowButton}
+                          onClick={unfollow}
+                        >
+                          FOLLOWING
+                        </button>
+                      : 
+                        <button 
+                          style={theme.FollowButton}
+                          onClick={follow}
+                        >
+                          FOLLOW
+                        </button>
+                      )
+                      } 
+                      </div>
+                      </>
+                    </div>
                 }
 
                 </div>

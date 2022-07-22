@@ -1,6 +1,45 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getFollowRelationship = /* GraphQL */ `
+  query GetFollowRelationship($followerId: ID!, $followeeId: ID!) {
+    getFollowRelationship(followerId: $followerId, followeeId: $followeeId) {
+      followeeId
+      followerId
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listFollowRelationships = /* GraphQL */ `
+  query ListFollowRelationships(
+    $followerId: ID
+    $followeeId: ModelIDKeyConditionInput
+    $filter: ModelFollowRelationshipFilterInput
+    $limit: Int
+    $nextToken: String
+    $sortDirection: ModelSortDirection
+  ) {
+    listFollowRelationships(
+      followerId: $followerId
+      followeeId: $followeeId
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
+      items {
+        followeeId
+        followerId
+        timestamp
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getPost = /* GraphQL */ `
   query GetPost($id: ID!) {
     getPost(id: $id) {

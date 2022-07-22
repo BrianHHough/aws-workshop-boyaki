@@ -42,14 +42,16 @@ export function HomePage(){
                   : 
                   <>
                   {window.location.pathname === `/${user.username}` ?
+                    // My profile
                     <div>
                       <Sidebar/>
-                      <ProfilePage/>
+                      <ProfilePage id="My profile"/>
                     </div>
                     : 
+                    // Someone else's profile
                     <div>
                       <Sidebar/>
-                      <ProfilePage/>
+                      <ProfilePage id="Someone else's profile"/>
                     </div>
                   }
                   </>

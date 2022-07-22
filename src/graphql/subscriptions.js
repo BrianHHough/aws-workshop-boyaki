@@ -1,6 +1,39 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateFollowRelationship = /* GraphQL */ `
+  subscription OnCreateFollowRelationship($followerId: String) {
+    onCreateFollowRelationship(followerId: $followerId) {
+      followeeId
+      followerId
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateFollowRelationship = /* GraphQL */ `
+  subscription OnUpdateFollowRelationship($followerId: String) {
+    onUpdateFollowRelationship(followerId: $followerId) {
+      followeeId
+      followerId
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteFollowRelationship = /* GraphQL */ `
+  subscription OnDeleteFollowRelationship($followerId: String) {
+    onDeleteFollowRelationship(followerId: $followerId) {
+      followeeId
+      followerId
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreatePost = /* GraphQL */ `
   subscription OnCreatePost($owner: String) {
     onCreatePost(owner: $owner) {

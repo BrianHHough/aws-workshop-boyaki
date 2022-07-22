@@ -21,6 +21,71 @@ mutation MyMutation {
 }
 ```
 
+
+### create follow relationship (7/21)
+
+```graphql
+mutation MyMutation {
+  createFollowRelationship(input: {followeeId: "username1", followerID: "userappsyncmock", timestamp: 1585299648}) {
+    createdAt
+    followeeId
+    followerID
+    followerId
+    timestamp
+    updatedAt
+  }
+}
+
+```
+
+Output is:
+
+```json
+{
+  "data": {
+    "createFollowRelationship": {
+      "createdAt": "2022-07-22T02:50:15.245Z",
+      "followeeId": "username1",
+      "followerID": "userappsyncmock",
+      "followerId": "userappsyncmock",
+      "timestamp": 1585299648,
+      "updatedAt": "2022-07-22T02:50:15.245Z"
+    }
+  }
+}
+```
+
+
+```graphql
+# ✅  This creates a follow relationship
+mutation MyMutation {
+  createFollowRelationship(
+    input: {followeeId: "User1", followerId: "User2", timestamp: 1585299648}
+  ) {
+    createdAt
+    followeeId
+    followerId
+    timestamp
+    updatedAt
+  }
+}
+```
+Output is:
+
+```json
+{
+  "data": {
+    "createFollowRelationship": {
+      "createdAt": "2022-07-21T19:36:54.078Z",
+      "followeeId": "User1",
+      "followerId": "User2",
+      "timestamp": 1585299648,
+      "updatedAt": "2022-07-21T19:36:54.078Z"
+    }
+  }
+}
+```
+
 ☁️ **For: AWS AppSync:**
 
 ```graphql
@@ -82,7 +147,55 @@ query MyQuery {
     }
   }
 }
+```
 
+
+
+### Get a particular follow relationship
+```graphql
+query MyQuery {
+  getFollowRelationship(id: "testfollow::username1") {
+    id
+    followerId
+    followeeId
+    createdAt
+  }
+}
+```
+
+### List the follow relationships
+
+```graphql
+query MyQuery {
+  listFollowRelationships(followeeId: "User1") {
+    items {
+      createdAt
+      followerId
+      followeeId
+      timestamp
+      updatedAt
+    }
+  }
+}
+```
+
+Output is:
+```json
+{
+  "data": {
+    "listFollowRelationships": {
+      "items": [
+        {
+          "createdAt": "2022-07-21T19:36:54.078Z",
+          "followerId": "User2",
+          "followeeId": "User1",
+          "timestamp": 1585299648,
+          "updatedAt": "2022-07-21T19:36:54.078Z"
+        }
+      ]
+    }
+  }
+}
 ```
 
 ## Additional Info
