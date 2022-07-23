@@ -10,11 +10,13 @@ import {
 
 import { Auth } from 'aws-amplify';
 
+
 import Sidebar from "../../containers/Sidebar"
 import PostList from "../../components/PostList"
 import ProfilePage from '../ProfilePage';
 
 export function HomePage(){
+
   async function signOut() {
     try {
         await Auth.signOut();

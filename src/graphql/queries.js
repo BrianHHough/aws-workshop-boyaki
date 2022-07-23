@@ -46,8 +46,31 @@ export const getPost = /* GraphQL */ `
       id
       content
       owner
+      userPointer {
+        name
+        handle
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        createdAt
+        updatedAt
+        followerId
+      }
       timestamp
       type
+      likes {
+        items {
+          id
+          likeUserId
+          likeUserHandle
+          createdAt
+          postID
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -64,8 +87,20 @@ export const listPosts = /* GraphQL */ `
         id
         content
         owner
+        userPointer {
+          name
+          handle
+          pictureURL
+          bio
+          createdAt
+          updatedAt
+          followerId
+        }
         timestamp
         type
+        likes {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -94,8 +129,20 @@ export const listPostsBySpecificOwner = /* GraphQL */ `
         id
         content
         owner
+        userPointer {
+          name
+          handle
+          pictureURL
+          bio
+          createdAt
+          updatedAt
+          followerId
+        }
         timestamp
         type
+        likes {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -124,10 +171,183 @@ export const listPostsSortedByTimestamp = /* GraphQL */ `
         id
         content
         owner
+        userPointer {
+          name
+          handle
+          pictureURL
+          bio
+          createdAt
+          updatedAt
+          followerId
+        }
         timestamp
         type
+        likes {
+          items {
+            id
+            likeUserId
+            likeUserHandle
+            createdAt
+            postID
+            updatedAt
+          }
+          nextToken
+        }
         createdAt
         updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getLike = /* GraphQL */ `
+  query GetLike($id: ID!) {
+    getLike(id: $id) {
+      id
+      likeUserId
+      likeUserHandle
+      createdAt
+      post {
+        id
+        content
+        owner
+        userPointer {
+          name
+          handle
+          pictureURL
+          bio
+          createdAt
+          updatedAt
+          followerId
+        }
+        timestamp
+        type
+        likes {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      postID
+      updatedAt
+    }
+  }
+`;
+export const listLikes = /* GraphQL */ `
+  query ListLikes(
+    $filter: ModelLikeFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listLikes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        likeUserId
+        likeUserHandle
+        createdAt
+        post {
+          id
+          content
+          owner
+          timestamp
+          type
+          createdAt
+          updatedAt
+        }
+        postID
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const listLikesByOwner = /* GraphQL */ `
+  query ListLikesByOwner(
+    $likeUserId: String!
+    $sortDirection: ModelSortDirection
+    $filter: ModelLikeFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listLikesByOwner(
+      likeUserId: $likeUserId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        likeUserId
+        likeUserHandle
+        createdAt
+        post {
+          id
+          content
+          owner
+          timestamp
+          type
+          createdAt
+          updatedAt
+        }
+        postID
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getUserInfo = /* GraphQL */ `
+  query GetUserInfo($name: String!) {
+    getUserInfo(name: $name) {
+      name
+      handle
+      post {
+        items {
+          id
+          content
+          owner
+          timestamp
+          type
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      pictureURL
+      bio
+      createdAt
+      updatedAt
+      followerId
+    }
+  }
+`;
+export const listUserInfos = /* GraphQL */ `
+  query ListUserInfos(
+    $name: String
+    $filter: ModelUserInfoFilterInput
+    $limit: Int
+    $nextToken: String
+    $sortDirection: ModelSortDirection
+  ) {
+    listUserInfos(
+      name: $name
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
+      items {
+        name
+        handle
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        createdAt
+        updatedAt
+        followerId
       }
       nextToken
     }

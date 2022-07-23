@@ -1,0 +1,10 @@
+.HeartUnfilled > path {
+    fill: transparent;
+}
+
+ .HeartFilled > path {
+    fill: #e41749;
+ }
+/* .HeartFilled {
+    background-color: blue;
+} */

@@ -17,6 +17,8 @@ import { red } from '@mui/material/colors';
 
 import awsconfig from './aws-exports';
 import HomePage from './components/Homepage';
+import Settings from './components/Settings';
+
 Amplify.configure(awsconfig);
 
 const theme = createTheme({
@@ -61,6 +63,7 @@ function App() {
                 <Routes> {/* No longer Switch */}
                   <Route path='/' element={<HomePage/>} />
                   <Route path='/feed' element={<HomePage/>} />
+                  <Route path='/settings' element={<Settings/>} />
                   <Route path='/:userId' element={<HomePage/>} />
                   <Route path="/*" element={<Navigate to="/" />} />
                   {/* <Navigate path='*' to="/" /> */}

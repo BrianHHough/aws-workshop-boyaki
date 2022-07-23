@@ -22,7 +22,7 @@ import PublicIcon from '@mui/icons-material/Public';
 
 import {Auth, API, graphqlOperation } from 'aws-amplify';
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { listPostsBySpecificOwner, getFollowRelationship } from '../../graphql/queries';
+import { listPostsBySpecificOwner, getFollowRelationship, listFollowRelationships } from '../../graphql/queries';
 import { onCreatePost } from '../../graphql/subscriptions';
 import { createFollowRelationship, deleteFollowRelationship } from '../../graphql/mutations';
 import { useNavigate } from 'react-router-dom';
@@ -56,9 +56,11 @@ const ProfilePage = ({activeListItem}) => {
     const [postsSub, setPostsSub] = useState([]);
     const [nextToken, setNextToken] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isLiked, setIsLiked] = useState(false);
 
     const [currentUser, setCurrentUser] = useState(null);
     const [isFollowing, setIsFollowing] = useState(false);
+    const [numberOfFollowers, setNumberOfFollowers] = useState(0);
 
     const theme = createTheme({
         header: {
@@ -134,11 +136,11 @@ const ProfilePage = ({activeListItem}) => {
                     // Get userappsyncmock
                     // owner: "userappsyncmock",
                     // owner: "ff03de39-5287-4b92-b1e2-fce3d8264bb7::userappsyncmock",
-                    owner: userId,
+                    owner: userId, 
                     // type: "Post",
                     sortDirection: 'DESC', // ASC vs. DESC for opposite
                     // limit: 3, //default = 10
-                    nextToken: nextToken,
+                    // nextToken: nextToken,
                     // authMode: "AMAZON_COGNITO_USER_POOLS"
                 }))
             // const postsItems = postData.data.listPostsSortedByTimestamp.items
@@ -155,11 +157,23 @@ const ProfilePage = ({activeListItem}) => {
         followerId: followerId, // username of person doing the following (me)
       }));
       console.log(res)
+      // setNumberOfFollowers(res)
       return res.data.getFollowRelationship !== null
     }
 
+    const getNumberOfFollowers = async () => {
+      try {
+        const res = await API.graphql(graphqlOperation(listFollowRelationships, {
+          followeeId: userId,
+        }))
+        setNumberOfFollowers(res.data.listFollowRelationships.items.length)
+      } catch (error) {console.log('failed to load followers')}
+    }
+    
+
     useEffect(() => {
       getIsFollowing();
+      getNumberOfFollowers();
     }, []);
 
     const getAdditionalPosts = () => {
@@ -190,7 +204,7 @@ const ProfilePage = ({activeListItem}) => {
       }
       const res = await API.graphql(graphqlOperation(deleteFollowRelationship,{input: input}));
       if(!res.data.deleteFollowRelationship.errors) setIsFollowing(false);
-      console.log(res)
+      console.log(res) 
     }
 
     useEffect(() => {
@@ -220,7 +234,7 @@ const ProfilePage = ({activeListItem}) => {
         })
 
         setIsFollowing(result);
-        console.log(user.username, userId);
+        // console.log(user.username, userId);
 
         // setIsFollowing(await getIsFollowing({
         //   // relationshipID: ID,
@@ -253,8 +267,10 @@ const ProfilePage = ({activeListItem}) => {
                 {user.username === userId ?
                     <>
                     <h1>My Posts</h1>
+                    <h3>Followers: {numberOfFollowers}</h3>
                     </>
                     :
+                    <>
                     <div style={theme.AnotherUserInfo}>
                     <h1>{userId}'s Posts</h1>
                     {/* {console.log(user.username)} */}
@@ -280,10 +296,13 @@ const ProfilePage = ({activeListItem}) => {
                       } 
                       </div>
                       </>
-                    </div>
+                  </div>
+                  <h3>Followers: {numberOfFollowers}</h3>
+                  </>
                 }
 
                 </div>
+                {/* Show all posts: {console.log(posts)} */}
                 {console.log(posts)}
                 {posts ? (
                     posts.map((item, index, text) => (
@@ -295,7 +314,13 @@ const ProfilePage = ({activeListItem}) => {
                                 username={item.owner}
                                 createdAt={item.createdAt}
                                 timestamp={item.timestamp}
+                                isLiked={isLiked}
+                                setIsLiked={setIsLiked}
+                                listOfLikes={item.likes}
+                                listOfLikesID={null}
+                                // listOfLikes={item.likes[0]}
                             />
+                           
                         </div>
                     ))
                     ) : (

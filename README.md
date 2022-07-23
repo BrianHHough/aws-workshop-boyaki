@@ -102,6 +102,29 @@ mutation MyMutation {
 }
 ```
 
+### Create a like (userID is auto-populated)
+
+```graphql
+mutation MyMutation {
+  createLike(input: {postID: "ddcd16e5-250c-4c38-95ec-04993d4d3c0f"}) {
+    id
+    likeUserHandle
+    likeUserId
+  }
+}
+```
+or
+```graphql
+mutation MyMutation {
+  createLike(input: {postID: "8df0fe08-6cad-4b0b-b2b4-0a41d06706a3"}) {
+    id
+    likeUserHandle
+    likeUserId
+  }
+}
+```
+
+
 ### Queries
 
 💻 **For: Local Mocking and Testing:**
@@ -167,7 +190,7 @@ query MyQuery {
 
 ```graphql
 query MyQuery {
-  listFollowRelationships(followeeId: "User1") {
+  listFollowRelationships(followerId: "username1") {
     items {
       createdAt
       followerId
@@ -186,11 +209,11 @@ Output is:
     "listFollowRelationships": {
       "items": [
         {
-          "createdAt": "2022-07-21T19:36:54.078Z",
-          "followerId": "User2",
-          "followeeId": "User1",
-          "timestamp": 1585299648,
-          "updatedAt": "2022-07-21T19:36:54.078Z"
+          "createdAt": "2022-07-22T03:17:04.321Z",
+          "followerId": "username1",
+          "followeeId": "testfollow",
+          "timestamp": 1658459824,
+          "updatedAt": "2022-07-22T03:17:04.321Z"
         }
       ]
     }

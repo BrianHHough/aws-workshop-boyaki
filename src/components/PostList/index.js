@@ -21,7 +21,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import PublicIcon from '@mui/icons-material/Public';
 
 import {Auth, API, graphqlOperation } from 'aws-amplify';
-import { listPostsSortedByTimestamp } from '../../graphql/queries';
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import { getLike, listLikesByOwner, listPostsSortedByTimestamp } from '../../graphql/queries';
 import { onCreatePost } from '../../graphql/subscriptions';
 
 import { createPost } from '../../graphql/mutations';
@@ -49,11 +50,13 @@ const reducer = (state, action) => {
 
 const PostList = ({activeListItem}) => {
     const navigate = useNavigate();
+    const { user } = useAuthenticator();
 
     const [posts, dispatch] = useReducer(reducer, []);
     const [postsSub, setPostsSub] = useState([]);
     const [nextToken, setNextToken] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isLiked, setIsLiked] = useState(false);
 
     const theme = createTheme({
         header: {
@@ -119,6 +122,27 @@ const PostList = ({activeListItem}) => {
             // console.log(posts)
         } catch (err) {console.log('error fetching posts')}
     }
+
+  //   const identifyLikeForDelete = async (type, nextToken = null) => {
+  //     try {
+  //       const fetchedPostID = await API.graphql(graphqlOperation(listLikesByOwner, {
+  //         likeUserId: user.username,
+  //         filter: {
+  //           postID: 
+  //         }
+  //       }))
+        
+  //       const likeData = await API.graphql(
+  //             graphqlOperation(getLike, {
+  //                 postID: fetchedPostID, 
+  //           }))
+  //         // const postsItems = postData.data.listPostsSortedByTimestamp.items
+  //         dispatch({ type: type, posts: postData.data.listPostsSortedByTimestamp.items })
+  //         setNextToken(postData.data.listPostsSortedByTimestamp.nextToken);
+  //         // dispatch(posts)
+  //         // console.log(posts)
+  //     } catch (err) {console.log('error fetching posts')}
+  // }
 
     useEffect(() => {
         getPosts()
@@ -215,6 +239,10 @@ const PostList = ({activeListItem}) => {
                                 username={item.owner}
                                 createdAt={item.createdAt}
                                 timestamp={item.timestamp}
+                                isLiked={isLiked}
+                                setIsLiked={setIsLiked}
+                                listOfLikes={item.likes}
+                                listOfLikesID={null}
                             />
                         </div>
                     ))

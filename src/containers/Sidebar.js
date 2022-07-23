@@ -112,18 +112,21 @@ const Sidebar = ({activeListItem, getPosts}) => {
           setHelperText('');
         }
       };
-    
+      
       // Inject values into JSON for new post
       const onPost = async () => {
         const res = await API.graphql(graphqlOperation(createPost, { input: {
           type: 'Post',
           content: value,
           owner: user.username,
+          // owner: user.attributes.preferred_username,
           timestamp: Math.floor(Date.now() / 1000),
+          // likes: [null]
         }})); 
         console.log(res)
         setValue('');
         getPosts();
+        window.location.reload()
       }
 
       // const signOut = () => {
@@ -171,6 +174,22 @@ const Sidebar = ({activeListItem, getPosts}) => {
                             <PersonIcon htmlColor={theme.icon.fontColor}/>
                         </ListItemIcon>
                         <ListItemText primary="Profile" />
+                    </ListItemStyled>
+
+                    <ListItemStyled
+                        button
+                        selected={activeListItem === 'settings'}
+                        onClick={() => {
+                            Auth.currentAuthenticatedUser().then((user) => {
+                            navigate('/settings');
+                            })
+                    }}
+                        key='settings'
+                    >
+                        <ListItemIcon>
+                            <PersonIcon htmlColor={theme.icon.fontColor}/>
+                        </ListItemIcon>
+                        <ListItemText primary="Settings" />
                     </ListItemStyled>
 
                     <ListItem key='post-input-field'>
@@ -249,8 +268,8 @@ const Sidebar = ({activeListItem, getPosts}) => {
                     </ListItem>
                 </List>
                 <div>
-                  Welcome back...
-                  {user.username}
+                  Welcome back: {" "}
+                  { user.username} | @{user.attributes.preferred_username}
                 </div>
                 </Drawer>
             </ThemeProvider>

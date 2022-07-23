@@ -40,8 +40,31 @@ export const onCreatePost = /* GraphQL */ `
       id
       content
       owner
+      userPointer {
+        name
+        handle
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        createdAt
+        updatedAt
+        followerId
+      }
       timestamp
       type
+      likes {
+        items {
+          id
+          likeUserId
+          likeUserHandle
+          createdAt
+          postID
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -53,8 +76,31 @@ export const onUpdatePost = /* GraphQL */ `
       id
       content
       owner
+      userPointer {
+        name
+        handle
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        createdAt
+        updatedAt
+        followerId
+      }
       timestamp
       type
+      likes {
+        items {
+          id
+          likeUserId
+          likeUserHandle
+          createdAt
+          postID
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -66,10 +112,207 @@ export const onDeletePost = /* GraphQL */ `
       id
       content
       owner
+      userPointer {
+        name
+        handle
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        createdAt
+        updatedAt
+        followerId
+      }
       timestamp
       type
+      likes {
+        items {
+          id
+          likeUserId
+          likeUserHandle
+          createdAt
+          postID
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
+    }
+  }
+`;
+export const onCreateLike = /* GraphQL */ `
+  subscription OnCreateLike($likeUserId: String) {
+    onCreateLike(likeUserId: $likeUserId) {
+      id
+      likeUserId
+      likeUserHandle
+      createdAt
+      post {
+        id
+        content
+        owner
+        userPointer {
+          name
+          handle
+          pictureURL
+          bio
+          createdAt
+          updatedAt
+          followerId
+        }
+        timestamp
+        type
+        likes {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      postID
+      updatedAt
+    }
+  }
+`;
+export const onUpdateLike = /* GraphQL */ `
+  subscription OnUpdateLike($likeUserId: String) {
+    onUpdateLike(likeUserId: $likeUserId) {
+      id
+      likeUserId
+      likeUserHandle
+      createdAt
+      post {
+        id
+        content
+        owner
+        userPointer {
+          name
+          handle
+          pictureURL
+          bio
+          createdAt
+          updatedAt
+          followerId
+        }
+        timestamp
+        type
+        likes {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      postID
+      updatedAt
+    }
+  }
+`;
+export const onDeleteLike = /* GraphQL */ `
+  subscription OnDeleteLike($likeUserId: String) {
+    onDeleteLike(likeUserId: $likeUserId) {
+      id
+      likeUserId
+      likeUserHandle
+      createdAt
+      post {
+        id
+        content
+        owner
+        userPointer {
+          name
+          handle
+          pictureURL
+          bio
+          createdAt
+          updatedAt
+          followerId
+        }
+        timestamp
+        type
+        likes {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      postID
+      updatedAt
+    }
+  }
+`;
+export const onCreateUserInfo = /* GraphQL */ `
+  subscription OnCreateUserInfo($followerId: String) {
+    onCreateUserInfo(followerId: $followerId) {
+      name
+      handle
+      post {
+        items {
+          id
+          content
+          owner
+          timestamp
+          type
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      pictureURL
+      bio
+      createdAt
+      updatedAt
+      followerId
+    }
+  }
+`;
+export const onUpdateUserInfo = /* GraphQL */ `
+  subscription OnUpdateUserInfo($followerId: String) {
+    onUpdateUserInfo(followerId: $followerId) {
+      name
+      handle
+      post {
+        items {
+          id
+          content
+          owner
+          timestamp
+          type
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      pictureURL
+      bio
+      createdAt
+      updatedAt
+      followerId
+    }
+  }
+`;
+export const onDeleteUserInfo = /* GraphQL */ `
+  subscription OnDeleteUserInfo($followerId: String) {
+    onDeleteUserInfo(followerId: $followerId) {
+      name
+      handle
+      post {
+        items {
+          id
+          content
+          owner
+          timestamp
+          type
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      pictureURL
+      bio
+      createdAt
+      updatedAt
+      followerId
     }
   }
 `;

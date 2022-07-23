@@ -1,0 +1,16 @@
+{
+  "resourceName": "boyakiS3Bucket",
+  "policyUUID": "aa8f384c",
+  "bucketName": "boyaki6ed0ded3313b4d9ea6b8ba36880e3003",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}
