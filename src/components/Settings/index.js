@@ -1,24 +1,115 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { createTheme, ThemeProvider, ThemeOptions } from "@mui/material/styles"
 
 import Amplify from "aws-amplify";
 import {Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import { createUserInfo } from '../../graphql/mutations';
+import { getUserInfo } from '../../graphql/queries';
+import { updateUserInfo } from '../../graphql/mutations';
 
 import Sidebar from "../../containers/Sidebar"
 
 Amplify.configure("../../aws-exports.js");
 
+const initialUserDataTemplate = { 
+  name: "", 
+  handle: "", 
+  pictureURL: "",
+  bio: "",
+}
+
 const SettingsPage = () => {
     const { user } = useAuthenticator();
-    console.log(user);
     const [username, setUsername] = useState();
     const [picture, setPicture ] = useState();
     const [pictureData, setPictureData ] = useState();
     const [pictureDataStatus, setPictureDataStatus] = useState();
     const [uploadedS3FilePath, setUploadedS3FilePath] = useState();
 
+    const [userDataTemplate, setUserDataTemplate] = useState(initialUserDataTemplate);
+    const [userInfoFetched, setUserInfoFetched] = useState();
+
+    // DYNAMODB - FETCH USER DATA INITIALLY
+    useEffect(() => {
+      fetchUser()
+      // Fetch UserData
+      async function fetchUser() {
+        const { username } = await Auth.currentAuthenticatedUser();
+          try {
+            const userData = await API.graphql({
+              query: getUserInfo,
+              variables: { name: username },
+          });
+          setUserInfoFetched(userData.data.getUserInfo);
+        } catch (error) { console.log('error fetching user data')}
+
+
+        // If nothing there yet - create user
+        if (userInfoFetched === undefined) {
+          userDataTemplate.name = username;
+          // userDataTemplate.handle = user.attributes.preferred_username;
+          userDataTemplate.bio = "I'm new here. Say hi!"
+          userDataTemplate.pictureURL = "https://boyaki6ed0ded3313b4d9ea6b8ba36880e300304540-dev.s3.amazonaws.com/public/pfps/global/orange-red-gradient.png";
+          
+          try {
+            const newUser = await API.graphql({
+              query: createUserInfo,
+              variables: { input: userDataTemplate },
+              // authMode: "AMAZON_COGNITO_USER_POOLS"
+            });
+            setUserInfoFetched(newUser.data.getUserInfo);
+          } catch (error) { console.log(error, 'did not set up user')}
+        }
+
+        // if (userInfoFetched !== undefined) {
+        //   userDataTemplate.name = username;
+        //   userDataTemplate.handle = user.attributes.preferred_username;
+        //   userDataTemplate.pictureURL = user.attributes.picture;
+        //   try {
+        //     const newUser = await API.graphql({
+        //       query: updateUserInfo,
+        //       variables: { input: userDataTemplate },
+        //       // authMode: "AMAZON_COGNITO_USER_POOLS"
+        //     });
+        //     setUserInfoFetched(newUser.data.getUserInfo);
+        //   } catch (error) { console.log('error setting up user')}
+        // }
+      }
+    // }, [userInfoFetched]);
+  }, []);
+
+    console.log(userInfoFetched);
+    console.log(userDataTemplate);
+
+    // console.log(userInfoFetched)
+
+  //   async function updateCurrentPost() {
+  //     if (!title || !content) return; 
+  //     const postUpdated = {
+  //         id, 
+  //         content,
+  //         title
+  //     };
+
+  //     if (coverImage && localImage) {
+  //         const fileName = `${coverImage.name}_${uuid()}`;
+  //         postUpdated.coverImage = fileName;
+  //         await Storage.put(fileName, coverImage);
+  //     };
+
+  //     await API.graphql({
+  //         query: updatePost,
+  //         variables: { input: postUpdated },
+  //         authMode: "AMAZON_COGNITO_USER_POOLS" // only they can update 
+  //     });
+  //     router.push(`/my-posts`);
+      
+  // }
+
+
+    // COGNITO
     async function handleSubmitUsername(event) {
       event.preventDefault();
       try {
@@ -45,41 +136,60 @@ const SettingsPage = () => {
       console.log(result.key);
       setUploadedS3FilePath(result.key);
       // handleSubmitUploadPicture();
-      const S3FilePath = uploadedS3FilePath;
+      const S3FilePath = result.key;
       const S3FilePrefix = "https://boyaki6ed0ded3313b4d9ea6b8ba36880e300304540-dev.s3.amazonaws.com/public/"
       // https://boyaki6ed0ded3313b4d9ea6b8ba36880e300304540-dev.s3.amazonaws.com/public/pfps/username1/Blue1.jpeg
       const updatedPicturePathFull = `${S3FilePrefix}${S3FilePath}`;
+
+      // Cognito Part
       try {
         const user = await Auth.currentAuthenticatedUser();
         const response = await Auth.updateUserAttributes(user, {
           "picture": updatedPicturePathFull
         })
-        console.log(response)
+        console.log(response, "Cognito updated")
         // event.preventDefault();
       ;
-      } catch (error) { 
-        console.log('error saving picture') 
-      }
+      } catch (error) {console.log('error saving picture to cognito')}
+
+      // DynamoDB Part
+      try {
+        const photoUploadedToCognito = { 
+          name: user.username, 
+          pictureURL: updatedPicturePathFull,
+        }
+        console.log(photoUploadedToCognito)
+        const response = await API.graphql({
+          query: updateUserInfo,
+          variables: { input: photoUploadedToCognito },
+          // authMode: "AMAZON_COGNITO_USER_POOLS"
+        });
+        console.log(response, "DynamoDB updated")
+        setUserInfoFetched(response.data.updateUserInfo);
+        
+        // setUserInfoFetched(updateUserPicture.data.getUserInfo);
+      } catch (error) { console.log(error, 'error adding picture to DDB')}
     }
 
-    async function handleSubmitUploadPicture(event, uploadedS3FilePath) {
-      // pfps/username1/Blue1.jpeg
-      const S3FilePath = uploadedS3FilePath;
-      const S3FilePrefix = "https://boyaki6ed0ded3313b4d9ea6b8ba36880e300304540-dev.s3.amazonaws.com/"
-      // https://boyaki6ed0ded3313b4d9ea6b8ba36880e300304540-dev.s3.amazonaws.com/public/pfps/username1/Blue1.jpeg
-      const updatedPicturePathFull = `${S3FilePrefix} ${S3FilePath}`;
-      try {
-        const user = await Auth.currentAuthenticatedUser();
-        const response = await Auth.updateUserAttributes(user, {
-          "picture": updatedPicturePathFull
-        })
-        console.log(response)
-        // event.preventDefault();
-      ;
-      } catch (error) { 
-        console.log('error saving picture') 
-      }
-    }
+    // COGNITO
+    // async function handleSubmitUploadPicture(event, uploadedS3FilePath) {
+    //   // pfps/username1/Blue1.jpeg
+    //   const S3FilePath = uploadedS3FilePath;
+    //   const S3FilePrefix = "https://boyaki6ed0ded3313b4d9ea6b8ba36880e300304540-dev.s3.amazonaws.com/"
+    //   // https://boyaki6ed0ded3313b4d9ea6b8ba36880e300304540-dev.s3.amazonaws.com/public/pfps/username1/Blue1.jpeg
+    //   const updatedPicturePathFull = `${S3FilePrefix} ${S3FilePath}`;
+    //   try {
+    //     const user = await Auth.currentAuthenticatedUser();
+    //     const response = await Auth.updateUserAttributes(user, {
+    //       "picture": updatedPicturePathFull
+    //     })
+    //     console.log(response)
+    //     // event.preventDefault();
+    //   ;
+    //   } catch (error) { 
+    //     console.log('error saving picture') 
+    //   }
+    // }
 
     function handleChangeUsername(event) {
       const {value} = event.target;
@@ -214,6 +324,8 @@ const SettingsPage = () => {
                     <div style={theme.usernamecon}>
                       <h2>Profile Picture</h2>
                       <p>This is your profile picture:</p>
+                        {/* {console.log(user.attributes.picture)} */}
+                        <img src={userInfoFetched?.pictureURL} alt="pfp" width="80px" height="80px"/>
                       <div>
                         <b>Your image goes here:</b>
                       </div>
@@ -256,11 +368,28 @@ const SettingsPage = () => {
                   {pictureData ? 
                   <h3>{pictureData.name}</h3>
                   : 
-                  <h3>No file...</h3>
+                  <h3>Upload a file...</h3>
                   }
+
 
                   {pictureDataStatus ? 'File uploaded successfully' : ""}
 
+                </div>
+                <hr></hr>
+                <div>
+
+                  {userInfoFetched !== undefined || null || "" ? 
+                    ""
+                    :
+                    <h4>You don't have a saved profile yet</h4>
+                  }
+
+                  {/* Check if you have the profile details */}
+                  {userInfoFetched?.handle && userInfoFetched?.pictureURL ? 
+                    <h4>Your profile has the stuff </h4>
+                    : 
+                    <p>You need a couple things...</p>
+                  }
                 </div>
             
                 </div>

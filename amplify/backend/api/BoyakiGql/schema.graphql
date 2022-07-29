@@ -93,11 +93,13 @@ type UserInfo @model
     { allow: public, operations: [read] }
   ])
 {
-  name: String! @primaryKey
+  username: String! @primaryKey
+  realName: String
   handle: String
   post: [Post] @hasMany(indexName: "BySpecificOwner", fields: ["name"])
   pictureURL: String
   bio: String
+  premium: boolean
 }
 
 

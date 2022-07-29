@@ -243,6 +243,7 @@ const PostList = ({activeListItem}) => {
                                 setIsLiked={setIsLiked}
                                 listOfLikes={item.likes}
                                 listOfLikesID={null}
+                                userPointer={item.userPointer}
                             />
                         </div>
                     ))

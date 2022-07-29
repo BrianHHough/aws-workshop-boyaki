@@ -18,7 +18,7 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import { createLike, deleteLike } from "../../graphql/mutations";
 
 import { useNavigate } from 'react-router-dom';
-import { getLike, listLikes } from '../../graphql/queries';
+import { getLike, getPost, listLikes } from '../../graphql/queries';
 
 const HANDLE_LIKE = Symbol("HANDLE_LIKE");
 const HANDLE_DISLIKE = Symbol("HANDLE_DISLIKE");
@@ -56,7 +56,7 @@ const HANDLE_DISLIKE = Symbol("HANDLE_DISLIKE");
 
 
 
-const PostBox = ({ id, item, text, username, createdAt, listOfLikes }) => {
+const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer }) => {
     const navigate = useNavigate();
     const { user } = useAuthenticator();
 
@@ -141,7 +141,7 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes }) => {
     useEffect(() => {
       if (listOfLikes)
       setListOfLikesCount(listOfLikes.items.length)
-    }, [])
+    }, [listOfLikes])
 
 
     const CREATE_LIKE = async () => {
@@ -150,7 +150,16 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes }) => {
         likeUserId: user.username,
       } }));
       console.log(res);
-      window.location.reload()
+      GET_LIKE();
+
+      // try { 
+      //   const res = await API.graphql(({
+      //     query: getPost,
+      //     variables: { id: id}
+      // }))
+      //   console.log(res);
+      // } catch (error) {console.log(error, 'help')};
+      // window.location.reload()
     }
 
     const GET_LIKE = async () => {
@@ -159,13 +168,14 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes }) => {
         postID: { eq: id },
         likeUserId: { eq: user.username },
       } }));
-      console.log(res.data.listLikes.items);
+      // console.log(res.data.listLikes.items);
       setCurrentUserLikeItem(res.data.listLikes.items);
-      if(res.data.listLikes.items.length > 0)
-      setIsLiked(true)
-      else {
+      if(res.data.listLikes.items.length > 0) {
+        setIsLiked(true)
+      } else {
         setIsLiked(false)
       }
+      
       // window.location.reload()
     }
     useEffect(() => {
@@ -183,7 +193,8 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes }) => {
         // likeUserId: user.username
       } }));
       console.log(res);
-      window.location.reload()
+      GET_LIKE();
+      // window.location.reload()
     }
 
     // Filter function to get like item - DOESN'T WORK
@@ -221,9 +232,17 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes }) => {
           <div style={theme.boxCon}>
           <div style={theme.box}>
 
+          {/* PROFILE PICTURE - PFP */}
+          {userPointer?.pictureURL ?
+            <Avatar 
+              style={theme.avatar}
+              src={userPointer.pictureURL}
+            />
+            :
             <Avatar style={theme.avatar}>
                 {UsernameChar.toUpperCase()}
             </Avatar>
+            }
 
             <div style={theme.postBody}>
 
@@ -235,9 +254,13 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes }) => {
                         style={theme.userHandle}
                         onClick={() => {
                             Auth.currentAuthenticatedUser().then((user) => {
-                            navigate('/' + username);
+                            navigate('/' + userPointer?.handle);
                             })}}>
-                        {username}
+                        {userPointer?.handle ? 
+                          userPointer?.handle
+                          :
+                          username
+                        }
                     </div>
                     {" • "}
                     {moment(createdAt).fromNow()}
