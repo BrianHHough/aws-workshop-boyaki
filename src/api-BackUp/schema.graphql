@@ -1,5 +1,271 @@
 
 
+
+
+# ========================================================
+#    ❌ Like/Unlike + Follow/Unfollow of 07/29/2022 @ 3:15am
+# ========================================================
+
+# DOESN"T WORK
+
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+type Post @model
+@auth(rules: [
+  { allow: owner, ownerField: "owner", provider: userPools, operations: [read, create, delete] }
+  { allow: private, provider: userPools, operations: [read] }
+  { allow: public, operations: [read] }
+])
+{
+  id: ID
+  content: String!
+  owner: String
+    @index(
+        name: "BySpecificOwner",
+        queryField: "listPostsBySpecificOwner",
+        sortKeyFields: ["timestamp"] # sort posts-by-owner by time
+    )
+  userPointer: UserInfo @belongsTo(fields: ["owner"]) # Query UserInfo for the name that is equal to the owner username
+
+    # @index(
+    #   name: "ByUserInfoObject",
+    #   queryField: "linkByUserInfoObject",
+    #   fields: ["id"]
+    # )
+
+  timestamp: Int!
+  type: String! # always should be `Post` - used in SortByTimestamp GSI
+    @index(
+        name: "SortByTimestamp"
+        queryField: "listPostsSortedByTimestamp"
+        sortKeyFields: ["timestamp"] # sort posts by time overall
+    )
+  likes: [Like] @hasMany(
+    indexName: "LikesByPost",
+    fields: ["id"]
+    ) 
+    # @index (
+    #   name: "LikesByOwner", 
+    #   queryField: "listPostsByOwnerLike",
+    #   sortKeyFields: ["timestamp"] # sort posts-by-owner by time
+    # )
+}
+
+type Like @model 
+@auth(rules: [
+  { allow: owner, ownerField: "likeUserId", provider: userPools, operations: [create, read, update, delete] }
+  { allow: private, provider: userPools, operations: [read] }
+  { allow: public, operations: [read] }
+])
+{
+  id: ID
+  likeUserId: String # get likes by owner
+    @index(
+      name: "LikesByOwner"
+      queryField: "listLikesByOwner"
+      # sortKeyFields: ["postID"]
+    )
+  likeUserHandle: String
+  createdAt: AWSDateTime
+  post: Post @belongsTo(fields: ["postID"])
+  postID: ID! @index( # get likes by posts
+    name: "LikesByPost"
+  )
+}
+
+type FollowRelationship @model
+	@auth(rules: [
+		{allow: owner, ownerField: "followerId", provider: userPools, operations:[read, create, delete]},
+		{allow: private, provider: userPools, operations:[read]}
+	])
+{
+  # id: ID
+  followeeId: ID! # username of person being followed (someone else) 
+    # @index ( 
+    #   name: "SortByFolloweeId"
+    #   sortKeyFields: ["followerId"]
+    # )
+	followerId: ID! @primaryKey(sortKeyFields: ["followeeId"]) # me
+  
+  # followerId: ID! @index (  # username of person doing the following (me)
+  #     name: "SortByFollowerId"
+  #     sortKeyFields: ["followeeId"]
+  #   )
+	timestamp: Int! 
+}
+
+type UserInfo @model 
+  @auth(rules: [
+    {allow: owner, ownerField: "followerId", provider: userPools, operations:[read, create, update]}, #followerId - previous ownerField
+		{allow: private, provider: userPools, operations:[read]}
+    { allow: public, operations: [read] }
+  ])
+{
+  username: String! @primaryKey
+  realName: String
+  handle: String
+  post: [Post] @hasMany(indexName: "BySpecificOwner", fields: ["handle"])
+  pictureURL: String
+  bio: String
+  premium: Boolean
+  payment: [Payment] @hasMany(indexName: "PaymentsBySpecificOwner", fields: ["username"])
+}
+
+type Payment @model 
+  @auth(rules: [
+    {allow: owner, ownerField: "owner", provider: userPools, operations:[read, create, update] }
+  ])
+  {
+  id: ID!
+  owner: String! # username of user
+    @index(
+        name: "PaymentsBySpecificOwner",
+        queryField: "listPaymentsBySpecificOwner",
+        sortKeyFields: ["timestamp"] # sort posts-by-owner by time
+    )
+  typeOfPayment: String # monthly, yearly, lifetime
+  costOfPayment: Int # cost of payment
+  invoiceURL: String
+  type: String! # always should be `Payment` - used in SortByTimestamp GSI
+    @index(
+        name: "SortPaymentsByTimestamp"
+        queryField: "listPaymentsSortedByTimestamp"
+        sortKeyFields: ["timestamp"] # sort posts by time overall
+    )
+  timestamp: Int!
+  }
+
+# type UserInfoS3Bucket {
+#   bucket: String!
+#   region: String!
+#   key: String!
+# }
+
+
+
+# ========================================================
+#    ✅ Update UserInfo DB + Cognito of 07/28/2022 @ 3:15am
+# ========================================================
+
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+type Post @model
+@auth(rules: [
+  { allow: owner, ownerField: "owner", provider: userPools, operations: [read, create, delete] }
+  { allow: private, provider: userPools, operations: [read] }
+  { allow: public, operations: [read] }
+])
+{
+  id: ID
+  content: String!
+  owner: String
+    @index(
+        name: "BySpecificOwner", 
+        queryField: "listPostsBySpecificOwner",
+        sortKeyFields: ["timestamp"] # sort posts-by-owner by time
+    )
+  userPointer: UserInfo @belongsTo(fields: ["owner"]) # Query UserInfo for the name that is equal to the owner username
+
+    # @index(
+    #   name: "ByUserInfoObject",
+    #   queryField: "linkByUserInfoObject",
+    #   fields: ["id"]
+    # )
+
+  timestamp: Int!
+  type: String! # always should be `Post` - used in SortByTimestamp GSI
+    @index(
+        name: "SortByTimestamp"
+        queryField: "listPostsSortedByTimestamp"
+        sortKeyFields: ["timestamp"] # sort posts by time overall
+    )
+  likes: [Like] @hasMany(
+    indexName: "LikesByPost",
+    fields: ["id"]
+    ) 
+    # @index (
+    #   name: "LikesByOwner", 
+    #   queryField: "listPostsByOwnerLike",
+    #   sortKeyFields: ["timestamp"] # sort posts-by-owner by time
+    # )
+}
+
+type Like @model 
+@auth(rules: [
+  { allow: owner, ownerField: "likeUserId", provider: userPools, operations: [create, read, update, delete] }
+  { allow: private, provider: userPools, operations: [read] }
+  { allow: public, operations: [read] }
+])
+{
+  id: ID
+  likeUserId: String # get likes by owner
+    @index(
+      name: "LikesByOwner"
+      queryField: "listLikesByOwner"
+      # sortKeyFields: ["postID"]
+    )
+  likeUserHandle: String 
+  createdAt: AWSDateTime 
+  post: Post @belongsTo(fields: ["postID"])
+  postID: ID! @index( # get likes by posts
+    name: "LikesByPost"
+  )
+}
+
+type FollowRelationship @model
+	@auth(rules: [
+		{allow: owner, ownerField: "followerId", provider: userPools, operations:[read, create, delete]},
+		{allow: private, provider: userPools, operations:[read]}
+	])
+{
+  # id: ID
+  followeeId: ID! # username of person being followed (someone else) 
+    # @index ( 
+    #   name: "SortByFolloweeId"
+    #   sortKeyFields: ["followerId"]
+    # )
+	followerId: ID! @primaryKey(sortKeyFields: ["followeeId"]) # me
+  
+  # followerId: ID! @index (  # username of person doing the following (me)
+  #     name: "SortByFollowerId"
+  #     sortKeyFields: ["followeeId"]
+  #   )
+	timestamp: Int! 
+}
+
+type UserInfo @model 
+  @auth(rules: [
+    {allow: owner, ownerField: "followerId", provider: userPools, operations:[read, create, update]},
+		{allow: private, provider: userPools, operations:[read]}
+    { allow: public, operations: [read] }
+  ])
+{
+  username: String! @primaryKey
+  realName: String
+  handle: String
+  post: [Post] @hasMany(indexName: "BySpecificOwner", fields: ["name"])
+  pictureURL: String
+  bio: String
+  premium: boolean
+}
+
+
+# type UserInfoS3Bucket {
+#   bucket: String!
+#   region: String!
+#   key: String!
+# }
+
+
+
+
+
+
+
 # ========================================================
 #    Like/Unlike + Follow/Unfollow of 07/23/2022 @ 3:15am
 # ========================================================

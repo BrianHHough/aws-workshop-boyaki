@@ -11,8 +11,10 @@ import ListItemText from '@mui/material/ListItemText';
 import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
 
-
+// Icons
 import PersonIcon from '@mui/icons-material/Person';
+import SettingsIcon from '@mui/icons-material/Settings';
+import PaidIcon from '@mui/icons-material/Paid';
 
 import PublicIcon from '@mui/icons-material/Public';
 
@@ -187,9 +189,25 @@ const Sidebar = ({activeListItem, getPosts}) => {
                         key='settings'
                     >
                         <ListItemIcon>
-                            <PersonIcon htmlColor={theme.icon.fontColor}/>
+                            <SettingsIcon htmlColor={theme.icon.fontColor}/>
                         </ListItemIcon>
                         <ListItemText primary="Settings" />
+                    </ListItemStyled>
+
+                    <ListItemStyled
+                        button
+                        selected={activeListItem === 'premium'}
+                        onClick={() => {
+                            Auth.currentAuthenticatedUser().then((user) => {
+                            navigate('/premium');
+                            })
+                    }}
+                        key='premium'
+                    >
+                        <ListItemIcon>
+                            <PaidIcon htmlColor={theme.icon.fontColor}/>
+                        </ListItemIcon>
+                        <ListItemText primary="Premium" />
                     </ListItemStyled>
 
                     <ListItem key='post-input-field'>

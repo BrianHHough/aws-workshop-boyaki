@@ -12,12 +12,17 @@ export const createPost = /* GraphQL */ `
       owner
       userPointer {
         name
+        realName
         handle
         post {
           nextToken
         }
         pictureURL
         bio
+        premium
+        payment {
+          nextToken
+        }
         createdAt
         updatedAt
         followerId
@@ -51,12 +56,17 @@ export const updatePost = /* GraphQL */ `
       owner
       userPointer {
         name
+        realName
         handle
         post {
           nextToken
         }
         pictureURL
         bio
+        premium
+        payment {
+          nextToken
+        }
         createdAt
         updatedAt
         followerId
@@ -90,12 +100,17 @@ export const deletePost = /* GraphQL */ `
       owner
       userPointer {
         name
+        realName
         handle
         post {
           nextToken
         }
         pictureURL
         bio
+        premium
+        payment {
+          nextToken
+        }
         createdAt
         updatedAt
         followerId
@@ -134,9 +149,11 @@ export const createLike = /* GraphQL */ `
         owner
         userPointer {
           name
+          realName
           handle
           pictureURL
           bio
+          premium
           createdAt
           updatedAt
           followerId
@@ -170,9 +187,11 @@ export const updateLike = /* GraphQL */ `
         owner
         userPointer {
           name
+          realName
           handle
           pictureURL
           bio
+          premium
           createdAt
           updatedAt
           followerId
@@ -206,9 +225,11 @@ export const deleteLike = /* GraphQL */ `
         owner
         userPointer {
           name
+          realName
           handle
           pictureURL
           bio
+          premium
           createdAt
           updatedAt
           followerId
@@ -275,6 +296,7 @@ export const createUserInfo = /* GraphQL */ `
   ) {
     createUserInfo(input: $input, condition: $condition) {
       name
+      realName
       handle
       post {
         items {
@@ -290,6 +312,21 @@ export const createUserInfo = /* GraphQL */ `
       }
       pictureURL
       bio
+      premium
+      payment {
+        items {
+          id
+          owner
+          typeOfPayment
+          costOfPayment
+          invoiceURL
+          type
+          timestamp
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
       followerId
@@ -303,6 +340,7 @@ export const updateUserInfo = /* GraphQL */ `
   ) {
     updateUserInfo(input: $input, condition: $condition) {
       name
+      realName
       handle
       post {
         items {
@@ -318,6 +356,21 @@ export const updateUserInfo = /* GraphQL */ `
       }
       pictureURL
       bio
+      premium
+      payment {
+        items {
+          id
+          owner
+          typeOfPayment
+          costOfPayment
+          invoiceURL
+          type
+          timestamp
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
       followerId
@@ -331,6 +384,7 @@ export const deleteUserInfo = /* GraphQL */ `
   ) {
     deleteUserInfo(input: $input, condition: $condition) {
       name
+      realName
       handle
       post {
         items {
@@ -346,9 +400,78 @@ export const deleteUserInfo = /* GraphQL */ `
       }
       pictureURL
       bio
+      premium
+      payment {
+        items {
+          id
+          owner
+          typeOfPayment
+          costOfPayment
+          invoiceURL
+          type
+          timestamp
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
       followerId
+    }
+  }
+`;
+export const createPayment = /* GraphQL */ `
+  mutation CreatePayment(
+    $input: CreatePaymentInput!
+    $condition: ModelPaymentConditionInput
+  ) {
+    createPayment(input: $input, condition: $condition) {
+      id
+      owner
+      typeOfPayment
+      costOfPayment
+      invoiceURL
+      type
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updatePayment = /* GraphQL */ `
+  mutation UpdatePayment(
+    $input: UpdatePaymentInput!
+    $condition: ModelPaymentConditionInput
+  ) {
+    updatePayment(input: $input, condition: $condition) {
+      id
+      owner
+      typeOfPayment
+      costOfPayment
+      invoiceURL
+      type
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deletePayment = /* GraphQL */ `
+  mutation DeletePayment(
+    $input: DeletePaymentInput!
+    $condition: ModelPaymentConditionInput
+  ) {
+    deletePayment(input: $input, condition: $condition) {
+      id
+      owner
+      typeOfPayment
+      costOfPayment
+      invoiceURL
+      type
+      timestamp
+      createdAt
+      updatedAt
     }
   }
 `;

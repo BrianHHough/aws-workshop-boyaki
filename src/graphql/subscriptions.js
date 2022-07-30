@@ -34,6 +34,51 @@ export const onDeleteFollowRelationship = /* GraphQL */ `
     }
   }
 `;
+export const onCreatePayment = /* GraphQL */ `
+  subscription OnCreatePayment($owner: String) {
+    onCreatePayment(owner: $owner) {
+      id
+      owner
+      typeOfPayment
+      costOfPayment
+      invoiceURL
+      type
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdatePayment = /* GraphQL */ `
+  subscription OnUpdatePayment($owner: String) {
+    onUpdatePayment(owner: $owner) {
+      id
+      owner
+      typeOfPayment
+      costOfPayment
+      invoiceURL
+      type
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeletePayment = /* GraphQL */ `
+  subscription OnDeletePayment($owner: String) {
+    onDeletePayment(owner: $owner) {
+      id
+      owner
+      typeOfPayment
+      costOfPayment
+      invoiceURL
+      type
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreatePost = /* GraphQL */ `
   subscription OnCreatePost($owner: String) {
     onCreatePost(owner: $owner) {
@@ -42,12 +87,17 @@ export const onCreatePost = /* GraphQL */ `
       owner
       userPointer {
         name
+        realName
         handle
         post {
           nextToken
         }
         pictureURL
         bio
+        premium
+        payment {
+          nextToken
+        }
         createdAt
         updatedAt
         followerId
@@ -78,12 +128,17 @@ export const onUpdatePost = /* GraphQL */ `
       owner
       userPointer {
         name
+        realName
         handle
         post {
           nextToken
         }
         pictureURL
         bio
+        premium
+        payment {
+          nextToken
+        }
         createdAt
         updatedAt
         followerId
@@ -114,12 +169,17 @@ export const onDeletePost = /* GraphQL */ `
       owner
       userPointer {
         name
+        realName
         handle
         post {
           nextToken
         }
         pictureURL
         bio
+        premium
+        payment {
+          nextToken
+        }
         createdAt
         updatedAt
         followerId
@@ -155,9 +215,11 @@ export const onCreateLike = /* GraphQL */ `
         owner
         userPointer {
           name
+          realName
           handle
           pictureURL
           bio
+          premium
           createdAt
           updatedAt
           followerId
@@ -188,9 +250,11 @@ export const onUpdateLike = /* GraphQL */ `
         owner
         userPointer {
           name
+          realName
           handle
           pictureURL
           bio
+          premium
           createdAt
           updatedAt
           followerId
@@ -221,9 +285,11 @@ export const onDeleteLike = /* GraphQL */ `
         owner
         userPointer {
           name
+          realName
           handle
           pictureURL
           bio
+          premium
           createdAt
           updatedAt
           followerId
@@ -245,6 +311,7 @@ export const onCreateUserInfo = /* GraphQL */ `
   subscription OnCreateUserInfo($followerId: String) {
     onCreateUserInfo(followerId: $followerId) {
       name
+      realName
       handle
       post {
         items {
@@ -260,6 +327,21 @@ export const onCreateUserInfo = /* GraphQL */ `
       }
       pictureURL
       bio
+      premium
+      payment {
+        items {
+          id
+          owner
+          typeOfPayment
+          costOfPayment
+          invoiceURL
+          type
+          timestamp
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
       followerId
@@ -270,6 +352,7 @@ export const onUpdateUserInfo = /* GraphQL */ `
   subscription OnUpdateUserInfo($followerId: String) {
     onUpdateUserInfo(followerId: $followerId) {
       name
+      realName
       handle
       post {
         items {
@@ -285,6 +368,21 @@ export const onUpdateUserInfo = /* GraphQL */ `
       }
       pictureURL
       bio
+      premium
+      payment {
+        items {
+          id
+          owner
+          typeOfPayment
+          costOfPayment
+          invoiceURL
+          type
+          timestamp
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
       followerId
@@ -295,6 +393,7 @@ export const onDeleteUserInfo = /* GraphQL */ `
   subscription OnDeleteUserInfo($followerId: String) {
     onDeleteUserInfo(followerId: $followerId) {
       name
+      realName
       handle
       post {
         items {
@@ -310,6 +409,21 @@ export const onDeleteUserInfo = /* GraphQL */ `
       }
       pictureURL
       bio
+      premium
+      payment {
+        items {
+          id
+          owner
+          typeOfPayment
+          costOfPayment
+          invoiceURL
+          type
+          timestamp
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
       followerId

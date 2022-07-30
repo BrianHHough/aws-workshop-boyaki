@@ -30,6 +30,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Sidebar from "../../containers/Sidebar"
 import PostBox from '../PostBox';
+import PostBoxTESTING from "../PostBox/indexTESTING"
 
 const SUBSCRIPTION = 'SUBSCRIPTION';
 const INITIAL_QUERY = 'INITIAL_QUERY';
@@ -116,7 +117,9 @@ const PostList = ({activeListItem}) => {
                     // authMode: "AMAZON_COGNITO_USER_POOLS"
                 }))
             // const postsItems = postData.data.listPostsSortedByTimestamp.items
-            dispatch({ type: type, posts: postData.data.listPostsSortedByTimestamp.items })
+            dispatch({ 
+              type: type, 
+              posts: postData.data.listPostsSortedByTimestamp.items })
             setNextToken(postData.data.listPostsSortedByTimestamp.nextToken);
             // dispatch(posts)
             // console.log(posts)
@@ -242,8 +245,9 @@ const PostList = ({activeListItem}) => {
                                 isLiked={isLiked}
                                 setIsLiked={setIsLiked}
                                 listOfLikes={item.likes}
-                                listOfLikesID={null}
+                                // listOfLikesID={null}
                                 userPointer={item.userPointer}
+                                fullPostData={item}
                             />
                         </div>
                     ))

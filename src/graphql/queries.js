@@ -40,6 +40,107 @@ export const listFollowRelationships = /* GraphQL */ `
     }
   }
 `;
+export const getPayment = /* GraphQL */ `
+  query GetPayment($id: ID!) {
+    getPayment(id: $id) {
+      id
+      owner
+      typeOfPayment
+      costOfPayment
+      invoiceURL
+      type
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listPayments = /* GraphQL */ `
+  query ListPayments(
+    $filter: ModelPaymentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPayments(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        owner
+        typeOfPayment
+        costOfPayment
+        invoiceURL
+        type
+        timestamp
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const listPaymentsBySpecificOwner = /* GraphQL */ `
+  query ListPaymentsBySpecificOwner(
+    $owner: String!
+    $timestamp: ModelIntKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelPaymentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPaymentsBySpecificOwner(
+      owner: $owner
+      timestamp: $timestamp
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        owner
+        typeOfPayment
+        costOfPayment
+        invoiceURL
+        type
+        timestamp
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const listPaymentsSortedByTimestamp = /* GraphQL */ `
+  query ListPaymentsSortedByTimestamp(
+    $type: String!
+    $timestamp: ModelIntKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelPaymentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPaymentsSortedByTimestamp(
+      type: $type
+      timestamp: $timestamp
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        owner
+        typeOfPayment
+        costOfPayment
+        invoiceURL
+        type
+        timestamp
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getPost = /* GraphQL */ `
   query GetPost($id: ID!) {
     getPost(id: $id) {
@@ -48,12 +149,17 @@ export const getPost = /* GraphQL */ `
       owner
       userPointer {
         name
+        realName
         handle
         post {
           nextToken
         }
         pictureURL
         bio
+        premium
+        payment {
+          nextToken
+        }
         createdAt
         updatedAt
         followerId
@@ -89,9 +195,11 @@ export const listPosts = /* GraphQL */ `
         owner
         userPointer {
           name
+          realName
           handle
           pictureURL
           bio
+          premium
           createdAt
           updatedAt
           followerId
@@ -99,6 +207,14 @@ export const listPosts = /* GraphQL */ `
         timestamp
         type
         likes {
+          items {
+            id
+            likeUserId
+            likeUserHandle
+            createdAt
+            postID
+            updatedAt
+          }
           nextToken
         }
         createdAt
@@ -131,9 +247,11 @@ export const listPostsBySpecificOwner = /* GraphQL */ `
         owner
         userPointer {
           name
+          realName
           handle
           pictureURL
           bio
+          premium
           createdAt
           updatedAt
           followerId
@@ -141,6 +259,14 @@ export const listPostsBySpecificOwner = /* GraphQL */ `
         timestamp
         type
         likes {
+          items {
+            id
+            likeUserId
+            likeUserHandle
+            createdAt
+            postID
+            updatedAt
+          }
           nextToken
         }
         createdAt
@@ -173,9 +299,11 @@ export const listPostsSortedByTimestamp = /* GraphQL */ `
         owner
         userPointer {
           name
+          realName
           handle
           pictureURL
           bio
+          premium
           createdAt
           updatedAt
           followerId
@@ -213,9 +341,11 @@ export const getLike = /* GraphQL */ `
         owner
         userPointer {
           name
+          realName
           handle
           pictureURL
           bio
+          premium
           createdAt
           updatedAt
           followerId
@@ -301,6 +431,7 @@ export const getUserInfo = /* GraphQL */ `
   query GetUserInfo($name: String!) {
     getUserInfo(name: $name) {
       name
+      realName
       handle
       post {
         items {
@@ -316,6 +447,21 @@ export const getUserInfo = /* GraphQL */ `
       }
       pictureURL
       bio
+      premium
+      payment {
+        items {
+          id
+          owner
+          typeOfPayment
+          costOfPayment
+          invoiceURL
+          type
+          timestamp
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
       followerId
@@ -339,12 +485,17 @@ export const listUserInfos = /* GraphQL */ `
     ) {
       items {
         name
+        realName
         handle
         post {
           nextToken
         }
         pictureURL
         bio
+        premium
+        payment {
+          nextToken
+        }
         createdAt
         updatedAt
         followerId
