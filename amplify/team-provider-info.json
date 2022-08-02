@@ -13,8 +13,17 @@
     },
     "categories": {
       "auth": {
-        "boyaki5195b8e7": {},
-        "true": {}
+        "boyaki5195b8e7": {}
+      },
+      "function": {
+        "boyakiCreatePayment": {
+          "deploymentBucketName": "amplify-boyaki-dev-04540-deployment",
+          "s3Key": "amplify-builds/boyakiCreatePayment-3061556d6f49336c5070-build.zip"
+        },
+        "boyakiProcessPayment": {
+          "deploymentBucketName": "amplify-boyaki-dev-04540-deployment",
+          "s3Key": "amplify-builds/boyakiProcessPayment-552f546a577a69575553-build.zip"
+        }
       }
     }
   }

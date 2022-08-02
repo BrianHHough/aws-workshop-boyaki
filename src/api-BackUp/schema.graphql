@@ -3,13 +3,9 @@
 
 
 # ========================================================
-#    ❌ Like/Unlike + Follow/Unfollow of 07/29/2022 @ 3:15am
+#    ✅  Most updated: 08/01/2022 @ 12:42am
 # ========================================================
 
-# DOESN"T WORK
-
-# This "input" configures a global authorization rule to enable public access to
-# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
 type Post @model
@@ -103,14 +99,14 @@ type UserInfo @model
     { allow: public, operations: [read] }
   ])
 {
-  username: String! @primaryKey
+  name: String! @primaryKey
   realName: String
   handle: String
-  post: [Post] @hasMany(indexName: "BySpecificOwner", fields: ["handle"])
+  post: [Post] @hasMany(indexName: "BySpecificOwner", fields: ["name"])
   pictureURL: String
   bio: String
   premium: Boolean
-  payment: [Payment] @hasMany(indexName: "PaymentsBySpecificOwner", fields: ["username"])
+  payment: [Payment] @hasMany(indexName: "PaymentsBySpecificOwner", fields: ["name"])
 }
 
 type Payment @model 

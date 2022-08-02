@@ -221,6 +221,14 @@ Output is:
 }
 ```
 
+## AWS Lambda Functions
+We add these by choosing: 
+- `Lambda function (serverless function)`
+- `NodeJS`
+- `Hello World` function template
+
+### (1.) `boyakiProcessPayment`
+
 ## Additional Info
 
 ### `useParams()`

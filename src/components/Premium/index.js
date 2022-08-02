@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { loadStripe } from '@stripe/stripe-js'
 
 import { createTheme, ThemeProvider, ThemeOptions } from "@mui/material/styles"
 
@@ -22,25 +23,6 @@ const initialUserDataTemplate = {
 
 const SettingsPage = () => {
     const { user } = useAuthenticator();
-    const [username, setUsername] = useState();
-    const [picture, setPicture ] = useState();
-    const [pictureData, setPictureData ] = useState();
-    const [pictureDataStatus, setPictureDataStatus] = useState();
-    const [uploadedS3FilePath, setUploadedS3FilePath] = useState();
-
-    const [userDataTemplate, setUserDataTemplate] = useState(initialUserDataTemplate);
-    const [userInfoFetched, setUserInfoFetched] = useState();
-
-
-
-    function handleChangeUsername(event) {
-      const {value} = event.target;
-      setUsername(value.toLowerCase());
-    }
-
-    function handleChangeUploadPicture(e) {
-      const upload = (e) => setPictureData(e.target.files[0]);
-    }
 
     const theme = createTheme({
         header: {
@@ -55,50 +37,22 @@ const SettingsPage = () => {
             left: "340px",
             marginTop: "-25px",
         },
-        box: {
-            width: "80%",
-            border: "1px solid grey",
-            borderRadius: "20px",
-            marginBottom: "10px",
-            display: "flex",
-            padding: "10px",
-            marginLeft: "30px",
-            cursor: "pointer",
-            "&:hover": {
-                backgroundColor: "red"
-            }
-        },
-        avatar: {
-            marginTop: "5px",
-        },
-        text: {
-            marginLeft: "10px",
-            fontWeight: "600",
-            cursor: "text",
-        },
-        textOwnerAndTime: {
-          marginLeft: "10px",
-          fontWeight: "400",
-          cursor: "text",
-        },
-        postBody: {
-          display: "block"
-        },
-        ownerAndTime: {
-          display: "flex"
-        },
-        inputField: {
-          width: "300px",
-          height: "60px",
-          fontSize: "20pt"
-        },
-        form: {
-
-        },
-        usernamecon: {
-
-        }
     });
+
+    const handleClick = async (e) => {
+      // const stripe = await loadStripe('pk_test_l8VbmbOPY90BgShjtT6mwlsm');
+      const stripe = await loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY)
+      try {const { error } = await stripe.redirectToCheckout({
+        lineItems: [{
+          price: 'price_1LR5xkCKJ7t6EJmTtmOFQtWE',
+          quantity: 1
+        }],
+        mode: 'subscription',
+        successUrl: 'http://localhost:3000',
+        cancelUrl: 'http://localhost:3000/premium',
+      })
+    } catch (error) {console.log(error, 'failed to call stripe api')}
+    }
 
     return (
         <>
@@ -108,6 +62,8 @@ const SettingsPage = () => {
                 <div style={theme.header}>
                   <h1>Premium</h1>
                   <h3>Your status is:</h3>
+                  <hr></hr>
+                  <button onClick={handleClick}>Get Premium</button>
                   
                 </div>
                 </div>

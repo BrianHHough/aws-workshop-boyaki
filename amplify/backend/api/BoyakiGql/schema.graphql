@@ -116,14 +116,14 @@ type Payment @model
   typeOfPayment: String # monthly, yearly, lifetime
   costOfPayment: Int # cost of payment
   invoiceURL: String
-  type: String! # always should be `Payment` - used in SortByTimestamp GSI
+  type: String!  # always should be `Payment` - used in SortByTimestamp GSI
     @index(
         name: "SortPaymentsByTimestamp"
         queryField: "listPaymentsSortedByTimestamp"
         sortKeyFields: ["timestamp"] # sort posts by time overall
     )
-  timestamp: Int!
-  }
+  timestamp: Int!  
+  } 
 
 # type UserInfoS3Bucket {
 #   bucket: String!

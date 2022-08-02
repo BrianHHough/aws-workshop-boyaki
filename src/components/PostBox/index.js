@@ -19,42 +19,7 @@ import { createLike, deleteLike } from "../../graphql/mutations";
 
 import { useNavigate } from 'react-router-dom';
 import { getLike, getPost, listLikes } from '../../graphql/queries';
-
-const HANDLE_LIKE = Symbol("HANDLE_LIKE");
-const HANDLE_DISLIKE = Symbol("HANDLE_DISLIKE");
-
-    const initialState = {
-      likes: 100,
-      dislikes: 12,
-      active: null
-    };
-
-    const reducer = (state, action) => {
-      const { likes, dislikes, active } = state;
-    
-      switch (action.type) {
-        case HANDLE_LIKE:
-          // CREATE_LIKE();
-          return {
-            ...state,
-            likes: state.likes + 1,
-            dislikes: active === "dislike" ? dislikes - 1 : dislikes,
-            active: "like"
-          };
-        case HANDLE_DISLIKE:
-          // DELETE_LIKE();
-          return {
-            ...state,
-            likes: active === "like" ? likes - 1 : likes,
-            active: "dislike",
-            dislikes: dislikes + 1
-          };
-        default:
-          return state;
-      }
-    };
-
-
+import { Block } from '@mui/icons-material';
 
 const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer }) => {
     const navigate = useNavigate();
@@ -78,6 +43,7 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
         },
         box: {
             width: "80%",
+            minHeight: "230px",
             border: "1px solid grey",
             borderRadius: "20px",
             marginBottom: "10px",
@@ -116,22 +82,24 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
         ownerAndTime: {
             display: "flex"
         },
+        RightSidebar: {
+          display: "block",
+        },
         HeartCon: {
-          height: "70px",
+          height: "90px",
           width: "70px",
           margin: "0 auto",
+        },
+        CommentCon: {
+          height: "90px",
+          width: "70px",
+          margin: "0 auto",
+          marginTop: "20px"
         }
     });
     
     const UsernameChar = username.slice(0,1);
-
-    
-
-    const [state, dispatch] = useReducer(reducer, initialState);
-    
-    const { likes, dislikes, active } = state;
     const [listOfLikesCount, setListOfLikesCount] = useState(0);
-
     const [ currentUserLikeItem, setCurrentUserLikeItem ] = useState([]);
     const [ isLiked, setIsLiked ] = useState(false);
     
@@ -197,22 +165,6 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
       // window.location.reload()
     }
 
-    // Filter function to get like item - DOESN'T WORK
-
-    // const fetchCurrentUserLikeItem = async (listOfLikes) => {
-    //   try {
-    //     // for (let i = 0; i < listOfLikes.length; i++ ) 
-    //     const response = listOfLikes.filter((item)=>(item.likeUserId === user.username));
-    //     setCurrentUserLikeItem(response);
-    //     console.log(listOfLikes);
-    //   } catch (error) {console.log('error getting like item')}
-    // }
-
-    // useState(() => {
-    //   fetchCurrentUserLikeItem();
-    // }, [])
-
-
     const HtmlTooltip = styled(({ className, ...props }) => (
       <Tooltip {...props} classes={{ popper: className }} />
     ))(({ theme }) => ({
@@ -272,10 +224,11 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
               </p>
 
             </div>
-
-            <div 
-              style={theme.HeartCon}
-            >
+    
+    <div style={theme.RightSidebar}>
+        <div 
+          style={theme.HeartCon}
+        >
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 viewBox="0 0 16 16"
@@ -286,19 +239,6 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
                   CREATE_LIKE()
                 }
               }
-                // onClick={() => {
-                //   active !== "like" ? 
-                //   dispatch({ type: HANDLE_LIKE }) : 
-                //   dispatch({ type: HANDLE_DISLIKE });
-
-                //   active !== "like" ? 
-                //   CREATE_LIKE() : 
-                //   DELETE_LIKE();
-                // }}
-
-                // className={isLiked ? "HeartFilled" : "HeartUnfilled"}
-                // onClick={() => toggle(item)}
-                // onClick={toggleLike => setIsLiked(true)} // Like all posts
               >
                 <path 
                 style={{
@@ -322,16 +262,74 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
                     </>
                 }
               >
-                <p style={{marginTop: "-5px"}}>Likes {listOfLikesCount}</p>
+                <p style={{marginTop: "-5px", textAlign: "center"}}>Likes {listOfLikesCount}</p>
               </HtmlTooltip>
 
-            </div>            
+        </div>
 
-          </div>
-            
-          </div>
-        </ThemeProvider>
-      </>
+        <div 
+          style={theme.CommentCon}
+        >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 512 512"
+                width="100%" height="50%"
+                
+                onClick={() => {
+                  isLiked === true ? 
+                  DELETE_LIKE() : 
+                  CREATE_LIKE()
+                }
+              }
+              >
+              
+              {isLiked === true ?
+              <path 
+                style={{
+                  fill:  "white",
+                  marginRight: "10px"
+                }}
+                fill="white" 
+                
+                // d="M128 224h256v64H128zM128 128h256v64H128z" 
+                d="M480 0H32C14.312 0 0 14.312 0 32v352c0 17.688 14.312 01 01 32h64v96l144-96h240c17.688 0 12-14.312 32-32V32c0-17.688-14.312-32-32-32zm-32 352H240l-80"
+                />
+                :
+                <path 
+                style={{
+                  marginRight: "10px"
+                }}
+                fill="white" 
+                
+                // d="M128 224h256v64H128zM128 128h256v64H128z" 
+                d="M480 0H32C14.312 0 0 14.312 0 32v352c0 17.688 14.312 32 32 32h64v96l144-96h240c17.688 0 32-14.312 32-32V32c0-17.688-14.312-32-32-32zm-32 352H240l-80 48v-48H64V64h384v288z"
+                />
+              }
+              </svg>
+
+              <HtmlTooltip
+                title={
+                  <>
+                    <h3>Accounts:</h3>
+                      {listOfLikes.items.length > 0 ? (
+                      listOfLikes.items.map((item) => (
+                        <p>{item.likeUserId}</p>
+                      ))) : (
+                        ""
+                      )}
+                    </>
+                }
+              >
+                <p style={{marginTop: "-5px", textAlign: "center"}}>MSG's {listOfLikesCount}</p>
+              </HtmlTooltip>
+        </div>  
+      </div>
+
+      </div>
+        
+      </div>
+      </ThemeProvider>
+    </>
     );
   };
 
