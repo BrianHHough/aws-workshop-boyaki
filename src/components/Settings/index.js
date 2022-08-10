@@ -6,7 +6,7 @@ import Amplify from "aws-amplify";
 import {Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { createUserInfo } from '../../graphql/mutations';
-import { getUserInfo } from '../../graphql/queries';
+import { getUserInfo, listUserInfos } from '../../graphql/queries';
 import { updateUserInfo } from '../../graphql/mutations';
 
 import Sidebar from "../../containers/Sidebar"
@@ -22,7 +22,7 @@ const initialUserDataTemplate = {
 
 const SettingsPage = () => {
     const { user } = useAuthenticator();
-    const [username, setUsername] = useState();
+    const [username, setUsername] = useState('');
     const [picture, setPicture ] = useState();
     const [pictureData, setPictureData ] = useState();
     const [pictureDataStatus, setPictureDataStatus] = useState();
@@ -30,8 +30,9 @@ const SettingsPage = () => {
 
     const [userDataTemplate, setUserDataTemplate] = useState(initialUserDataTemplate);
     const [userInfoFetched, setUserInfoFetched] = useState();
+    const [handleCheckTaken, setHandleCheckTaken] = useState(true);
 
-    // DYNAMODB - FETCH USER DATA INITIALLY
+    // DYNAMODB - FETCH USER DATA INITIALLY (OR SET UP USER)
     useEffect(() => {
       fetchUser()
       // Fetch UserData
@@ -60,7 +61,7 @@ const SettingsPage = () => {
               // authMode: "AMAZON_COGNITO_USER_POOLS"
             });
             setUserInfoFetched(newUser.data.getUserInfo);
-          } catch (error) { console.log(error, 'did not set up user')}
+          } catch (error) { console.log(error, 'user already set up')}
         }
 
         // if (userInfoFetched !== undefined) {
@@ -80,8 +81,18 @@ const SettingsPage = () => {
     // }, [userInfoFetched]);
   }, []);
 
-    console.log(userInfoFetched);
-    console.log(userDataTemplate);
+
+
+
+    // FETCH USER INFO
+    // console.log(userInfoFetched);
+    // console.log('handle', userInfoFetched)
+    // console.log(userDataTemplate);
+
+
+
+
+
 
     // console.log(userInfoFetched)
 
@@ -191,10 +202,54 @@ const SettingsPage = () => {
     //   }
     // }
 
+    // Remove special characters from username (enforce only alphanumeric)
     function handleChangeUsername(event) {
       const {value} = event.target;
-      setUsername(value.toLowerCase());
+      setUsername(value
+        .replace(/\s/g, '')
+        .replace(/[^a-z0-9]/gi,'')
+        // .replace(/(^\&)|,(^\@)|,/g, '')
+        .split('.').join('')
+        .toLowerCase()
+      );
     }
+
+    console.log(username);
+
+    const checkIfHandleTaken = async (type, username) => {
+      console.log(username);
+      try {
+        const handleData = await API.graphql(
+          graphqlOperation(listUserInfos, {
+            // handle: username
+            filter: {
+              handle: { eq: 'username2'}
+            }
+        }))
+        const handleCheckData = handleData.data.listUserInfos.items;
+        console.log(handleCheckData);
+
+        // function searchReturnedData(username, handleCheckData) {
+        //   for (var i=0; i <  handleCheckData.length; i++) {
+        //     if (handleCheckData[i].handle === username) {
+        //       return handleCheckData[i];
+        //     }
+        //   }
+        // }
+        let handleCheckDataHandle = handleCheckData.find(o => o.handle == username);
+        console.log(handleCheckData)
+
+        if (handleCheckData) {
+          setHandleCheckTaken(true)
+        } else {
+          setHandleCheckTaken(false)
+        }
+      } catch (error) {console.log('error fetching handles')}
+    }
+
+    // useEffect(() => (
+    //   checkIfHandleTaken()
+    // ), [handleCheckTaken] )
 
     function handleChangeUploadPicture(e) {
       const upload = (e) => setPictureData(e.target.files[0]);
@@ -277,7 +332,7 @@ const SettingsPage = () => {
                   {user.attributes.preferred_username ?
                     <>
                     <div style={theme.usernamecon}>
-                      <h2>Username</h2>
+                      <h2>Handle</h2>
                       <p>This is your preferred username:</p>
                       <input
                         type="text"
@@ -290,7 +345,7 @@ const SettingsPage = () => {
                       >
                       </input>
                       </div>
-                    <button type="submit">Save Changes</button>
+                    <button style={{background: "lightblue"}} type="submit">Save Changes</button>
                     </>
                     :
                     <>
@@ -312,6 +367,9 @@ const SettingsPage = () => {
                     </>
                   }
                   </form>
+                  <br></br>
+                  <button style={{background: "yellow"}} onClick={checkIfHandleTaken}>Check if handle taken</button>
+                    <p>Handle is: {handleCheckTaken === true ? "taken" : "available"}</p>
 
 
 

@@ -164,6 +164,22 @@ const Sidebar = ({activeListItem, getPosts}) => {
 
                     <ListItemStyled
                         button
+                        selected={activeListItem === 'fetch-and-load'}
+                        onClick={() => {
+                            Auth.currentAuthenticatedUser().then((user) => {
+                            navigate('/fetch-and-load');
+                            })
+                    }}
+                    key='fetch-and-load'
+                    >
+                        <ListItemIcon>
+                            <PublicIcon htmlColor={theme.icon.fontColor}/>
+                        </ListItemIcon>
+                        <ListItemText primary="Fetch 'n Load" />
+                    </ListItemStyled>
+
+                    <ListItemStyled
+                        button
                         selected={activeListItem === 'profile'}
                         onClick={() => {
                             Auth.currentAuthenticatedUser().then((user) => {

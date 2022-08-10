@@ -84,7 +84,7 @@ type FollowRelationship @model
 	timestamp: Int! 
 }
 
-type UserInfo @model 
+type UserInfo @model  
   @auth(rules: [
     {allow: owner, ownerField: "followerId", provider: userPools, operations:[read, create, update]}, #followerId - previous ownerField
 		{allow: private, provider: userPools, operations:[read]}
