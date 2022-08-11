@@ -96,3 +96,11 @@ main > h1 {
   background-color: rgb(234, 234, 234);
   border-radius: 0px 0px 15px 15px;
 }
+
+.a:-webkit-any-link {
+  color: red !important;
+}
+
+.a:-webkit-any-link:nth-child(2) * {
+  color: red !important;
+}

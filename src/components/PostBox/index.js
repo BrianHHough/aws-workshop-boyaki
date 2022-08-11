@@ -3,8 +3,17 @@ import React, { useState, useEffect, useReducer } from 'react'
 import Moment from 'moment';
 import moment from 'moment';
 
-import { createTheme, ThemeProvider, ThemeOptions } from "@mui/material/styles"
+// Link Preview elements
+import {
+  MyCustomCardFinalized, LinkifyStyled
+} from "./PostBoxElements"
+import LinkifyIt, { Match } from "linkify-it";
+import tlds from 'tlds'; 
+// import * as linkify from 'linkifyjs';
+// import hashtag from 'linkifyjs/plugins/hashtag';
 
+
+import { createTheme, ThemeProvider, ThemeOptions } from "@mui/material/styles"
 import Avatar from '@mui/material/Avatar';
 import { styled } from '@mui/material/styles';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
@@ -21,9 +30,13 @@ import { useNavigate } from 'react-router-dom';
 import { getLike, getPost, listLikes } from '../../graphql/queries';
 import { Block } from '@mui/icons-material';
 
+import "../../index.css"
+
+
 const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer }) => {
     const navigate = useNavigate();
     const { user } = useAuthenticator();
+
 
     const theme = createTheme({
         header: {
@@ -63,6 +76,9 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
             marginLeft: "10px",
             fontWeight: "600",
             cursor: "text",
+            a: {
+              color: "red !important"
+            }
         },
         textOwnerAndTime: {
             marginLeft: "10px",
@@ -102,6 +118,11 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
     const [listOfLikesCount, setListOfLikesCount] = useState(0);
     const [ currentUserLikeItem, setCurrentUserLikeItem ] = useState([]);
     const [ isLiked, setIsLiked ] = useState(false);
+
+    // Link Previewer States
+    const [thereIsALink, setThereIsALink] = useState(false);
+    const [extractedLinkForPost, setExtractedLinkForPost] = useState("");
+    const [metadata, setMetadata] = useState({});
     
     // console.log(listOfLikes.items.length)
     // const countOfListOfLikes = listOfLikes.length
@@ -177,6 +198,110 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
       },
     }));
 
+    // =============== //
+    // LINK PREVIEWER  //
+    // =============== //
+
+    function isValidUrl(textBoxText) {
+      try {
+        var response = textBoxText.match(
+          /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
+        );
+        console.log("pulled out link", response);
+        if (response !== null) {
+          setExtractedLinkForPost("");
+        }
+        setExtractedLinkForPost(response[0]);
+        return response !== null;
+      } catch (error) {
+        console.log("error checking string");
+      }
+    }
+
+    useEffect(() => {
+      const response = isValidUrl(text);
+      if (response == true) {
+        return setThereIsALink(true);
+      } else {
+        setExtractedLinkForPost("");
+        setThereIsALink(false);
+      }
+    }, [text]);
+
+    // Color links within Linkify
+    const componentDecorator = (href, text, key) => (
+      <a href={href} key={key} target="_blank" style={{color: "grey"}} rel="noreferrer">
+        {text}
+      </a>
+    );
+
+    var linkifyOptions = {
+      formatHref: function (href, type) {
+        if (type === 'hashtag') {
+          href = 'https://twitter.com/hashtag/' + href.substring(1);
+        }
+        return href;
+      }
+    }
+
+    const linkify = new LinkifyIt();
+    linkify.tlds(tlds);
+    
+    // Identify and link handles starting with @
+    linkify.add('@', {
+      validate: function (text, pos, self) {
+        var tail = text.slice(pos);
+    
+        if (!self.re.twitter) {
+          self.re.twitter =  new RegExp(
+            '^([a-zA-Z0-9_]){1,15}(?!_)(?=$|' + self.re.src_ZPCc + ')'
+          );
+        }
+        if (self.re.twitter.test(tail)) {
+          // Linkifier allows punctuation chars before prefix,
+          // but we additionally disable `@` ("@@mention" is invalid)
+          if (pos >= 2 && tail[pos - 2] === '@') {
+            return false;
+          }
+          return tail.match(self.re.twitter)[0].length;
+        }
+        return 0;
+      },
+      normalize: function (match) {
+        match.url = '/' + match.url.replace(/^@/, '');
+      }
+    });
+
+    // Identify and link handles starting with @
+    linkify.add('#', {
+      validate: function (text, pos, self) {
+        var tail = text.slice(pos);
+    
+        if (!self.re.twitter) {
+          self.re.twitter =  new RegExp(
+            '^([a-zA-Z0-9_]){1,15}(?!_)(?=$|' + self.re.src_ZPCc + ')'
+          );
+        }
+        if (self.re.twitter.test(tail)) {
+          // Linkifier allows punctuation chars before prefix,
+          // but we additionally disable `#` ("##mention" is invalid)
+          if (pos >= 2 && tail[pos - 2] === '#') {
+            return false;
+          }
+          return tail.match(self.re.twitter)[0].length;
+        }
+        return 0;
+      },
+      normalize: function (match) {
+        match.url = '/search/' + match.url.replace(/^#/, '');
+      }
+    });
+
+    // Declare Match Decorator
+    const matchDecorator = (text) => {
+      return linkify.match(text);
+    };
+
 
     return (
       <>
@@ -218,10 +343,34 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
                     {moment(createdAt).fromNow()}
                 </div>
               </div>
-
-              <p style={theme.text}>
-                  {text}
-              </p>
+              
+              <LinkifyStyled 
+                componentDecorator={componentDecorator}
+                matchDecorator={matchDecorator}
+                >
+                <p style={theme.text}>
+                    {text}
+                </p>
+              </LinkifyStyled>
+              {/* Turn metadata into link preview */}
+              {console.log("metadata", metadata)}
+                {extractedLinkForPost.length > 0 ? (
+                  <MyCustomCardFinalized
+                    url={extractedLinkForPost}
+                    fetchData
+                    setData={{ setMetadata }}
+                    // setData={data => ({
+                    //   ...data,
+                    //   title: 'SENTRY ACTIVATED',
+                    //   description: 'Are humans worth it?',
+                    //   image: { url: 'https://i.imgur.com/1FyFxlk.jpg' },
+                    //   publisher: 'HAL 9000',
+                    //   url: 'http://thehal9000.com'
+                    // })}
+                  />
+                ) : (
+                  ""
+                )}
 
             </div>
     

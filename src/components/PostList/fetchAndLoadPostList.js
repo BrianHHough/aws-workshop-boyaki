@@ -112,7 +112,7 @@ const PostList = ({activeListItem}) => {
                 graphqlOperation(listPostsSortedByTimestamp, {
                     type: "Post", 
                     sortDirection: 'DESC', // ASC vs. DESC for opposite
-                    // limit: 3, //default = 10
+                    limit: 3, //default = 10
                     nextToken: nextToken,
                     // authMode: "AMAZON_COGNITO_USER_POOLS"
                 }))

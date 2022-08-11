@@ -1,5 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
+import {
+    MyCustomCardFinalized
+} from "../components/PostBox/PostBoxElements.js"
 import { createTheme, ThemeProvider } from "@mui/material/styles"
 
 import Drawer from '@mui/material/Drawer';
@@ -41,6 +44,11 @@ const Sidebar = ({activeListItem, getPosts}) => {
     const [value, setValue] = useState('');
     const [isError, setIsError] = useState(false);
     const [helperText, setHelperText] = useState('');
+
+    // Link Previewer States
+    const [thereIsALink, setThereIsALink] = useState(false);
+    const [extractedLinkForPost, setExtractedLinkForPost] = useState("");
+    const [metadata, setMetadata] = useState({});
 
     const theme = createTheme({
         drawer: {
@@ -131,11 +139,35 @@ const Sidebar = ({activeListItem, getPosts}) => {
         window.location.reload()
       }
 
-      // const signOut = () => {
-      //   Auth.signOut()
-      //     .then(data => console.log(data)) && navigate('/')
-      //     .catch(err => console.log(err));
-      // }
+      // =============== //
+    // LINK PREVIEWER  //
+    // =============== //
+
+    function isValidUrl(textBoxText) {
+        try {
+          var response = textBoxText.match(
+            /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
+          );
+          console.log("pulled out link", response);
+          if (response !== null) {
+            setExtractedLinkForPost("");
+          }
+          setExtractedLinkForPost(response[0]);
+          return response !== null;
+        } catch (error) {
+          console.log("error checking string");
+        }
+      }
+  
+      useEffect(() => {
+        const response = isValidUrl(value);
+        if (response == true) {
+          return setThereIsALink(true);
+        } else {
+          setExtractedLinkForPost("");
+          setThereIsALink(false);
+        }
+      }, [value]);
 
     return (
         <>
@@ -275,6 +307,25 @@ const Sidebar = ({activeListItem, getPosts}) => {
                         />
                     } />
                     </ListItem>
+                    {/* Parse string and pull out the link */}
+                    {console.log("metadata", metadata)}
+                        {extractedLinkForPost.length > 0 ? (
+                        <MyCustomCardFinalized
+                            url={extractedLinkForPost}
+                            fetchData
+                            setData={{ setMetadata }}
+                            // setData={data => ({
+                            //   ...data,
+                            //   title: 'SENTRY ACTIVATED',
+                            //   description: 'Are humans worth it?',
+                            //   image: { url: 'https://i.imgur.com/1FyFxlk.jpg' },
+                            //   publisher: 'HAL 9000',
+                            //   url: 'http://thehal9000.com'
+                            // })}
+                        />
+                    ) : (
+                    ""
+                    )}
                     <ListItem key='post-button'>
                     <ListItemText primary={
                         <Button
