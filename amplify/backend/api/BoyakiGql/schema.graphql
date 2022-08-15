@@ -2,6 +2,9 @@ input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONL
 
 type Post @model
 @auth(rules: [
+  { allow: groups, groups: ["Admin"], operations: [read, update, delete] }
+  { allow: groups, groups: ["Moderator"], operations: [read, update] }
+  { allow: groups, groups: ["Analyst"], operations: [read] }
   { allow: owner, ownerField: "owner", provider: userPools, operations: [read, create, delete] }
   { allow: private, provider: userPools, operations: [read] }
   { allow: public, operations: [read] }
@@ -22,6 +25,9 @@ type Post @model
     #   queryField: "linkByUserInfoObject",
     #   fields: ["id"]
     # )
+  
+  totalVisibility: Boolean @auth(rules: [{ allow: groups, groups: ["Admin", "Moderator"],operations: [read, update]  }]) # Remove from site or not
+  feedVisibility: Boolean @auth(rules: [{ allow: groups, groups: ["Admin", "Moderator"],operations: [read, update]  }])  # Show public or not
 
   timestamp: Int!
   type: String! # always should be `Post` - used in SortByTimestamp GSI
@@ -98,7 +104,7 @@ type UserInfo @model
   pictureURL: String
   bio: String
   premium: Boolean
-  payment: [Payment] @hasMany(indexName: "PaymentsBySpecificOwner", fields: ["name"])
+  payment: [Payment] @hasMany(indexName: "PaymentsBySpecificOwner", fields: ["name"]) @auth(rules: [{ allow: owner }])
 }
 
 type Payment @model 

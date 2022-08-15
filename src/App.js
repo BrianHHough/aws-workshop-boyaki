@@ -17,6 +17,7 @@ import { red } from '@mui/material/colors';
 
 import awsconfig from './aws-exports';
 import HomePage from './components/Homepage';
+import FollowOnlyFeed from "./components/Homepage/follow-only-feed"
 import FetchAndLoad from "./components/Homepage/fetchAndLoad"
 import Settings from './components/Settings';
 import Premium from "./components/Premium"
@@ -65,6 +66,7 @@ function App() {
                 <Routes> {/* No longer Switch */}
                   <Route path='/' element={<HomePage/>} />
                   <Route path='/feed' element={<HomePage/>} />
+                  <Route path='/follow-only-feed' element={<FollowOnlyFeed/>} />
                   <Route path='/fetch-and-load' element={<FetchAndLoad/>} />
                   <Route path='/premium' element={<Premium/>} />
                   <Route path='/settings' element={<Settings/>} />

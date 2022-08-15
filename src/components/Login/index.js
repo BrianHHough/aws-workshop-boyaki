@@ -12,8 +12,8 @@ import {
   import { SignInHeader } from "../SignInHeader";
   import { SignInFooter } from "../SignInFooter";
 
-  import "../../App.css";
-  import "../../index.css";
+  // import "../../App.css";
+  // import "../../index.css";
 
   import CircuitPhoto from "../../assets/computer-glow.avif"
   
@@ -35,7 +35,10 @@ import {
           backgroundColor="#0f0c29"
           justifyContent="center"
         >
-          <Authenticator components={components}>
+          <Authenticator 
+            components={components}
+            socialProviders={[]}
+          >
             {({ signOut, user }) => (
               <main style={{color: "white"}}>
                 <h1>Hello, {user.username}</h1>

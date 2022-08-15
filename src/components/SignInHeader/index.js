@@ -4,7 +4,10 @@ export function SignInHeader() {
   const { tokens } = useTheme();
 
   return (
-    <Heading level={3} padding={`${tokens.space.xl} ${tokens.space.xl} 0`}>
+    <Heading 
+      level={3} 
+      padding={`${tokens.space.xl} ${tokens.space.xl} 0`}
+    >
       Sign into your Account
     </Heading>
   );

@@ -352,8 +352,13 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
                     {text}
                 </p>
               </LinkifyStyled>
-              {/* Turn metadata into link preview */}
-              {console.log("metadata", metadata)}
+
+              {/* ============
+
+              Turn metadata into link preview 
+
+              ==============*/}
+              {/* {console.log("metadata", metadata)} */}
                 {extractedLinkForPost.length > 0 ? (
                   <MyCustomCardFinalized
                     url={extractedLinkForPost}

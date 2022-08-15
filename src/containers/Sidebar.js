@@ -196,6 +196,22 @@ const Sidebar = ({activeListItem, getPosts}) => {
 
                     <ListItemStyled
                         button
+                        selected={activeListItem === 'Follow-Only Feed'}
+                        onClick={() => {
+                            Auth.currentAuthenticatedUser().then((user) => {
+                            navigate('/follow-only-feed');
+                            })
+                    }}
+                    key='follow-only-feed'
+                    >
+                        <ListItemIcon>
+                            <PublicIcon htmlColor={theme.icon.fontColor}/>
+                        </ListItemIcon>
+                        <ListItemText primary="Follow Only Feed" />
+                    </ListItemStyled>
+
+                    <ListItemStyled
+                        button
                         selected={activeListItem === 'fetch-and-load'}
                         onClick={() => {
                             Auth.currentAuthenticatedUser().then((user) => {
