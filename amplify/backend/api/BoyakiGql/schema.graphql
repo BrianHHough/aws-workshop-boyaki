@@ -1,5 +1,14 @@
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
+
+
+type Timeline @model {
+  userId: ID!
+  timestamp: Int!
+  postId: ID!
+  post: [Post] @hasMany(fields: ["postId"])
+}
+
 type Post @model
 @auth(rules: [
   { allow: groups, groups: ["Admin"], operations: [read, update, delete] }
@@ -19,12 +28,6 @@ type Post @model
         sortKeyFields: ["timestamp"] # sort posts-by-owner by time
     )
   userPointer: UserInfo @belongsTo(fields: ["owner"]) # Query UserInfo for the name that is equal to the owner username
-
-    # @index(
-    #   name: "ByUserInfoObject",
-    #   queryField: "linkByUserInfoObject",
-    #   fields: ["id"]
-    # )
   
   totalVisibility: Boolean @auth(rules: [{ allow: groups, groups: ["Admin", "Moderator"],operations: [read, update]  }]) # Remove from site or not
   feedVisibility: Boolean @auth(rules: [{ allow: groups, groups: ["Admin", "Moderator"],operations: [read, update]  }])  # Show public or not
@@ -40,11 +43,7 @@ type Post @model
     indexName: "LikesByPost",
     fields: ["id"]
     ) 
-    # @index (
-    #   name: "LikesByOwner", 
-    #   queryField: "listPostsByOwnerLike",
-    #   sortKeyFields: ["timestamp"] # sort posts-by-owner by time
-    # )
+
 }
 
 type Like @model 

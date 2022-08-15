@@ -12,7 +12,7 @@ import { Auth } from 'aws-amplify';
 
 
 import Sidebar from "../../containers/Sidebar"
-import PostList from "../../components/PostList"
+import PostList from "../PostList"
 import ProfilePage from '../ProfilePage';
 
 export function HomePage(){
