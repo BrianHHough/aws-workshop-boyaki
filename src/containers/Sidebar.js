@@ -138,6 +138,7 @@ const Sidebar = ({activeListItem, getPosts}) => {
         getPosts();
         window.location.reload()
       }
+      console.log(user.username);
 
       // =============== //
     // LINK PREVIEWER  //

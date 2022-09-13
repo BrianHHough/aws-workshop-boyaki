@@ -21,6 +21,7 @@ import FollowOnlyFeed from "./components/Homepage/follow-only-feed"
 import FetchAndLoad from "./components/Homepage/fetchAndLoad"
 import Settings from './components/Settings';
 import Premium from "./components/Premium"
+import AuthContext from './hooks/AuthContext';
 
 Amplify.configure(awsconfig);
 
@@ -60,23 +61,25 @@ function App() {
       if (user) {
         return (
           <>
-            <ThemeProvider theme={theme}>
-              <CssBaseline /> {/* Remove styles */}
-              <BrowserRouter>
-                <Routes> {/* No longer Switch */}
-                  <Route path='/' element={<HomePage/>} />
-                  <Route path='/feed' element={<HomePage/>} />
-                  <Route path='/follow-only-feed' element={<FollowOnlyFeed/>} />
-                  <Route path='/fetch-and-load' element={<FetchAndLoad/>} />
-                  <Route path='/premium' element={<Premium/>} />
-                  <Route path='/settings' element={<Settings/>} />
-                  <Route path='/:userId' element={<HomePage/>} />
-                  <Route path="/*" element={<Navigate to="/" />} />
+            <AuthContext>
+              <ThemeProvider theme={theme}>
+                <CssBaseline /> {/* Remove styles */}
+                <BrowserRouter>
+                  <Routes> {/* No longer Switch */}
+                    <Route path='/' element={<HomePage/>} />
+                    <Route path='/feed' element={<HomePage/>} />
+                    <Route path='/follow-only-feed' element={<FollowOnlyFeed/>} />
+                    <Route path='/fetch-and-load' element={<FetchAndLoad/>} />
+                    <Route path='/premium' element={<Premium/>} />
+                    <Route path='/settings' element={<Settings/>} />
+                    <Route path='/:userId' element={<HomePage/>} />
+                    <Route path="/*" element={<Navigate to="/" />} />
+                    {/* <Navigate path='*' to="/" /> */}
+                  </Routes> 
                   {/* <Navigate path='*' to="/" /> */}
-                </Routes> 
-                {/* <Navigate path='*' to="/" /> */}
-              </BrowserRouter>
-            </ThemeProvider>
+                </BrowserRouter>
+              </ThemeProvider>
+            </AuthContext>
           </>
         )
       };

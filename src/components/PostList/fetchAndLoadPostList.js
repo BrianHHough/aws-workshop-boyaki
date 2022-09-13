@@ -55,7 +55,7 @@ const PostList = ({activeListItem}) => {
 
     const [posts, dispatch] = useReducer(reducer, []);
     const [postsSub, setPostsSub] = useState([]);
-    const [nextToken, setNextToken] = useState(null);
+    const [nextTokenState, setNextTokenState] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isLiked, setIsLiked] = useState(false);
 
@@ -106,21 +106,21 @@ const PostList = ({activeListItem}) => {
         }
     });
 
-    const getPosts = async (type, nextToken = null) => {
+    const getPosts = async (type, nextToken = nextTokenState) => {
         try {
             const postData = await API.graphql(
                 graphqlOperation(listPostsSortedByTimestamp, {
                     type: "Post", 
                     sortDirection: 'DESC', // ASC vs. DESC for opposite
                     limit: 3, //default = 10
-                    nextToken: nextToken,
+                    nextToken: nextTokenState,
                     // authMode: "AMAZON_COGNITO_USER_POOLS"
                 }))
             // const postsItems = postData.data.listPostsSortedByTimestamp.items
             dispatch({ 
               type: type, 
               posts: postData.data.listPostsSortedByTimestamp.items })
-            setNextToken(postData.data.listPostsSortedByTimestamp.nextToken);
+            setNextTokenState(postData.data.listPostsSortedByTimestamp.nextToken);
             // dispatch(posts)
             // console.log(posts)
         } catch (err) {console.log('error fetching posts')}
@@ -152,8 +152,8 @@ const PostList = ({activeListItem}) => {
       }, [postsSub])
 
       const getAdditionalPosts = () => {
-        if (nextToken === null) return; //Reached the last page
-        getPosts(ADDITIONAL_QUERY, nextToken);
+        if (nextTokenState === null) return; //Reached the last page
+        getPosts(ADDITIONAL_QUERY, nextTokenState);
       }
 
       useEffect(() => {
@@ -229,9 +229,11 @@ const PostList = ({activeListItem}) => {
         <ThemeProvider theme={theme}>
                 <div style={theme.postlist} id="PostListCon">
                 <div style={theme.header}>
-                  <h1>Fetch and Post List</h1>
+                  <h1>Fetch 'n' Load Posts</h1>
                 </div>
-                {console.log(posts)}
+                <button onClick={getPosts}>Testing nextToken</button>
+                {console.log('posts', posts)}
+                {console.log('nextToken', nextTokenState)}
                 {posts ? (
                     posts.map((item, index, text) => (
                         <div key={`item${index}`}>
