@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react'
+import React, { useState, useEffect, useReducer, useCallback, useRef } from 'react'
 
 import Moment from 'moment';
 import moment from 'moment';
@@ -49,6 +49,23 @@ const reducer = (state, action) => {
     }
   };
 
+  export function Item({index, text}) {
+    return (
+    <>
+      <div style={{
+        // background: "lightblue",
+        borderBottom: "2px solid lightblue ",
+        minHeight: "140px",
+        height: "auto",
+        width: "100%"
+      }}>
+        <h1>Post #{index}</h1>
+        <h2>{text}</h2>
+      </div>
+    </>
+    )
+  }
+
 const PostList = ({activeListItem}) => {
     const navigate = useNavigate();
     const { user } = useAuthenticator();
@@ -58,6 +75,11 @@ const PostList = ({activeListItem}) => {
     const [nextTokenState, setNextTokenState] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isLiked, setIsLiked] = useState(false);
+
+    // Scroll States
+    const [initiateScroll, setInitiateScroll] = useState(false);
+    
+
 
     const theme = createTheme({
         header: {
@@ -112,15 +134,16 @@ const PostList = ({activeListItem}) => {
                 graphqlOperation(listPostsSortedByTimestamp, {
                     type: "Post", 
                     sortDirection: 'DESC', // ASC vs. DESC for opposite
-                    limit: 3, //default = 10
+                    limit: 5, //default = 10
                     nextToken: nextTokenState,
                     // authMode: "AMAZON_COGNITO_USER_POOLS"
                 }))
             // const postsItems = postData.data.listPostsSortedByTimestamp.items
             dispatch({ 
               type: type, 
-              posts: postData.data.listPostsSortedByTimestamp.items })
-            setNextTokenState(postData.data.listPostsSortedByTimestamp.nextToken);
+              posts: postData.data.listPostsSortedByTimestamp.items 
+            })
+              setNextTokenState(postData.data.listPostsSortedByTimestamp.nextToken);
             // dispatch(posts)
             // console.log(posts)
         } catch (err) {console.log('error fetching posts')}
@@ -151,6 +174,10 @@ const PostList = ({activeListItem}) => {
         getPosts()
       }, [postsSub])
 
+      // useEffect(() => {
+      //   getAdditionalPosts()
+      // }, [nextTokenState])
+
       const getAdditionalPosts = () => {
         if (nextTokenState === null) return; //Reached the last page
         getPosts(ADDITIONAL_QUERY, nextTokenState);
@@ -168,6 +195,8 @@ const PostList = ({activeListItem}) => {
         });
         return () => subscription.unsubscribe();
       }, []);
+
+
 
     // const post_data_placeholder = [
     //     {
@@ -221,6 +250,47 @@ const PostList = ({activeListItem}) => {
     //     );
     //   };
 
+    const listInnerRef = useRef();
+    const onScroll = () => {
+      if (listInnerRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
+        
+        // console.log('scrollTop:' + scrollTop)
+        // console.log('clientHeight:' + clientHeight)
+        // console.log('-------------------------')
+        // console.log(scrollTop + clientHeight + 1)
+        // console.log('scrollTop:' + scrollHeight)
+        console.log(listInnerRef.current.scrollHeight)
+        
+        // if ((scrollTop + clientHeight + 1) === scrollHeight) {
+        //   setInitiateScroll(true);
+        // } else {
+        //   setInitiateScroll(false);
+        // }
+
+        if((scrollTop + clientHeight + 1) >= scrollHeight) {
+          
+        }
+        
+        if ((scrollTop + clientHeight + 1) >= scrollHeight) {
+          // TO SOMETHING HERE
+          // getAdditionalPosts();
+          const getAdditionalPosts = () => {
+            if (nextTokenState === null) return; //Reached the last page
+            getPosts(ADDITIONAL_QUERY, nextTokenState);
+          }
+          getAdditionalPosts()
+
+          console.log("Reached bottom");
+        }
+        
+        if (scrollTop === 0) {
+          // TO SOMETHING HERE
+          console.log("Reached top");
+        }
+      }
+    };
+
     return (
         <>
         <Sidebar
@@ -229,12 +299,38 @@ const PostList = ({activeListItem}) => {
         <ThemeProvider theme={theme}>
                 <div style={theme.postlist} id="PostListCon">
                 <div style={theme.header}>
-                  <h1>Fetch 'n' Load Posts</h1>
+                  <h1>Fetch 'n Load Posts</h1>
                 </div>
-                <button onClick={getPosts}>Testing nextToken</button>
-                {console.log('posts', posts)}
-                {console.log('nextToken', nextTokenState)}
-                {posts ? (
+                <div
+                  id="Container"
+                  className="list-inner"
+                  onScroll={() => onScroll()}
+                  ref={listInnerRef}
+                  style={{
+                    width: "500px",
+                    height: "300px", 
+                    border: "1px solid lightgrey",
+                    overflowX: "hidden",
+                    overflowY: "scroll",
+                    position: "relative",
+                    left: "50%",
+                    transform: "translateX(-50%)"  
+                  }}
+                >
+                  {posts.map((post, index) => {
+                    return (
+                      // Return value
+                      <Item 
+                        key={index} 
+                        index={post.id.slice(0,8)} 
+                        text={post.content} 
+                      />
+                    );
+                  })}
+                </div>
+                {/* {console.log('posts', posts)}
+                {console.log('nextToken', nextTokenState)} */}
+                {/* {posts ? (
                     posts.map((item, index, text) => (
                         <div key={`item${index}`}>
                             <PostBox 
@@ -255,7 +351,8 @@ const PostList = ({activeListItem}) => {
                     ))
                     ) : (
                         "Loading..."
-                    )}
+                    )} */}
+                    <Button variant='outlined' onClick={() => getAdditionalPosts()}> Read More </Button>
                 </div>
             {/* </Drawer> */}
             </ThemeProvider>

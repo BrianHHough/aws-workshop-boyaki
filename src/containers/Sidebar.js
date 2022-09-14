@@ -133,12 +133,12 @@ const Sidebar = ({activeListItem, getPosts}) => {
           timestamp: Math.floor(Date.now() / 1000),
           // likes: [null]
         }})); 
-        console.log(res)
+        // console.log(res)
         setValue('');
         getPosts();
         window.location.reload()
       }
-      console.log(user.username);
+      // console.log(user.username);
 
       // =============== //
     // LINK PREVIEWER  //
@@ -149,14 +149,14 @@ const Sidebar = ({activeListItem, getPosts}) => {
           var response = textBoxText.match(
             /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
           );
-          console.log("pulled out link", response);
+          // console.log("pulled out link", response);
           if (response !== null) {
             setExtractedLinkForPost("");
           }
           setExtractedLinkForPost(response[0]);
           return response !== null;
         } catch (error) {
-          console.log("error checking string");
+          // console.log("error checking string");
         }
       }
   
@@ -325,7 +325,7 @@ const Sidebar = ({activeListItem, getPosts}) => {
                     } />
                     </ListItem>
                     {/* Parse string and pull out the link */}
-                    {console.log("metadata", metadata)}
+                    {/* {console.log("metadata", metadata)} */}
                         {extractedLinkForPost.length > 0 ? (
                         <MyCustomCardFinalized
                             url={extractedLinkForPost}
