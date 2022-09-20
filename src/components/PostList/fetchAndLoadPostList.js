@@ -308,6 +308,16 @@ const PostList = ({activeListItem}) => {
                 <div style={theme.postlist} id="PostListCon">
                 <div style={theme.header}>
                   <h1>Fetch 'n Load Posts</h1>
+                  <div style={{
+                    position: "absolute",
+                    zIndex: "99999",
+                    float: "right",
+                    top: "40px",
+                    right: "20px"
+                    }}
+                  >
+                    <Button variant='outlined' onClick={() => getAdditionalPosts()}> Read More </Button>
+                  </div>
                 </div>
                 <div
                   id="Container"
@@ -315,8 +325,8 @@ const PostList = ({activeListItem}) => {
                   onScroll={() => onScroll()}
                   ref={listInnerRef}
                   style={{
-                    width: "500px",
-                    height: "300px", 
+                    width: "calc(100vw - 340px)",
+                    height: "calc(100vh - 86px)", 
                     border: "1px solid lightgrey",
                     overflowX: "hidden",
                     overflowY: "scroll",
@@ -327,11 +337,24 @@ const PostList = ({activeListItem}) => {
                 >
                   {posts.map((post, index) => {
                     return (
-                      // Return value
-                      <Item 
-                        key={index} 
-                        index={post.id.slice(0,8)} 
+                      // <Item 
+                      //   key={index} 
+                      //   index={post.id.slice(0,8)} 
+                      //   text={post.content} 
+                      // />
+                      <PostBox 
+                        id={post.id} 
                         text={post.content} 
+                        key={post.value}
+                        username={post.owner}
+                        createdAt={post.createdAt}
+                        timestamp={post.timestamp}
+                        isLiked={isLiked}
+                        setIsLiked={setIsLiked}
+                        listOfLikes={post.likes}
+                        // listOfLikesID={null}
+                        userPointer={post.userPointer}
+                        fullPostData={post}
                       />
                     );
                   })}
@@ -375,7 +398,7 @@ const PostList = ({activeListItem}) => {
                     ) : (
                         "Loading..."
                     )} */}
-                    <Button variant='outlined' onClick={() => getAdditionalPosts()}> Read More </Button>
+                    
                 </div>
             {/* </Drawer> */}
             </ThemeProvider>
