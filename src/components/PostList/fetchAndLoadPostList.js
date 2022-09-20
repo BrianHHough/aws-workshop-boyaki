@@ -31,6 +31,8 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from "../../containers/Sidebar"
 import PostBox from '../PostBox';
 import PostBoxTESTING from "../PostBox/indexTESTING"
+import { CircularProgressCon } from './fetchElements';
+import { CircularProgress } from '@mui/material';
 
 const SUBSCRIPTION = 'SUBSCRIPTION';
 const INITIAL_QUERY = 'INITIAL_QUERY';
@@ -149,6 +151,10 @@ const PostList = ({activeListItem}) => {
         } catch (err) {console.log('error fetching posts')}
     }
 
+    useEffect(()=> {
+      getPosts(INITIAL_QUERY);
+  }, [INITIAL_QUERY])
+
   //   const identifyLikeForDelete = async (type, nextToken = null) => {
   //     try {
   //       const fetchedPostID = await API.graphql(graphqlOperation(listLikesByOwner, {
@@ -260,7 +266,7 @@ const PostList = ({activeListItem}) => {
         // console.log('-------------------------')
         // console.log(scrollTop + clientHeight + 1)
         // console.log('scrollTop:' + scrollHeight)
-        console.log(listInnerRef.current.scrollHeight)
+        // console.log(listInnerRef.current.scrollHeight)
         
         // if ((scrollTop + clientHeight + 1) === scrollHeight) {
         //   setInitiateScroll(true);
@@ -268,9 +274,11 @@ const PostList = ({activeListItem}) => {
         //   setInitiateScroll(false);
         // }
 
-        if((scrollTop + clientHeight + 1) >= scrollHeight) {
-          
-        }
+        // if((scrollTop + clientHeight + 1) === scrollHeight) {
+        //   initiateScroll(true);
+        // } else {
+        //   initiateScroll(true);
+        // }
         
         if ((scrollTop + clientHeight + 1) >= scrollHeight) {
           // TO SOMETHING HERE
@@ -327,6 +335,21 @@ const PostList = ({activeListItem}) => {
                       />
                     );
                   })}
+
+                  {nextTokenState === null ? 
+                  ""
+                  :
+                  <CircularProgressCon>
+                      <CircularProgress 
+                          style={{
+                              color: 'var(--c4)',
+                              height: "25px",
+                              width: "25px"
+                          }}
+                      />
+                  </CircularProgressCon>
+                  } 
+                  
                 </div>
                 {/* {console.log('posts', posts)}
                 {console.log('nextToken', nextTokenState)} */}
