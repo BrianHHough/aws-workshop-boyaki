@@ -1,93 +1,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const createTimeline = /* GraphQL */ `
-  mutation CreateTimeline(
-    $input: CreateTimelineInput!
-    $condition: ModelTimelineConditionInput
-  ) {
-    createTimeline(input: $input, condition: $condition) {
-      userId
-      timestamp
-      postId
-      post {
-        items {
-          id
-          content
-          owner
-          totalVisibility
-          feedVisibility
-          timestamp
-          type
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      id
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const updateTimeline = /* GraphQL */ `
-  mutation UpdateTimeline(
-    $input: UpdateTimelineInput!
-    $condition: ModelTimelineConditionInput
-  ) {
-    updateTimeline(input: $input, condition: $condition) {
-      userId
-      timestamp
-      postId
-      post {
-        items {
-          id
-          content
-          owner
-          totalVisibility
-          feedVisibility
-          timestamp
-          type
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      id
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deleteTimeline = /* GraphQL */ `
-  mutation DeleteTimeline(
-    $input: DeleteTimelineInput!
-    $condition: ModelTimelineConditionInput
-  ) {
-    deleteTimeline(input: $input, condition: $condition) {
-      userId
-      timestamp
-      postId
-      post {
-        items {
-          id
-          content
-          owner
-          totalVisibility
-          feedVisibility
-          timestamp
-          type
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      id
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const createPost = /* GraphQL */ `
   mutation CreatePost(
     $input: CreatePostInput!
@@ -101,7 +14,6 @@ export const createPost = /* GraphQL */ `
         name
         realName
         handle
-        aliasLowerCase
         post {
           nextToken
         }
@@ -114,10 +26,7 @@ export const createPost = /* GraphQL */ `
         createdAt
         updatedAt
         followerId
-        owner
       }
-      totalVisibility
-      feedVisibility
       timestamp
       type
       likes {
@@ -149,7 +58,6 @@ export const updatePost = /* GraphQL */ `
         name
         realName
         handle
-        aliasLowerCase
         post {
           nextToken
         }
@@ -162,10 +70,7 @@ export const updatePost = /* GraphQL */ `
         createdAt
         updatedAt
         followerId
-        owner
       }
-      totalVisibility
-      feedVisibility
       timestamp
       type
       likes {
@@ -197,7 +102,6 @@ export const deletePost = /* GraphQL */ `
         name
         realName
         handle
-        aliasLowerCase
         post {
           nextToken
         }
@@ -210,10 +114,7 @@ export const deletePost = /* GraphQL */ `
         createdAt
         updatedAt
         followerId
-        owner
       }
-      totalVisibility
-      feedVisibility
       timestamp
       type
       likes {
@@ -250,17 +151,13 @@ export const createLike = /* GraphQL */ `
           name
           realName
           handle
-          aliasLowerCase
           pictureURL
           bio
           premium
           createdAt
           updatedAt
           followerId
-          owner
         }
-        # totalVisibility
-        # feedVisibility
         timestamp
         type
         likes {
@@ -292,17 +189,13 @@ export const updateLike = /* GraphQL */ `
           name
           realName
           handle
-          aliasLowerCase
           pictureURL
           bio
           premium
           createdAt
           updatedAt
           followerId
-          owner
         }
-        totalVisibility
-        feedVisibility
         timestamp
         type
         likes {
@@ -334,17 +227,13 @@ export const deleteLike = /* GraphQL */ `
           name
           realName
           handle
-          aliasLowerCase
           pictureURL
           bio
           premium
           createdAt
           updatedAt
           followerId
-          owner
         }
-        # totalVisibility
-        # feedVisibility
         timestamp
         type
         likes {
@@ -409,14 +298,11 @@ export const createUserInfo = /* GraphQL */ `
       name
       realName
       handle
-      aliasLowerCase
       post {
         items {
           id
           content
           owner
-          totalVisibility
-          feedVisibility
           timestamp
           type
           createdAt
@@ -444,7 +330,6 @@ export const createUserInfo = /* GraphQL */ `
       createdAt
       updatedAt
       followerId
-      owner
     }
   }
 `;
@@ -457,14 +342,11 @@ export const updateUserInfo = /* GraphQL */ `
       name
       realName
       handle
-      aliasLowerCase
       post {
         items {
           id
           content
           owner
-          totalVisibility
-          feedVisibility
           timestamp
           type
           createdAt
@@ -492,7 +374,6 @@ export const updateUserInfo = /* GraphQL */ `
       createdAt
       updatedAt
       followerId
-      owner
     }
   }
 `;
@@ -505,14 +386,11 @@ export const deleteUserInfo = /* GraphQL */ `
       name
       realName
       handle
-      aliasLowerCase
       post {
         items {
           id
           content
           owner
-          totalVisibility
-          feedVisibility
           timestamp
           type
           createdAt
@@ -540,7 +418,6 @@ export const deleteUserInfo = /* GraphQL */ `
       createdAt
       updatedAt
       followerId
-      owner
     }
   }
 `;

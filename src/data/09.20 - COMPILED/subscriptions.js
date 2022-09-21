@@ -1,84 +1,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreateTimeline = /* GraphQL */ `
-  subscription OnCreateTimeline {
-    onCreateTimeline {
-      userId
-      timestamp
-      postId
-      post {
-        items {
-          id
-          content
-          owner
-          totalVisibility
-          feedVisibility
-          timestamp
-          type
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      id
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onUpdateTimeline = /* GraphQL */ `
-  subscription OnUpdateTimeline {
-    onUpdateTimeline {
-      userId
-      timestamp
-      postId
-      post {
-        items {
-          id
-          content
-          owner
-          totalVisibility
-          feedVisibility
-          timestamp
-          type
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      id
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onDeleteTimeline = /* GraphQL */ `
-  subscription OnDeleteTimeline {
-    onDeleteTimeline {
-      userId
-      timestamp
-      postId
-      post {
-        items {
-          id
-          content
-          owner
-          totalVisibility
-          feedVisibility
-          timestamp
-          type
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      id
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const onCreateFollowRelationship = /* GraphQL */ `
   subscription OnCreateFollowRelationship($followerId: String) {
     onCreateFollowRelationship(followerId: $followerId) {
@@ -167,7 +89,6 @@ export const onCreatePost = /* GraphQL */ `
         name
         realName
         handle
-        aliasLowerCase
         post {
           nextToken
         }
@@ -180,10 +101,7 @@ export const onCreatePost = /* GraphQL */ `
         createdAt
         updatedAt
         followerId
-        owner
       }
-      totalVisibility
-      feedVisibility
       timestamp
       type
       likes {
@@ -212,7 +130,6 @@ export const onUpdatePost = /* GraphQL */ `
         name
         realName
         handle
-        aliasLowerCase
         post {
           nextToken
         }
@@ -225,10 +142,7 @@ export const onUpdatePost = /* GraphQL */ `
         createdAt
         updatedAt
         followerId
-        owner
       }
-      totalVisibility
-      feedVisibility
       timestamp
       type
       likes {
@@ -257,7 +171,6 @@ export const onDeletePost = /* GraphQL */ `
         name
         realName
         handle
-        aliasLowerCase
         post {
           nextToken
         }
@@ -270,10 +183,7 @@ export const onDeletePost = /* GraphQL */ `
         createdAt
         updatedAt
         followerId
-        owner
       }
-      totalVisibility
-      feedVisibility
       timestamp
       type
       likes {
@@ -307,17 +217,13 @@ export const onCreateLike = /* GraphQL */ `
           name
           realName
           handle
-          aliasLowerCase
           pictureURL
           bio
           premium
           createdAt
           updatedAt
           followerId
-          owner
         }
-        totalVisibility
-        feedVisibility
         timestamp
         type
         likes {
@@ -346,17 +252,13 @@ export const onUpdateLike = /* GraphQL */ `
           name
           realName
           handle
-          aliasLowerCase
           pictureURL
           bio
           premium
           createdAt
           updatedAt
           followerId
-          owner
         }
-        totalVisibility
-        feedVisibility
         timestamp
         type
         likes {
@@ -385,17 +287,13 @@ export const onDeleteLike = /* GraphQL */ `
           name
           realName
           handle
-          aliasLowerCase
           pictureURL
           bio
           premium
           createdAt
           updatedAt
           followerId
-          owner
         }
-        totalVisibility
-        feedVisibility
         timestamp
         type
         likes {
@@ -410,19 +308,16 @@ export const onDeleteLike = /* GraphQL */ `
   }
 `;
 export const onCreateUserInfo = /* GraphQL */ `
-  subscription OnCreateUserInfo($followerId: String, $owner: String) {
-    onCreateUserInfo(followerId: $followerId, owner: $owner) {
+  subscription OnCreateUserInfo($followerId: String) {
+    onCreateUserInfo(followerId: $followerId) {
       name
       realName
       handle
-      aliasLowerCase
       post {
         items {
           id
           content
           owner
-          totalVisibility
-          feedVisibility
           timestamp
           type
           createdAt
@@ -450,24 +345,20 @@ export const onCreateUserInfo = /* GraphQL */ `
       createdAt
       updatedAt
       followerId
-      owner
     }
   }
 `;
 export const onUpdateUserInfo = /* GraphQL */ `
-  subscription OnUpdateUserInfo($followerId: String, $owner: String) {
-    onUpdateUserInfo(followerId: $followerId, owner: $owner) {
+  subscription OnUpdateUserInfo($followerId: String) {
+    onUpdateUserInfo(followerId: $followerId) {
       name
       realName
       handle
-      aliasLowerCase
       post {
         items {
           id
           content
           owner
-          totalVisibility
-          feedVisibility
           timestamp
           type
           createdAt
@@ -495,24 +386,20 @@ export const onUpdateUserInfo = /* GraphQL */ `
       createdAt
       updatedAt
       followerId
-      owner
     }
   }
 `;
 export const onDeleteUserInfo = /* GraphQL */ `
-  subscription OnDeleteUserInfo($followerId: String, $owner: String) {
-    onDeleteUserInfo(followerId: $followerId, owner: $owner) {
+  subscription OnDeleteUserInfo($followerId: String) {
+    onDeleteUserInfo(followerId: $followerId) {
       name
       realName
       handle
-      aliasLowerCase
       post {
         items {
           id
           content
           owner
-          totalVisibility
-          feedVisibility
           timestamp
           type
           createdAt
@@ -540,7 +427,6 @@ export const onDeleteUserInfo = /* GraphQL */ `
       createdAt
       updatedAt
       followerId
-      owner
     }
   }
 `;

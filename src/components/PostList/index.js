@@ -123,7 +123,7 @@ const PostList = ({activeListItem}) => {
             setNextToken(postData.data.listPostsSortedByTimestamp.nextToken);
             // dispatch(posts)
             // console.log(posts)
-        } catch (err) {console.log('error fetching posts')}
+        } catch (err) {console.log(err, 'error fetching posts')}
     }
 
   //   const identifyLikeForDelete = async (type, nextToken = null) => {

@@ -1,4 +1,4 @@
-# input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
 
 
@@ -8,10 +8,6 @@ type Timeline @model {
   postId: ID!
   post: [Post] @hasMany(fields: ["postId"])
 }
-
-# ====================== #
-#          POST          #
-# ====================== #
 
 type Post @model
 @auth(rules: [
@@ -47,12 +43,8 @@ type Post @model
     indexName: "LikesByPost",
     fields: ["id"]
     ) 
+
 }
-
-
-# ====================== #
-#          LIKE          #
-# ====================== #
 
 type Like @model 
 @auth(rules: [
@@ -76,10 +68,6 @@ type Like @model
   )
 }
 
-# ====================== #
-#   FOLLOW RELATIONSHIP  #
-# ====================== #
-
 type FollowRelationship @model
 	@auth(rules: [
 		{allow: owner, ownerField: "followerId", provider: userPools, operations:[read, create, delete]},
@@ -101,39 +89,6 @@ type FollowRelationship @model
 	timestamp: Int! 
 }
 
-# Attempt
-type FollowObject @model 
-@auth(rules: [
-  { allow: owner, ownerField: "followHead", provider: userPools, operations: [create, read, delete] }
-  { allow: private, provider: userPools, operations: [read] }
-  { allow: public, operations: [read] }
-])
-{
-  id: ID
-  followHead: ID! # user
-    @index(
-      name: "FollowCreator"
-      queryField: "listFollowsBySpecificOwner"
-      # sortKeyFields: ["postID"]
-    )
-  followTail: ID! # someone else's account
-    @index(
-      name: "FollowRecipient"
-      queryField: "listOfFollowedAccounts"
-      # sortKeyFields: ["postID"]
-    )
-
-  timestamp: Int
-
-  createdAt: AWSDateTime
-  
- 
-}
-
-# ====================== #
-#         USERS          #
-# ====================== #
-
 type UserInfo @model  
   @auth(rules: [
     {allow: owner, ownerField: "followerId", provider: userPools, operations:[read, create, update]}, #followerId - previous ownerField
@@ -154,18 +109,7 @@ type UserInfo @model
   payment: [Payment] 
     @hasMany(indexName: "PaymentsBySpecificOwner", fields: ["name"]) 
     @auth(rules: [{ allow: owner }])
-  
-  # Who Follows a User (i.e. 10 people follow you)
-  followersOfUser: [FollowObject] 
-    @hasMany(indexName: "FollowersOfSpecificOwner", fields: ["name"])
-  # Who the User Follows (i.e. you follow 10 people)
-  followsMadeByUser: [FollowObject]
-    @hasMany(indexName: "FollowsMadeBySpecificOwner", fields: ["name"])
 }
-
-# ====================== #
-#         PAYMENT        #
-# ====================== #
 
 type Payment @model 
   @auth(rules: [
@@ -195,4 +139,4 @@ type Payment @model
 #   bucket: String!
 #   region: String!
 #   key: String!
-# }   
+# }

@@ -1,54 +1,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const getTimeline = /* GraphQL */ `
-  query GetTimeline($id: ID!) {
-    getTimeline(id: $id) {
-      userId
-      timestamp
-      postId
-      post {
-        items {
-          id
-          content
-          owner
-          totalVisibility
-          feedVisibility
-          timestamp
-          type
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      id
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const listTimelines = /* GraphQL */ `
-  query ListTimelines(
-    $filter: ModelTimelineFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listTimelines(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        userId
-        timestamp
-        postId
-        post {
-          nextToken
-        }
-        id
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
 export const getFollowRelationship = /* GraphQL */ `
   query GetFollowRelationship($followerId: ID!, $followeeId: ID!) {
     getFollowRelationship(followerId: $followerId, followeeId: $followeeId) {
@@ -199,7 +151,6 @@ export const getPost = /* GraphQL */ `
         name
         realName
         handle
-        aliasLowerCase
         post {
           nextToken
         }
@@ -212,10 +163,7 @@ export const getPost = /* GraphQL */ `
         createdAt
         updatedAt
         followerId
-        owner
       }
-      totalVisibility
-      feedVisibility
       timestamp
       type
       likes {
@@ -249,20 +197,24 @@ export const listPosts = /* GraphQL */ `
           name
           realName
           handle
-          aliasLowerCase
           pictureURL
           bio
           premium
           createdAt
           updatedAt
           followerId
-          owner
         }
-        totalVisibility
-        feedVisibility
         timestamp
         type
         likes {
+          items {
+            id
+            likeUserId
+            likeUserHandle
+            createdAt
+            postID
+            updatedAt
+          }
           nextToken
         }
         createdAt
@@ -297,17 +249,13 @@ export const listPostsBySpecificOwner = /* GraphQL */ `
           name
           realName
           handle
-          aliasLowerCase
           pictureURL
           bio
           premium
           createdAt
           updatedAt
           followerId
-          owner
         }
-        # totalVisibility
-        # feedVisibility
         timestamp
         type
         likes {
@@ -353,17 +301,13 @@ export const listPostsSortedByTimestamp = /* GraphQL */ `
           name
           realName
           handle
-          aliasLowerCase
           pictureURL
           bio
           premium
           createdAt
           updatedAt
           followerId
-          owner
         }
-        # totalVisibility
-        # feedVisibility
         timestamp
         type
         likes {
@@ -399,17 +343,13 @@ export const getLike = /* GraphQL */ `
           name
           realName
           handle
-          aliasLowerCase
           pictureURL
           bio
           premium
           createdAt
           updatedAt
           followerId
-          owner
         }
-        totalVisibility
-        feedVisibility
         timestamp
         type
         likes {
@@ -439,8 +379,6 @@ export const listLikes = /* GraphQL */ `
           id
           content
           owner
-          # totalVisibility
-          # feedVisibility
           timestamp
           type
           createdAt
@@ -477,8 +415,6 @@ export const listLikesByOwner = /* GraphQL */ `
           id
           content
           owner
-          totalVisibility
-          feedVisibility
           timestamp
           type
           createdAt
@@ -497,14 +433,11 @@ export const getUserInfo = /* GraphQL */ `
       name
       realName
       handle
-      aliasLowerCase
       post {
         items {
           id
           content
           owner
-          # totalVisibility
-          # feedVisibility
           timestamp
           type
           createdAt
@@ -532,7 +465,6 @@ export const getUserInfo = /* GraphQL */ `
       createdAt
       updatedAt
       followerId
-      owner
     }
   }
 `;
@@ -555,7 +487,6 @@ export const listUserInfos = /* GraphQL */ `
         name
         realName
         handle
-        aliasLowerCase
         post {
           nextToken
         }
@@ -568,119 +499,6 @@ export const listUserInfos = /* GraphQL */ `
         createdAt
         updatedAt
         followerId
-        owner
-      }
-      nextToken
-    }
-  }
-`;
-export const userByHandle = /* GraphQL */ `
-  query UserByHandle(
-    $handle: String!
-    $sortDirection: ModelSortDirection
-    $filter: ModelUserInfoFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    userByHandle(
-      handle: $handle
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        name
-        realName
-        handle
-        aliasLowerCase
-        post(sortDirection: DESC) {
-          items {
-            id
-            content
-            owner
-            userPointer {
-              name
-              realName
-              handle
-              aliasLowerCase
-              post {
-                nextToken
-              }
-              pictureURL
-              bio
-              premium
-              createdAt
-              updatedAt
-              followerId
-              owner
-            }
-            timestamp
-            type
-            likes {
-              items {
-                id
-                likeUserId
-                likeUserHandle
-                createdAt
-                postID
-                updatedAt
-              }
-              nextToken
-            }
-            createdAt
-            updatedAt
-          }
-          nextToken
-        }
-        pictureURL
-        bio
-        premium
-        # payment {
-        #   nextToken
-        # }
-        createdAt
-        updatedAt
-        followerId
-        owner
-      }
-      nextToken
-    }
-  }
-`;
-export const userByHandleLowerCaseCheck = /* GraphQL */ `
-  query UserByHandleLowerCaseCheck(
-    $aliasLowerCase: String!
-    $sortDirection: ModelSortDirection
-    $filter: ModelUserInfoFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    userByHandleLowerCaseCheck(
-      aliasLowerCase: $aliasLowerCase
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        name
-        realName
-        handle
-        aliasLowerCase
-        post {
-          nextToken
-        }
-        pictureURL
-        bio
-        premium
-        payment {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        followerId
-        owner
       }
       nextToken
     }

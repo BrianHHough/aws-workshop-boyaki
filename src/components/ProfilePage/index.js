@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react'
-
+import {useLocation} from 'react-router-dom';
 import Moment from 'moment';
 import moment from 'moment';
 
@@ -22,7 +22,7 @@ import PublicIcon from '@mui/icons-material/Public';
 
 import {Auth, API, graphqlOperation } from 'aws-amplify';
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { listPostsBySpecificOwner, getFollowRelationship, listFollowRelationships } from '../../graphql/queries';
+import { listPostsBySpecificOwner, getFollowRelationship, listFollowRelationships, getUserInfo, userByHandle } from '../../graphql/queries';
 import { onCreatePost } from '../../graphql/subscriptions';
 import { createFollowRelationship, deleteFollowRelationship } from '../../graphql/mutations';
 import { useNavigate } from 'react-router-dom';
@@ -49,16 +49,20 @@ const reducer = (state, action) => {
 
 const ProfilePage = ({activeListItem}) => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { userId } = useParams();
+    const usernamePath = (location.pathname.substring(1));
     const { user } = useAuthenticator();
 
     const [posts, dispatch] = useReducer(reducer, []);
+    const [postsFetched, setPostsFetched] = useState([]);
     const [postsSub, setPostsSub] = useState([]);
     const [nextToken, setNextToken] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isLiked, setIsLiked] = useState(false);
 
     const [currentUser, setCurrentUser] = useState(null);
+    const [myUserData, setMyUserData] = useState();
     const [isFollowing, setIsFollowing] = useState(false);
     const [numberOfFollowers, setNumberOfFollowers] = useState(0);
 
@@ -123,12 +127,36 @@ const ProfilePage = ({activeListItem}) => {
         }
     });
 
-    const getPostsBySpecifiedUser = async (type, nextToken = null) => {
+    // console.log(usernamePath);
+
+    async function fetchUser() {
+      // const { username } = await Auth.currentAuthenticatedUser();
         try {
-            const postData = await API.graphql(
+          const userData = await API.graphql({
+            query: userByHandle,
+            variables: { handle: usernamePath },
+            // authMode: "API_KEY"
+        });
+        setMyUserData(userData?.data.userByHandle.items[0]);
+        setPostsFetched(userData?.data.userByHandle.items[0].post.items)
+      } catch (error) { console.log(error, 'error getting user data')}
+    }
+
+    useEffect(()=> {
+        fetchUser();
+    }, []) 
+    console.log('myUserData', myUserData)
+    console.log('posts', postsFetched);
+
+    const getPostsBySpecifiedUser = async (type, nextToken = null) => {
+      // console.log(myUserData?.name);
+      const { username } = await Auth.currentAuthenticatedUser();
+      const ownerUserData = myUserData?.name;
+      try {
+            const postData = await API.graphql( 
                 graphqlOperation(listPostsBySpecificOwner, {
                     // owner: "dba56bd6-16c1-4528-b0f2-0273662e257e::username1",
-
+ 
                     // Get Username 1
                     // owner: "username1",
                     // owner: "dba56bd6-16c1-4528-b0f2-0273662e257e::username1", 
@@ -136,45 +164,52 @@ const ProfilePage = ({activeListItem}) => {
                     // Get userappsyncmock
                     // owner: "userappsyncmock",
                     // owner: "ff03de39-5287-4b92-b1e2-fce3d8264bb7::userappsyncmock",
-                    owner: userId, 
+                    owner: ownerUserData, 
                     // type: "Post",
                     sortDirection: 'DESC', // ASC vs. DESC for opposite
                     // limit: 3, //default = 10
                     // nextToken: nextToken,
-                    // authMode: "AMAZON_COGNITO_USER_POOLS"
+                    authMode: "API_KEY" 
                 }))
             // const postsItems = postData.data.listPostsSortedByTimestamp.items
             dispatch({ type: type, posts: postData.data.listPostsBySpecificOwner.items })
             setNextToken(postData.data.listPostsBySpecificOwner.nextToken);
             // dispatch(posts)
-            console.log(posts)
-        } catch (err) {console.log('error fetching posts')}
+            // console.log(posts)
+        } catch (err) {console.log(err, 'error fetching posts')}
     }
 
-    const getIsFollowing = async ({followerId, followeeId}) => {
+    const getIsFollowing = async () => {
       const res = await API.graphql(graphqlOperation(getFollowRelationship,{
-        followeeId: followeeId, // username of person being followed (someone else)
-        followerId: followerId, // username of person doing the following (me)
+        followeeId: myUserData?.name, // username of person being followed (someone else)
+        followerId: user.username, // username of person doing the following (me)
       }));
-      console.log(res)
+      // console.log(res)
       // setNumberOfFollowers(res)
       return res.data.getFollowRelationship !== null
     }
 
-    const getNumberOfFollowers = async () => {
+    const getNumberOfFollowers = async () => {  
       try {
         const res = await API.graphql(graphqlOperation(listFollowRelationships, {
-          followeeId: userId,
+          // followerId: myUserData?.owner,
+          // sortDirection: "DESC",
+          filter: {
+            followeeId: {eq: myUserData?.name} 
+        },
         }))
+        // console.log(myUserData)
+        console.log(res.data.listFollowRelationships.items)
         setNumberOfFollowers(res.data.listFollowRelationships.items.length)
-      } catch (error) {console.log('failed to load followers')}
+      } catch (error) {console.log(error, 'failed to load followers')}
     }
+
     
 
     useEffect(() => {
       getIsFollowing();
       getNumberOfFollowers();
-    }, []);
+    }, [myUserData, setNumberOfFollowers]);
 
     const getAdditionalPosts = () => {
       if (nextToken === null) return; //Reached the last page
@@ -185,7 +220,7 @@ const ProfilePage = ({activeListItem}) => {
       console.log('follow')
       const input = {
         // id: `${userId}::${currentUser.username}`,
-        followeeId: userId, // someone else
+        followeeId: myUserData.name, // userId, // someone else
         followerId: currentUser.username, // me
         timestamp: Math.floor(Date.now() / 1000),
       }
@@ -198,7 +233,7 @@ const ProfilePage = ({activeListItem}) => {
       console.log('unfollow');
       const input = {
         // id: `${userId}::${currentUser.username}`,
-        followeeId: userId, // someone else
+        followeeId: myUserData.name, // userId, // someone else
         followerId: currentUser.username, // me
         // timestamp: '1658437217'
       }
@@ -209,7 +244,7 @@ const ProfilePage = ({activeListItem}) => {
 
     useEffect(() => {
         getPostsBySpecifiedUser()
-      }, [postsSub])
+      }, [])
 
 
       
@@ -219,29 +254,13 @@ const ProfilePage = ({activeListItem}) => {
         const currentUser = await Auth.currentAuthenticatedUser();
         setCurrentUser(currentUser);
 
-        // setFollowing based on inputs
-
-        // setIsFollowing(await getIsFollowing({
-        //   // relationshipID: ID,
-        //   id: `${currentUser.username}::${userId}`
-        //   // followeeId: userId,
-        //   // followerId: currentUser.username
-        // }));
-
         const result = await getIsFollowing({
-          followeeId: userId, // username of person being followed (someone else)
+          followeeId: myUserData?.name, // username of person being followed (someone else)
           followerId: user.username, 
         })
 
         setIsFollowing(result);
-        // console.log(user.username, userId);
 
-        // setIsFollowing(await getIsFollowing({
-        //   // relationshipID: ID,
-        //   id: `${currentUser.username}::${userId}`,
-        //   followeeId: userId,
-        //   followerId: currentUser.username
-        // }));
 
         getPostsBySpecifiedUser(INITIAL_QUERY);
       }
@@ -256,23 +275,37 @@ const ProfilePage = ({activeListItem}) => {
       });
       return () => subscription.unsubscribe();
       // when there is a change in URL, run this side script
-    }, [userId]); 
+    }, [myUserData]); 
+
+    // console.log(user.username)
 
 
     return (
         <>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}> 
                 <div style={theme.postlist} id="PostListCon">
                 <div style={theme.header}>
-                {user.username === userId ?
+                {user.username === myUserData?.name ?
                     <>
                     <h1>My Posts</h1>
-                    <h3>Followers: {numberOfFollowers}</h3>
+                    <h3>Followers: {myUserData.name ? numberOfFollowers : 0}</h3>
                     </>
                     :
                     <>
                     <div style={theme.AnotherUserInfo}>
-                    <h1>{userId}'s Posts</h1>
+                    <div style={{height: "50px", width: "50px", marginTop: "20px", marginRight: "10px"}}>
+                      <img 
+                        src={`${myUserData?.pictureURL}`} 
+                        alt="Profile" 
+                        style={{
+                          height: "100%", 
+                          width: "100%",
+                          objectFit: "cover",
+                          borderRadius: "360px"
+                        }}
+                      />
+                    </div>
+                    <h1>{myUserData?.name}'s Posts</h1>
                     {/* {console.log(user.username)} */}
                     <>
                     <div style={theme.ButtonCon}>
@@ -303,9 +336,9 @@ const ProfilePage = ({activeListItem}) => {
 
                 </div>
                 {/* Show all posts: {console.log(posts)} */}
-                {console.log(posts)}
-                {posts ? (
-                    posts.map((item, index, text) => (
+                {/* {console.log(posts)} */}
+                {postsFetched.length > 0 ? (
+                    postsFetched.map((item, index, text) => (
                         <div key={`item${index}`}>
                             <PostBox 
                                 id={item.id} 
@@ -317,14 +350,19 @@ const ProfilePage = ({activeListItem}) => {
                                 isLiked={isLiked}
                                 setIsLiked={setIsLiked}
                                 listOfLikes={item.likes}
-                                listOfLikesID={null}
-                                // listOfLikes={item.likes[0]}
+                                // listOfLikesID={null}
+                                userPointer={item.userPointer}
+                                fullPostData={item}
                             />
                            
                         </div>
                     ))
                     ) : (
+                      <div style={{
+                        marginLeft: "30px"
+                      }}>
                         "Loading..."
+                      </div>
                     )}
                 </div>
             {/* </Drawer> */}

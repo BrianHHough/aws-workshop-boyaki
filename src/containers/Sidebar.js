@@ -179,6 +179,8 @@ const Sidebar = ({activeListItem, getPosts}) => {
                 >
                 <List style={theme.drawerPaper}>
 
+
+
                     <ListItemStyled
                         button
                         selected={activeListItem === 'global-timeline'}
@@ -194,6 +196,26 @@ const Sidebar = ({activeListItem, getPosts}) => {
                         </ListItemIcon>
                         <ListItemText primary="My Feed" />
                     </ListItemStyled>
+
+
+
+                    <ListItemStyled
+                        button
+                        selected={activeListItem === 'fetch-and-load'}
+                        onClick={() => {
+                            Auth.currentAuthenticatedUser().then((user) => {
+                            navigate('/fetch-and-load');
+                            })
+                    }}
+                    key='fetch-and-load'
+                    >
+                        <ListItemIcon>
+                            <PublicIcon htmlColor={theme.icon.fontColor}/>
+                        </ListItemIcon>
+                        <ListItemText primary="My Feed - Fetch 'n Load (5/scroll)" />
+                    </ListItemStyled>
+
+
 
                     <ListItemStyled
                         button
@@ -211,21 +233,7 @@ const Sidebar = ({activeListItem, getPosts}) => {
                         <ListItemText primary="Follow Only Feed" />
                     </ListItemStyled>
 
-                    <ListItemStyled
-                        button
-                        selected={activeListItem === 'fetch-and-load'}
-                        onClick={() => {
-                            Auth.currentAuthenticatedUser().then((user) => {
-                            navigate('/fetch-and-load');
-                            })
-                    }}
-                    key='fetch-and-load'
-                    >
-                        <ListItemIcon>
-                            <PublicIcon htmlColor={theme.icon.fontColor}/>
-                        </ListItemIcon>
-                        <ListItemText primary="Fetch 'n Load" />
-                    </ListItemStyled>
+
 
                     <ListItemStyled
                         button
@@ -243,6 +251,8 @@ const Sidebar = ({activeListItem, getPosts}) => {
                         <ListItemText primary="Profile" />
                     </ListItemStyled>
 
+
+
                     <ListItemStyled
                         button
                         selected={activeListItem === 'settings'}
@@ -258,6 +268,8 @@ const Sidebar = ({activeListItem, getPosts}) => {
                         </ListItemIcon>
                         <ListItemText primary="Settings" />
                     </ListItemStyled>
+
+
 
                     <ListItemStyled
                         button
