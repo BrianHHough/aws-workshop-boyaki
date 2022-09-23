@@ -23,6 +23,10 @@
         "boyakiProcessPayment": {
           "deploymentBucketName": "amplify-boyaki-dev-04540-deployment",
           "s3Key": "amplify-builds/boyakiProcessPayment-552f546a577a69575553-build.zip"
+        },
+        "createPostAndTimelineLambda": {
+          "deploymentBucketName": "amplify-boyaki-dev-04540-deployment",
+          "s3Key": "amplify-builds/createPostAndTimelineLambda-71333030694a44516c70-build.zip"
         }
       }
     }

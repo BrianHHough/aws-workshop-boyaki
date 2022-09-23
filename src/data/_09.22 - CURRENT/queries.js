@@ -8,35 +8,18 @@ export const getTimeline = /* GraphQL */ `
       timestamp
       postId
       post {
-        id
-        content
-        owner
-        userPointer {
-          name
-          realName
-          handle
-          aliasLowerCase
-          pictureURL
-          bio
-          premium
-          followersNumber
-          followingNumber
-          impressions
+        items {
+          id
+          content
+          owner
+          totalVisibility
+          feedVisibility
+          timestamp
+          type
           createdAt
           updatedAt
-          followerId
-          owner
         }
-        totalVisibility
-        feedVisibility
-        timestamp
-        type
-        likes {
-          nextToken
-        }
-        impressions
-        createdAt
-        updatedAt
+        nextToken
       }
       id
       createdAt
@@ -56,16 +39,7 @@ export const listTimelines = /* GraphQL */ `
         timestamp
         postId
         post {
-          id
-          content
-          owner
-          totalVisibility
-          feedVisibility
-          timestamp
-          type
-          impressions
-          createdAt
-          updatedAt
+          nextToken
         }
         id
         createdAt
@@ -324,7 +298,6 @@ export const getPost = /* GraphQL */ `
         }
         followersNumber
         followingNumber
-        impressions
         createdAt
         updatedAt
         followerId
@@ -345,7 +318,6 @@ export const getPost = /* GraphQL */ `
         }
         nextToken
       }
-      impressions
       createdAt
       updatedAt
     }
@@ -372,7 +344,6 @@ export const listPosts = /* GraphQL */ `
           premium
           followersNumber
           followingNumber
-          impressions
           createdAt
           updatedAt
           followerId
@@ -385,7 +356,6 @@ export const listPosts = /* GraphQL */ `
         likes {
           nextToken
         }
-        impressions
         createdAt
         updatedAt
       }
@@ -424,20 +394,26 @@ export const listPostsBySpecificOwner = /* GraphQL */ `
           premium
           followersNumber
           followingNumber
-          impressions
           createdAt
           updatedAt
           followerId
           owner
         }
-        totalVisibility
-        feedVisibility
+        # totalVisibility
+        # feedVisibility
         timestamp
         type
         likes {
+          items {
+            id
+            likeUserId
+            likeUserHandle
+            createdAt
+            postID
+            updatedAt
+          }
           nextToken
         }
-        impressions
         createdAt
         updatedAt
       }
@@ -476,20 +452,26 @@ export const listPostsSortedByTimestamp = /* GraphQL */ `
           premium
           followersNumber
           followingNumber
-          impressions
           createdAt
           updatedAt
           followerId
           owner
         }
-        totalVisibility
-        feedVisibility
+        # totalVisibility
+        # feedVisibility
         timestamp
         type
         likes {
+          items {
+            id
+            likeUserId
+            likeUserHandle
+            createdAt
+            postID
+            updatedAt
+          }
           nextToken
         }
-        impressions
         createdAt
         updatedAt
       }
@@ -518,7 +500,6 @@ export const getLike = /* GraphQL */ `
           premium
           followersNumber
           followingNumber
-          impressions
           createdAt
           updatedAt
           followerId
@@ -531,7 +512,6 @@ export const getLike = /* GraphQL */ `
         likes {
           nextToken
         }
-        impressions
         createdAt
         updatedAt
       }
@@ -556,11 +536,10 @@ export const listLikes = /* GraphQL */ `
           id
           content
           owner
-          totalVisibility
-          feedVisibility
+          # totalVisibility
+          # feedVisibility
           timestamp
           type
-          impressions
           createdAt
           updatedAt
         }
@@ -595,11 +574,10 @@ export const listLikesByOwner = /* GraphQL */ `
           id
           content
           owner
-          totalVisibility
-          feedVisibility
+          # totalVisibility
+          # feedVisibility
           timestamp
           type
-          impressions
           createdAt
           updatedAt
         }
@@ -711,11 +689,10 @@ export const getUserInfo = /* GraphQL */ `
           id
           content
           owner
-          totalVisibility
-          feedVisibility
+          # totalVisibility
+          # feedVisibility
           timestamp
           type
-          impressions
           createdAt
           updatedAt
         }
@@ -740,7 +717,6 @@ export const getUserInfo = /* GraphQL */ `
       }
       followersNumber
       followingNumber
-      impressions
       createdAt
       updatedAt
       followerId
@@ -779,7 +755,6 @@ export const listUserInfos = /* GraphQL */ `
         }
         followersNumber
         followingNumber
-        impressions
         createdAt
         updatedAt
         followerId
@@ -809,18 +784,53 @@ export const userByHandle = /* GraphQL */ `
         realName
         handle
         aliasLowerCase
-        post {
+        post(sortDirection: DESC) {
+          items {
+            id
+            content
+            owner
+            userPointer {
+              name
+              realName
+              handle
+              aliasLowerCase
+              post {
+                nextToken
+              }
+              pictureURL
+              bio
+              premium
+              createdAt
+              updatedAt
+              followerId
+              owner
+            }
+            timestamp
+            type
+            likes {
+              items {
+                id
+                likeUserId
+                likeUserHandle
+                createdAt
+                postID
+                updatedAt
+              }
+              nextToken
+            }
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         pictureURL
         bio
         premium
-        payment {
-          nextToken
-        }
+        # payment {
+        #   nextToken
+        # }
         followersNumber
         followingNumber
-        impressions
         createdAt
         updatedAt
         followerId
@@ -861,7 +871,6 @@ export const userByHandleLowerCaseCheck = /* GraphQL */ `
         }
         followersNumber
         followingNumber
-        impressions
         createdAt
         updatedAt
         followerId

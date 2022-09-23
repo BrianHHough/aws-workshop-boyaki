@@ -3,11 +3,10 @@
 
 
 type Timeline @model {
-  userId: ID! 
-    # @primaryKey(sortKeyFields: ["timestamp"])
+  userId: ID!
   timestamp: Int!
   postId: ID!
-  post: Post @hasOne(fields: ["postId"])
+  post: [Post] @hasMany(fields: ["postId"])
 }
 
 # ====================== #
@@ -97,7 +96,6 @@ type FollowRelationship @model
       queryField: "listFollowsByFollowerId"
       # sortKeyFields: ["followeeId"]
     )
-  # followerIdUserPointer: UserInfo @belongsTo(fields: ["followerId"]) # Query UserInfo for the name that is equal to the owner username
 
   followeeId: ID! # you are being followed
     @index ( 
@@ -105,7 +103,6 @@ type FollowRelationship @model
       queryField: "listFollowsByFolloweeId"
       sortKeyFields: ["followerId"]
     )
-  # followeeIdUserPointer: UserInfo @belongsTo(fields: ["followeeId"]) # Query UserInfo for the name that is equal to the owner username
 	
   
   # followerId: ID! @index (  # username of person doing the following (me)
@@ -219,4 +216,4 @@ type Payment @model
 #   bucket: String!
 #   region: String!
 #   key: String!
-# }         
+# }      

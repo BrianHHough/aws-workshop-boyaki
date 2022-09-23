@@ -8,35 +8,18 @@ export const onCreateTimeline = /* GraphQL */ `
       timestamp
       postId
       post {
-        id
-        content
-        owner
-        userPointer {
-          name
-          realName
-          handle
-          aliasLowerCase
-          pictureURL
-          bio
-          premium
-          followersNumber
-          followingNumber
-          impressions
+        items {
+          id
+          content
+          owner
+          totalVisibility
+          feedVisibility
+          timestamp
+          type
           createdAt
           updatedAt
-          followerId
-          owner
         }
-        totalVisibility
-        feedVisibility
-        timestamp
-        type
-        likes {
-          nextToken
-        }
-        impressions
-        createdAt
-        updatedAt
+        nextToken
       }
       id
       createdAt
@@ -51,35 +34,18 @@ export const onUpdateTimeline = /* GraphQL */ `
       timestamp
       postId
       post {
-        id
-        content
-        owner
-        userPointer {
-          name
-          realName
-          handle
-          aliasLowerCase
-          pictureURL
-          bio
-          premium
-          followersNumber
-          followingNumber
-          impressions
+        items {
+          id
+          content
+          owner
+          totalVisibility
+          feedVisibility
+          timestamp
+          type
           createdAt
           updatedAt
-          followerId
-          owner
         }
-        totalVisibility
-        feedVisibility
-        timestamp
-        type
-        likes {
-          nextToken
-        }
-        impressions
-        createdAt
-        updatedAt
+        nextToken
       }
       id
       createdAt
@@ -94,35 +60,18 @@ export const onDeleteTimeline = /* GraphQL */ `
       timestamp
       postId
       post {
-        id
-        content
-        owner
-        userPointer {
-          name
-          realName
-          handle
-          aliasLowerCase
-          pictureURL
-          bio
-          premium
-          followersNumber
-          followingNumber
-          impressions
+        items {
+          id
+          content
+          owner
+          totalVisibility
+          feedVisibility
+          timestamp
+          type
           createdAt
           updatedAt
-          followerId
-          owner
         }
-        totalVisibility
-        feedVisibility
-        timestamp
-        type
-        likes {
-          nextToken
-        }
-        impressions
-        createdAt
-        updatedAt
+        nextToken
       }
       id
       createdAt
@@ -233,7 +182,6 @@ export const onCreatePost = /* GraphQL */ `
         }
         followersNumber
         followingNumber
-        impressions
         createdAt
         updatedAt
         followerId
@@ -254,7 +202,6 @@ export const onCreatePost = /* GraphQL */ `
         }
         nextToken
       }
-      impressions
       createdAt
       updatedAt
     }
@@ -282,7 +229,6 @@ export const onUpdatePost = /* GraphQL */ `
         }
         followersNumber
         followingNumber
-        impressions
         createdAt
         updatedAt
         followerId
@@ -303,7 +249,6 @@ export const onUpdatePost = /* GraphQL */ `
         }
         nextToken
       }
-      impressions
       createdAt
       updatedAt
     }
@@ -331,7 +276,6 @@ export const onDeletePost = /* GraphQL */ `
         }
         followersNumber
         followingNumber
-        impressions
         createdAt
         updatedAt
         followerId
@@ -352,7 +296,6 @@ export const onDeletePost = /* GraphQL */ `
         }
         nextToken
       }
-      impressions
       createdAt
       updatedAt
     }
@@ -379,7 +322,6 @@ export const onCreateLike = /* GraphQL */ `
           premium
           followersNumber
           followingNumber
-          impressions
           createdAt
           updatedAt
           followerId
@@ -392,7 +334,6 @@ export const onCreateLike = /* GraphQL */ `
         likes {
           nextToken
         }
-        impressions
         createdAt
         updatedAt
       }
@@ -422,7 +363,6 @@ export const onUpdateLike = /* GraphQL */ `
           premium
           followersNumber
           followingNumber
-          impressions
           createdAt
           updatedAt
           followerId
@@ -435,7 +375,6 @@ export const onUpdateLike = /* GraphQL */ `
         likes {
           nextToken
         }
-        impressions
         createdAt
         updatedAt
       }
@@ -465,7 +404,6 @@ export const onDeleteLike = /* GraphQL */ `
           premium
           followersNumber
           followingNumber
-          impressions
           createdAt
           updatedAt
           followerId
@@ -478,7 +416,6 @@ export const onDeleteLike = /* GraphQL */ `
         likes {
           nextToken
         }
-        impressions
         createdAt
         updatedAt
       }
@@ -542,7 +479,6 @@ export const onCreateUserInfo = /* GraphQL */ `
           feedVisibility
           timestamp
           type
-          impressions
           createdAt
           updatedAt
         }
@@ -567,7 +503,6 @@ export const onCreateUserInfo = /* GraphQL */ `
       }
       followersNumber
       followingNumber
-      impressions
       createdAt
       updatedAt
       followerId
@@ -591,7 +526,6 @@ export const onUpdateUserInfo = /* GraphQL */ `
           feedVisibility
           timestamp
           type
-          impressions
           createdAt
           updatedAt
         }
@@ -616,7 +550,6 @@ export const onUpdateUserInfo = /* GraphQL */ `
       }
       followersNumber
       followingNumber
-      impressions
       createdAt
       updatedAt
       followerId
@@ -640,7 +573,6 @@ export const onDeleteUserInfo = /* GraphQL */ `
           feedVisibility
           timestamp
           type
-          impressions
           createdAt
           updatedAt
         }
@@ -665,7 +597,6 @@ export const onDeleteUserInfo = /* GraphQL */ `
       }
       followersNumber
       followingNumber
-      impressions
       createdAt
       updatedAt
       followerId

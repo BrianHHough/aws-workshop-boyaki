@@ -195,7 +195,7 @@ const ProfilePage = ({activeListItem}) => {
           // followerId: myUserData?.owner,
           // sortDirection: "DESC",
           filter: {
-            followeeId: {eq: myUserData?.name} 
+            followeeId: {eq: myUserData?.name}  
         },
         }))
         // console.log(myUserData)
@@ -288,7 +288,10 @@ const ProfilePage = ({activeListItem}) => {
                 {user.username === myUserData?.name ?
                     <>
                     <h1>My Posts</h1>
-                    <h3>Followers: {myUserData.name ? numberOfFollowers : 0}</h3>
+                    <h3>Followers:{" "}
+                      {/* {myUserData.name ? numberOfFollowers : 0} */}
+                      {myUserData?.followersNumber ? myUserData?.followersNumber : 0 }
+                    </h3>
                     </>
                     :
                     <>
@@ -330,7 +333,7 @@ const ProfilePage = ({activeListItem}) => {
                       </div>
                       </>
                   </div>
-                  <h3>Followers: {numberOfFollowers}</h3>
+                  <h3>Followers: {myUserData?.followersNumber ? myUserData?.followersNumber : "No followers" }</h3>
                   </>
                 }
 

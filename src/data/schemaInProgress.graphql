@@ -1,14 +1,54 @@
 # input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
 
-
-type Timeline @model {
-  userId: ID! 
-    # @primaryKey(sortKeyFields: ["timestamp"])
+# Reference object to connect posts to users 
+# (each object/row only link to one user and one post)
+# can't be @hasMany (timeline = many to many)
+# user can hasve many timeline events, post can belong to many different timelines
+# Timeline object = 1 user and 1 post
+# Fetch me timeline objects for username1 ==> get many posts and sort by timestamp
+# TImeline event
+# GetTimeline - paginate with limit and order by dates descending
+type Timeline 
+  @model 
+  @auth(
+    rules: [
+      {
+        allow: owner
+        ownerField: "ownerID"
+        provider: userPools
+        operations: [read, create]
+      }
+    ]
+  )
+{
+  # id: ID!
+  ownerID: ID! @primaryKey(sortKeyFields: ["timestamp"])
+    # @index(
+    #     name: "TimelineBySpecificOwner",
+    #     queryField: "listTimelinePostsBySpecificOwner",
+    #     sortKeyFields: ["timestamp"] # sort posts-by-owner by time
+    # )
+  # ownerPointer: UserInfo @belongsTo(fields: ["ownerID"])
+  postID: ID!
+  post: Post
+    @hasOne(
+      # indexName: "PostsByTimeline",
+      fields: ["postID"]
+    )
+  
+  # TIME
   timestamp: Int!
-  postId: ID!
-  post: Post @hasOne(fields: ["postId"])
+  # type: String! # always should be `Post` - used in SortByTimestamp GSI
+  #   @index(
+  #       name: "TimelineByTimestamp"
+  #       queryField: "listTimelineSortedByTimestamp"
+  #       sortKeyFields: ["timestamp"] # sort posts by time overall
+  #   )
 }
+
+
+
 
 # ====================== #
 #          POST          #
@@ -113,12 +153,12 @@ type FollowRelationship @model
   #     sortKeyFields: ["followeeId"]
   #   )
 	timestamp: Int! 
-  type: String! # always should be `Post` - used in SortByTimestamp GSI
-    @index(
-        name: "SortFollowRelationshipsByTimestamp"
-        queryField: "listFollowRelationshipsSortedByTimestamp"
-        sortKeyFields: ["timestamp"] # sort posts by time overall
-    )
+  # type: String! # always should be `Post` - used in SortByTimestamp GSI
+  #   @index(
+  #       name: "SortFollowRelationshipsByTimestamp"
+  #       queryField: "listFollowRelationshipsSortedByTimestamp"
+  #       sortKeyFields: ["timestamp"] # sort posts by time overall
+  #   )
 }
 
 # Attempt
@@ -167,7 +207,8 @@ type UserInfo @model
     @index(name: "byHandle", queryField: "userByHandle")
   aliasLowerCase: String
     @index(name: "handleLowerCaseCheck", queryField: "userByHandleLowerCaseCheck")
-  post: [Post] @hasMany(indexName: "BySpecificOwner", fields: ["name"])
+  post: [Post] 
+    @hasMany(indexName: "BySpecificOwner", fields: ["name"])
   pictureURL: String
   bio: String
   premium: Boolean
@@ -185,6 +226,19 @@ type UserInfo @model
   # following: [FollowObject]
   #   @hasMany(indexName: "FollowsMadeBySpecificOwner", fields: ["name"])
   impressions: Int
+
+  # followerIdPointer: [FollowRelationship] 
+  #   @hasMany(indexName: "SortByFollowerId", fields: ["name"])
+  
+  # followeeIdPointer: [FollowRelationship] 
+  #   @hasMany(indexName: "SortByFolloweeId", fields: ["name"])
+
+  # timeline: [Timeline]
+  #   @hasMany(
+  #     indexName: "TimelineBySpecificOwner", fields: ["name"]
+  #     # sortKeyFields: ["timestamp"] # sort posts by time overall
+  #     )
+  #   @auth(rules: [{ allow: owner }])
 }
 
 # ====================== #
@@ -219,4 +273,4 @@ type Payment @model
 #   bucket: String!
 #   region: String!
 #   key: String!
-# }         
+# }                              

@@ -11,35 +11,18 @@ export const createTimeline = /* GraphQL */ `
       timestamp
       postId
       post {
-        id
-        content
-        owner
-        userPointer {
-          name
-          realName
-          handle
-          aliasLowerCase
-          pictureURL
-          bio
-          premium
-          followersNumber
-          followingNumber
-          impressions
+        items {
+          id
+          content
+          owner
+          totalVisibility
+          feedVisibility
+          timestamp
+          type
           createdAt
           updatedAt
-          followerId
-          owner
         }
-        totalVisibility
-        feedVisibility
-        timestamp
-        type
-        likes {
-          nextToken
-        }
-        impressions
-        createdAt
-        updatedAt
+        nextToken
       }
       id
       createdAt
@@ -57,35 +40,18 @@ export const updateTimeline = /* GraphQL */ `
       timestamp
       postId
       post {
-        id
-        content
-        owner
-        userPointer {
-          name
-          realName
-          handle
-          aliasLowerCase
-          pictureURL
-          bio
-          premium
-          followersNumber
-          followingNumber
-          impressions
+        items {
+          id
+          content
+          owner
+          totalVisibility
+          feedVisibility
+          timestamp
+          type
           createdAt
           updatedAt
-          followerId
-          owner
         }
-        totalVisibility
-        feedVisibility
-        timestamp
-        type
-        likes {
-          nextToken
-        }
-        impressions
-        createdAt
-        updatedAt
+        nextToken
       }
       id
       createdAt
@@ -103,35 +69,18 @@ export const deleteTimeline = /* GraphQL */ `
       timestamp
       postId
       post {
-        id
-        content
-        owner
-        userPointer {
-          name
-          realName
-          handle
-          aliasLowerCase
-          pictureURL
-          bio
-          premium
-          followersNumber
-          followingNumber
-          impressions
+        items {
+          id
+          content
+          owner
+          totalVisibility
+          feedVisibility
+          timestamp
+          type
           createdAt
           updatedAt
-          followerId
-          owner
         }
-        totalVisibility
-        feedVisibility
-        timestamp
-        type
-        likes {
-          nextToken
-        }
-        impressions
-        createdAt
-        updatedAt
+        nextToken
       }
       id
       createdAt
@@ -164,7 +113,6 @@ export const createPost = /* GraphQL */ `
         }
         followersNumber
         followingNumber
-        impressions
         createdAt
         updatedAt
         followerId
@@ -185,7 +133,56 @@ export const createPost = /* GraphQL */ `
         }
         nextToken
       }
-      impressions
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updatePost = /* GraphQL */ `
+  mutation UpdatePost(
+    $input: UpdatePostInput!
+    $condition: ModelPostConditionInput
+  ) {
+    updatePost(input: $input, condition: $condition) {
+      id
+      content
+      owner
+      userPointer {
+        name
+        realName
+        handle
+        aliasLowerCase
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        premium
+        payment {
+          nextToken
+        }
+        followersNumber
+        followingNumber
+        createdAt
+        updatedAt
+        followerId
+        owner
+      }
+      totalVisibility
+      feedVisibility
+      timestamp
+      type
+      likes {
+        items {
+          id
+          likeUserId
+          likeUserHandle
+          createdAt
+          postID
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -216,7 +213,6 @@ export const deletePost = /* GraphQL */ `
         }
         followersNumber
         followingNumber
-        impressions
         createdAt
         updatedAt
         followerId
@@ -237,7 +233,6 @@ export const deletePost = /* GraphQL */ `
         }
         nextToken
       }
-      impressions
       createdAt
       updatedAt
     }
@@ -267,7 +262,6 @@ export const createLike = /* GraphQL */ `
           premium
           followersNumber
           followingNumber
-          impressions
           createdAt
           updatedAt
           followerId
@@ -280,7 +274,6 @@ export const createLike = /* GraphQL */ `
         likes {
           nextToken
         }
-        impressions
         createdAt
         updatedAt
       }
@@ -313,7 +306,6 @@ export const updateLike = /* GraphQL */ `
           premium
           followersNumber
           followingNumber
-          impressions
           createdAt
           updatedAt
           followerId
@@ -326,7 +318,6 @@ export const updateLike = /* GraphQL */ `
         likes {
           nextToken
         }
-        impressions
         createdAt
         updatedAt
       }
@@ -359,7 +350,6 @@ export const deleteLike = /* GraphQL */ `
           premium
           followersNumber
           followingNumber
-          impressions
           createdAt
           updatedAt
           followerId
@@ -372,7 +362,6 @@ export const deleteLike = /* GraphQL */ `
         likes {
           nextToken
         }
-        impressions
         createdAt
         updatedAt
       }
@@ -493,7 +482,6 @@ export const createUserInfo = /* GraphQL */ `
           feedVisibility
           timestamp
           type
-          impressions
           createdAt
           updatedAt
         }
@@ -518,7 +506,56 @@ export const createUserInfo = /* GraphQL */ `
       }
       followersNumber
       followingNumber
-      impressions
+      createdAt
+      updatedAt
+      followerId
+      owner
+    }
+  }
+`;
+export const updateUserInfo = /* GraphQL */ `
+  mutation UpdateUserInfo(
+    $input: UpdateUserInfoInput!
+    $condition: ModelUserInfoConditionInput
+  ) {
+    updateUserInfo(input: $input, condition: $condition) {
+      name
+      realName
+      handle
+      aliasLowerCase
+      post {
+        items {
+          id
+          content
+          owner
+          totalVisibility
+          feedVisibility
+          timestamp
+          type
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      pictureURL
+      bio
+      premium
+      payment {
+        items {
+          id
+          owner
+          typeOfPayment
+          costOfPayment
+          invoiceURL
+          type
+          timestamp
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      followersNumber
+      followingNumber
       createdAt
       updatedAt
       followerId
@@ -545,7 +582,6 @@ export const deleteUserInfo = /* GraphQL */ `
           feedVisibility
           timestamp
           type
-          impressions
           createdAt
           updatedAt
         }
@@ -570,7 +606,6 @@ export const deleteUserInfo = /* GraphQL */ `
       }
       followersNumber
       followingNumber
-      impressions
       createdAt
       updatedAt
       followerId
@@ -629,110 +664,6 @@ export const deletePayment = /* GraphQL */ `
       timestamp
       createdAt
       updatedAt
-    }
-  }
-`;
-export const updatePost = /* GraphQL */ `
-  mutation UpdatePost(
-    $input: UpdatePostInput!
-    $condition: ModelPostConditionInput
-  ) {
-    updatePost(input: $input, condition: $condition) {
-      id
-      content
-      owner
-      userPointer {
-        name
-        realName
-        handle
-        aliasLowerCase
-        post {
-          nextToken
-        }
-        pictureURL
-        bio
-        premium
-        payment {
-          nextToken
-        }
-        followersNumber
-        followingNumber
-        impressions
-        createdAt
-        updatedAt
-        followerId
-        owner
-      }
-      totalVisibility
-      feedVisibility
-      timestamp
-      type
-      likes {
-        items {
-          id
-          likeUserId
-          likeUserHandle
-          createdAt
-          postID
-          updatedAt
-        }
-        nextToken
-      }
-      impressions
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const updateUserInfo = /* GraphQL */ `
-  mutation UpdateUserInfo(
-    $input: UpdateUserInfoInput!
-    $condition: ModelUserInfoConditionInput
-  ) {
-    updateUserInfo(input: $input, condition: $condition) {
-      name
-      realName
-      handle
-      aliasLowerCase
-      post {
-        items {
-          id
-          content
-          owner
-          totalVisibility
-          feedVisibility
-          timestamp
-          type
-          impressions
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      pictureURL
-      bio
-      premium
-      payment {
-        items {
-          id
-          owner
-          typeOfPayment
-          costOfPayment
-          invoiceURL
-          type
-          timestamp
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      followersNumber
-      followingNumber
-      impressions
-      createdAt
-      updatedAt
-      followerId
-      owner
     }
   }
 `;
