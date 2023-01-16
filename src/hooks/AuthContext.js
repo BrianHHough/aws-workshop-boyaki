@@ -6,6 +6,8 @@ import { Auth, Hub } from 'aws-amplify';
 const UserContext = createContext({});
 
 export default function AuthContext({ children }) {
+  // Auth0 Federation
+  const [token, setToken] = useState(null);
   // Store the user in a state variable
   const [user, setUser] = useState(null);
   useEffect(() => {
@@ -14,13 +16,35 @@ export default function AuthContext({ children }) {
 
   // (Only once) - when the component mounts, create a listener for any auth events.
   useEffect(() => {
-    Hub.listen('auth', () => {
+    Hub.listen('auth', ({payload: {event, data}}) => {
       // Hub listens for auth events that happen.
       // i.e. Sign in, sign out, sign up, etc.
+      switch (event) {
+        case "signIn":
+        case "cognitoHostedUI":
+          setToken("grating...");
+          getToken().then(userToken => setToken(userToken.idToken.jwtToken));
+          break;
+        case "signOut":
+          setToken(null);
+          break;
+        case "signIn_failure":
+        case "cognitoHostedUI_failure":
+          console.log("Sign in failure", data);
+          break;
+        default:
+          break;
+        }
       // Whenever an event gets detected, run the checkUser function
       checkUser();
     });
   }, []);
+
+  function getToken() {
+    return Auth.currentSession()
+      .then(session => session)
+      .catch(err => console.log(err));
+  }
 
   async function checkUser() {
     try {
@@ -44,6 +68,7 @@ export default function AuthContext({ children }) {
       value={{
         user, // the value of the current user
         setUser, // the setState method - allows us to set the current user in state from anywhere in our application
+        token
       }}
     >
       {children}

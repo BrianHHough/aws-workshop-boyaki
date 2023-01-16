@@ -18,6 +18,7 @@ import { styled } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PaidIcon from '@mui/icons-material/Paid';
+import MessageIcon from '@mui/icons-material/Message';
 
 import PublicIcon from '@mui/icons-material/Public';
 
@@ -231,6 +232,22 @@ const Sidebar = ({activeListItem, getPosts}) => {
                             <PublicIcon htmlColor={theme.icon.fontColor}/>
                         </ListItemIcon>
                         <ListItemText primary="Follow Only Feed" />
+                    </ListItemStyled>
+
+                    <ListItemStyled
+                        button
+                        selected={activeListItem === 'Messages'}
+                        onClick={() => {
+                            Auth.currentAuthenticatedUser().then((user) => {
+                            navigate('/messages');
+                            })
+                    }}
+                    key='messaging'
+                    >
+                        <ListItemIcon>
+                            <MessageIcon htmlColor={theme.icon.fontColor}/>
+                        </ListItemIcon>
+                        <ListItemText primary="Messages" />
                     </ListItemStyled>
 
 

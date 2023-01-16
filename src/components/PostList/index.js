@@ -112,6 +112,11 @@ const PostList = ({activeListItem}) => {
                 graphqlOperation(listPostsSortedByTimestamp, {
                     type: "Post", 
                     sortDirection: 'DESC', // ASC vs. DESC for opposite
+                    filter: {
+                      input: {
+                        feedVisibility: true
+                      }
+                    },
                     // limit: 3, //default = 10
                     nextToken: nextToken,
                     // authMode: "AMAZON_COGNITO_USER_POOLS"

@@ -127,10 +127,10 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
     // console.log(listOfLikes.items.length)
     // const countOfListOfLikes = listOfLikes.length
 
-    useEffect(() => {
-      if (listOfLikes)
-      setListOfLikesCount(listOfLikes.items.length)
-    }, [listOfLikes])
+    // useEffect(() => {
+    //   if (listOfLikes)
+    //   setListOfLikesCount(listOfLikes.items.length)
+    // }, [listOfLikes])
 
 
     const CREATE_LIKE = async () => {
@@ -407,12 +407,12 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
                 title={
                   <>
                     <h3>Accounts:</h3>
-                      {listOfLikes.items.length > 0 ? (
-                      listOfLikes.items.map((item) => (
+                      {/* {listOfLikes?.items.length > 0 ? (
+                      listOfLikes?.items.map((item) => (
                         <p>{item.likeUserId}</p>
                       ))) : (
                         ""
-                      )}
+                      )} */}
                     </>
                 }
               >
@@ -465,12 +465,12 @@ const PostBox = ({ id, item, text, username, createdAt, listOfLikes, userPointer
                 title={
                   <>
                     <h3>Accounts:</h3>
-                      {listOfLikes.items.length > 0 ? (
+                      {/* {listOfLikes.items.length > 0 ? (
                       listOfLikes.items.map((item) => (
                         <p>{item.likeUserId}</p>
                       ))) : (
                         ""
-                      )}
+                      )} */}
                     </>
                 }
               >

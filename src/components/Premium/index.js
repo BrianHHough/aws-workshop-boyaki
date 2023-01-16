@@ -21,7 +21,7 @@ const initialUserDataTemplate = {
   bio: "",
 }
 
-const SettingsPage = () => {
+const PremiumPage = () => {
     const { user } = useAuthenticator();
 
     const theme = createTheme({
@@ -72,4 +72,4 @@ const SettingsPage = () => {
     )
 }
 
-export default SettingsPage
+export default PremiumPage

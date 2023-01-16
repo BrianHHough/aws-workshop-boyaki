@@ -1,0 +1,57 @@
+[
+    {
+        "id": 0,
+        "handle": "bobby",
+        "text": "Hey, how's it going?",
+        "timestamp": "2022-10-01T12:00:00Z"
+    },
+    {
+        "id": 1,
+        "handle": "brian",
+        "text": "Not bad, thanks for asking. How about you?",
+        "timestamp": "2022-10-01T12:05:00Z"
+    },
+    {
+        "id": 2,
+        "handle": "bobby",
+        "text": "I'm good, just finished up a project. How's work?",
+        "timestamp": "2022-10-01T12:10:00Z"
+    },
+    {
+        "id": 3,
+        "handle": "brian",
+        "text": "It's going well, thanks. How's your project?",
+        "timestamp": "2022-10-01T12:15:00Z"
+    },
+    {
+        "id": 4,
+        "handle": "brian",
+        "text": "I'm probably going to put a few more hours in and then call it a night.",
+        "timestamp": "2022-10-01T12:20:00Z"
+    },
+    {
+        "id": 5,
+        "handle": "brian",
+        "text": "It's been quite a week putting together this chat application.",
+        "timestamp": "2022-11-01T12:15:00Z"
+    },
+    {
+        "id": 6,
+        "handle": "brian",
+        "text": "Ok made a lot of progress",
+        "timestamp": "2022-11-02T12:15:00Z"
+    },
+    {
+        "id": 7,
+        "handle": "bobby",
+        "text": "You got this man! Rooting for you!! 💪💪",
+        "timestamp": "2022-11-03T12:15:00Z"
+    },
+    {
+        "id": 8,
+        "handle": "bobby",
+        "text": "When do you think you'll be done?",
+        "timestamp": "2022-11-04T12:15:00Z"
+    }
+
+  ]

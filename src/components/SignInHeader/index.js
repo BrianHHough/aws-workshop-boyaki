@@ -42,6 +42,7 @@ export function SignInHeader() {
     <div style={{marginLeft: "30px", marginTop: "10px", marginBottom: "-30px"}}>
       <button onClick={() => Auth.federatedSignIn({provider: CognitoHostedUIIdentityProvider.Google })}>Sign in with Google</button>
       <button onClick={() => Auth.federatedSignIn()}>Open Hosted UI</button>
+      <button onClick={() => Auth.federatedSignIn({provider: "Auth0" })}>Auth0 <> Twitter</></button>
       <p style={{color: "black"}}>OR</p>
     </div>
     </>

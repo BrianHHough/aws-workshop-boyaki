@@ -9,7 +9,8 @@
       "UnauthRoleName": "amplify-boyaki-dev-04540-unauthRole",
       "StackName": "amplify-boyaki-dev-04540",
       "StackId": "arn:aws:cloudformation:us-east-1:289971349213:stack/amplify-boyaki-dev-04540/4ff8eca0-058b-11ed-8d44-0a17df93e785",
-      "AmplifyAppId": "dd6takpii3g7"
+      "AmplifyAppId": "dd6takpii3g7",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-boyaki-dev-04540-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
     },
     "categories": {
       "auth": {
@@ -26,8 +27,21 @@
         },
         "createPostAndTimelineLambda": {
           "deploymentBucketName": "amplify-boyaki-dev-04540-deployment",
-          "s3Key": "amplify-builds/createPostAndTimelineLambda-71333030694a44516c70-build.zip"
-        }
+          "s3Key": "amplify-builds/createPostAndTimelineLambda-343554415a4b34744f44-build.zip"
+        },
+        "boyakitestlambdaroot": {
+          "deploymentBucketName": "amplify-boyaki-dev-04540-deployment",
+          "s3Key": "amplify-builds/boyakitestlambdaroot-314c523957706d315235-build.zip"
+        },
+        "boyaki5195b8e7PostAuthentication": {},
+        "boyaki5195b8e7PostConfirmation": {},
+        "updateUserAfterFollowRelationship": {}
+      },
+      "api": {
+        "BoyakiGql": {}
+      },
+      "storage": {
+        "boyakiS3Bucket": {}
       }
     }
   }

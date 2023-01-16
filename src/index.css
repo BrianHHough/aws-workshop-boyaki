@@ -14,7 +14,12 @@ main > h1 {
 }
 
 :root {
-  --c1: red;
+  --c1: #18192A;
+  --c2: #2D285D;
+  --c3: #8B81F5;
+  --c4: #ffffff;
+  --c5: #bcbcbc;
+  --c6: #606060;
   --amplify-fonts-default-variable: "Open Sans";
   --amplify-fonts-default-static: "Open Sans";
   --amplify-colors-brand-primary-10: var(--amplify-colors-blue-10);

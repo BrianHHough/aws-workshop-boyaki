@@ -3,7 +3,7 @@
   "serviceConfiguration": {
     "apiName": "BoyakiGql",
     "serviceName": "AppSync",
-    "gqlSchemaPath": "/Users/interstellarx/Documents/GitHub/AWSWorkshops/Amplify Social Network App/amplify-sns-shop/boyaki/amplify/backend/api/BoyakiGql/schema.graphql",
+    "gqlSchemaPath": "/Users/interstellarx/Documents/GitHub/AWSWorkshops/AmplifySocialNetworkApp/amplify-sns-shop/boyaki/amplify/backend/api/BoyakiGql/schema.graphql",
     "defaultAuthType": {
       "mode": "AMAZON_COGNITO_USER_POOLS",
       "cognitoUserPoolId": "authboyaki5195b8e7"

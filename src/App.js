@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Amplify from 'aws-amplify';
 import { useAuthenticator } from "@aws-amplify/ui-react";
 
@@ -22,6 +22,8 @@ import FetchAndLoad from "./components/Homepage/fetchAndLoad"
 import Settings from './components/Settings';
 import Premium from "./components/Premium"
 import AuthContext from './hooks/AuthContext';
+import MessagesPage from './components/Messages';
+import MessagesTesting from "./components/Messages/indexTesting"
 
 Amplify.configure(awsconfig);
 
@@ -57,19 +59,22 @@ const theme = createTheme({
 
 function App() {
   const { user } = useAuthenticator();
+  const [token, setToken] = useState(null);
 
       if (user) {
         return (
           <>
-            <AuthContext>
+            <AuthContext token={token}>
               <ThemeProvider theme={theme}>
                 <CssBaseline /> {/* Remove styles */}
                 <BrowserRouter>
                   <Routes> {/* No longer Switch */}
-                    <Route path='/' element={<HomePage/>} />
+                    <Route path='/' element={<HomePage token={token}/>} />
                     <Route path='/feed' element={<HomePage/>} />
                     <Route path='/follow-only-feed' element={<FollowOnlyFeed/>} />
                     <Route path='/fetch-and-load' element={<FetchAndLoad/>} />
+                    <Route path='/messages' element={<MessagesPage/>} />
+                    <Route path='/messages2' element={<MessagesTesting/>} />
                     <Route path='/premium' element={<Premium/>} />
                     <Route path='/settings' element={<Settings/>} />
                     <Route path='/:userId' element={<HomePage/>} />

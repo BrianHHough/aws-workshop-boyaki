@@ -2,12 +2,30 @@
 
 
 
-type Timeline @model {
+type Timeline @model 
+@auth(
+    rules: [
+      # Owner = create record
+      {
+        allow: owner
+        ownerField: "userId"
+        provider: userPools
+        operations: [read, create]
+      }
+      # any authenticated user can create records for another owner (security risk)
+    ]
+  )
+{
+  # unique ID: userId + postId + timestamp
   userId: ID! 
-    # @primaryKey(sortKeyFields: ["timestamp"])
+    # sort by timestamp desc | @primaryKey = local secondary index
+    @primaryKey(sortKeyFields: ["postId", "timestamp"])
   timestamp: Int!
   postId: ID!
-  post: Post @hasOne(fields: ["postId"])
+  postOwnerId: ID! 
+    @index(sortKeyFields: ["userId"])
+  post: Post 
+    @hasOne(fields: ["postId"])
 }
 
 # ====================== #
@@ -34,8 +52,8 @@ type Post @model
     )
   userPointer: UserInfo @belongsTo(fields: ["owner"]) # Query UserInfo for the name that is equal to the owner username
   
-  totalVisibility: Boolean # @auth(rules: [{ allow: groups, groups: ["Admin", "Moderator"],operations: [ update]  }]) # Remove from site or not
-  feedVisibility: Boolean # @auth(rules: [{ allow: groups, groups: ["Admin", "Moderator"],operations: [ update]  }])  # Show public or not
+  totalVisibility: Boolean @auth(rules: [{ allow: groups, groups: ["Admin", "Moderator"],operations: [read, update]  }]) # Remove from site or not
+  feedVisibility: Boolean @auth(rules: [{ allow: groups, groups: ["Admin", "Moderator"],operations: [read, update]  }])  # Show public or not
 
   timestamp: Int!
   type: String! # always should be `Post` - used in SortByTimestamp GSI
@@ -219,15 +237,10 @@ type Payment @model
 #   bucket: String!
 #   region: String!
 #   key: String!
-# }
-
-# ============================= #
-#   TESTING @AUTH DIRECTIVES    #
-# ============================= #
+# }                              
 
 # PUBLIC RECORD
 type BoyakiRecordPublic
-    @model  
     @auth(rules: [
         { allow: owner, ownerField: "owner", provider: userPools}
         { allow: private, provider: userPools, operations: [read] }
@@ -239,77 +252,38 @@ type BoyakiRecordPublic
     status: RECORDSTATUS @default(value: "PUBLIC")
     
     # Connect this record to an array of Private Record(s)
-    privateRecord: [BoyakiRecordPrivate] 
-        @hasMany(
-            indexName: "PrivateRecordsByPublicParent",
-            fields: ["id"]
-        )
+    privateRecord: [BoyakiRecordPrivate] @hasMany(name: "PrivateRecordPublicRecordType")
 
     # Connect this record to an array of Records with some public/private/owner data
-    mixedRecord: [BoyakiRecordMixed] 
-        @hasMany(
-            indexName: "MixedRecordsByPublicParent",
-            fields: ["id"]
-        )
-
-    # Allow anyone to access this field
-    publicField: String
-
-    # Sort by Time
-    timestamp: Int!
-    type: String! # always should be `Post` - used in SortPostsByTimestamp GSI
-        @index(
-            name: "PublicRecordsByTimestamp"
-            queryField: "listPublicRecordsSortedByTimestamp"
-            sortKeyFields: ["timestamp"] # sort posts by time overall
-        )
-
+    mixedRecord: [BoyakiRecordMixed] @hasMany(name: "MixedRecordPublicRecordType")
+    privateRecord
 }
 
 # PRIVATE RECORD
 type BoyakiRecordPrivate # Owner-only
-    @model
     @auth(rules: [
         { allow: owner, ownerField: "owner", provider: userPools}
     ])
 {
-    id: ID! # @auth(rules: [{ allow: owner }])
+    id: ID!
     description: String 
     status: RECORDSTATUS @default(value: "PRIVATE")
 
     # Connect this record to the Public Record
-    parent: BoyakiRecordPublic @belongsTo(fields: ["parentPointer"])
-    parentPointer: ID!
-        @index(
-            name: "PrivateRecordsByPublicParent",
-            queryField: "listPrivateRecordsByPublicRecord",
-            sortKeyFields: ["timestamp"]
-        )
-        # @auth(rules: [{ allow: owner }])
+    parent: BoyakiRecordPublic @belongsTo(name: "PrivateRecordPublicRecordType")
 
     # Only allow the owner of the parent to access this field
-    secretOwnerField: String # @auth(rules: [{ allow: owner }])
+    secretOwnerField: String @auth(rules: [{ allow: owner }])
     
     # Allow any authenticated user to access this field
-    # privateField: String @auth(rules: [{ allow: private }])
+    privateField: String @auth(rules: [{ allow: authenticated }])
 
     # Allow anyone to access this field
     publicField: String
-
-    # Sort by Time
-    timestamp: Int! # @auth(rules: [{ allow: owner }])
-    type: String! # always should be `Post` - used in SortPostsByTimestamp GSI
-        @index(
-            name: "PrivateRecordsByTimestamp"
-            queryField: "listPrivateRecordsSortedByTimestamp"
-            sortKeyFields: ["timestamp"] # sort posts by time overall
-        )
-        # @auth(rules: [{ allow: owner }])
 }
 
 # MIXED RECORD
 type BoyakiRecordMixed
-    @model
     @auth(rules: [
         # { allow: owner, ownerField: "owner", provider: userPools}
         { allow: owner, ownerField: "owner", provider: userPools}
@@ -322,31 +296,18 @@ type BoyakiRecordMixed
     status: RECORDSTATUS @default(value: "MIXED")
     
     # Connect this record to the Public Record
-    parent: BoyakiRecordPublic @belongsTo(fields: ["parentPointer"])
-    parentPointer: ID!
-        @index(
-            name: "MixedRecordsByPublicParent",
-            queryField: "listMixedRecordsByPublicRecord",
-            sortKeyFields: ["timestamp"]
-        )
+    parent: BoyakiRecordPublic @belongsTo(name: "MixedRecordPublicRecordType")
+
+    
 
     # Only allow the owner of the parent to access this field
     secretOwnerField: String @auth(rules: [{ allow: owner }])
     
     # Allow any authenticated user to access this field
-    privateField: String @auth(rules: [{ allow: private }])
+    privateField: String @auth(rules: [{ allow: authenticated }])
 
     # Allow anyone to access this field
     publicField: String
-
-    # Sort by Time
-    timestamp: Int!
-    type: String! # always should be `Post` - used in SortPostsByTimestamp GSI
-        @index(
-            name: "MixedRecordsByTimestamp"
-            queryField: "listMixedRecordsSortedByTimestamp"
-            sortKeyFields: ["timestamp"] # sort posts by time overall
-        )
 }
 
 enum RECORDSTATUS {
@@ -355,4 +316,3 @@ enum RECORDSTATUS {
     SHARED
     PRIVATE
 }
-            

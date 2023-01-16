@@ -27,8 +27,8 @@ export const getTimeline = /* GraphQL */ `
           followerId
           owner
         }
-        totalVisibility
-        feedVisibility
+        # totalVisibility
+        # feedVisibility
         timestamp
         type
         likes {
@@ -59,8 +59,8 @@ export const listTimelines = /* GraphQL */ `
           id
           content
           owner
-          totalVisibility
-          feedVisibility
+          # totalVisibility
+          # feedVisibility
           timestamp
           type
           impressions
@@ -148,79 +148,6 @@ export const listPayments = /* GraphQL */ `
         timestamp
         createdAt
         updatedAt
-      }
-      nextToken
-    }
-  }
-`;
-export const getBoyakiRecordPrivate = /* GraphQL */ `
-  query GetBoyakiRecordPrivate($id: ID!) {
-    getBoyakiRecordPrivate(id: $id) {
-      id
-      description
-      status
-      parent {
-        id
-        description
-        status
-        privateRecord {
-          nextToken
-        }
-        mixedRecord {
-          nextToken
-        }
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      parentPointer
-      secretOwnerField
-      publicField
-      timestamp
-      type
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const listBoyakiRecordPrivates = /* GraphQL */ `
-  query ListBoyakiRecordPrivates(
-    $filter: ModelBoyakiRecordPrivateFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listBoyakiRecordPrivates(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        description
-        status
-        parent {
-          id
-          description
-          status
-          publicField
-          timestamp
-          type
-          createdAt
-          updatedAt
-          owner
-        }
-        parentPointer
-        secretOwnerField
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
       }
       nextToken
     }
@@ -375,96 +302,6 @@ export const listPaymentsSortedByTimestamp = /* GraphQL */ `
     }
   }
 `;
-export const listPrivateRecordsByPublicRecord = /* GraphQL */ `
-  query ListPrivateRecordsByPublicRecord(
-    $parentPointer: ID!
-    $timestamp: ModelIntKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelBoyakiRecordPrivateFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listPrivateRecordsByPublicRecord(
-      parentPointer: $parentPointer
-      timestamp: $timestamp
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        description
-        status
-        parent {
-          id
-          description
-          status
-          publicField
-          timestamp
-          type
-          createdAt
-          updatedAt
-          owner
-        }
-        parentPointer
-        secretOwnerField
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      nextToken
-    }
-  }
-`;
-export const listPrivateRecordsSortedByTimestamp = /* GraphQL */ `
-  query ListPrivateRecordsSortedByTimestamp(
-    $type: String!
-    $timestamp: ModelIntKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelBoyakiRecordPrivateFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listPrivateRecordsSortedByTimestamp(
-      type: $type
-      timestamp: $timestamp
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        description
-        status
-        parent {
-          id
-          description
-          status
-          publicField
-          timestamp
-          type
-          createdAt
-          updatedAt
-          owner
-        }
-        parentPointer
-        secretOwnerField
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      nextToken
-    }
-  }
-`;
 export const getPost = /* GraphQL */ `
   query GetPost($id: ID!) {
     getPost(id: $id) {
@@ -493,8 +330,8 @@ export const getPost = /* GraphQL */ `
         followerId
         owner
       }
-      totalVisibility
-      feedVisibility
+      # totalVisibility
+      # feedVisibility
       timestamp
       type
       likes {
@@ -541,8 +378,8 @@ export const listPosts = /* GraphQL */ `
           followerId
           owner
         }
-        totalVisibility
-        feedVisibility
+        # totalVisibility
+        # feedVisibility
         timestamp
         type
         likes {
@@ -593,11 +430,19 @@ export const listPostsBySpecificOwner = /* GraphQL */ `
           followerId
           owner
         }
-        totalVisibility
-        feedVisibility
+        # totalVisibility
+        # feedVisibility
         timestamp
         type
         likes {
+          items {
+            id
+            likeUserId
+            likeUserHandle
+            createdAt
+            postID
+            updatedAt
+          }
           nextToken
         }
         impressions
@@ -645,11 +490,19 @@ export const listPostsSortedByTimestamp = /* GraphQL */ `
           followerId
           owner
         }
-        totalVisibility
-        feedVisibility
+        # totalVisibility
+        # feedVisibility
         timestamp
         type
         likes {
+          items {
+            id
+            likeUserId
+            likeUserHandle
+            createdAt
+            postID
+            updatedAt
+          }
           nextToken
         }
         impressions
@@ -687,8 +540,8 @@ export const getLike = /* GraphQL */ `
           followerId
           owner
         }
-        totalVisibility
-        feedVisibility
+        # totalVisibility
+        # feedVisibility
         timestamp
         type
         likes {
@@ -719,8 +572,8 @@ export const listLikes = /* GraphQL */ `
           id
           content
           owner
-          totalVisibility
-          feedVisibility
+          # totalVisibility
+          # feedVisibility
           timestamp
           type
           impressions
@@ -758,8 +611,8 @@ export const listLikesByOwner = /* GraphQL */ `
           id
           content
           owner
-          totalVisibility
-          feedVisibility
+          # totalVisibility
+          # feedVisibility
           timestamp
           type
           impressions
@@ -874,8 +727,8 @@ export const getUserInfo = /* GraphQL */ `
           id
           content
           owner
-          totalVisibility
-          feedVisibility
+          # totalVisibility
+          # feedVisibility
           timestamp
           type
           impressions
@@ -972,15 +825,51 @@ export const userByHandle = /* GraphQL */ `
         realName
         handle
         aliasLowerCase
-        post {
+        post(sortDirection: DESC) {
+          items {
+            id
+            content
+            owner
+            userPointer {
+              name
+              realName
+              handle
+              aliasLowerCase
+              post {
+                nextToken
+              }
+              pictureURL
+              bio
+              premium
+              createdAt
+              updatedAt
+              followerId
+              owner
+            }
+            timestamp
+            type
+            likes {
+              items {
+                id
+                likeUserId
+                likeUserHandle
+                createdAt
+                postID
+                updatedAt
+              }
+              nextToken
+            }
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         pictureURL
         bio
         premium
-        payment {
-          nextToken
-        }
+        # payment {
+        #   nextToken
+        # }
         followersNumber
         followingNumber
         impressions
@@ -1028,291 +917,6 @@ export const userByHandleLowerCaseCheck = /* GraphQL */ `
         createdAt
         updatedAt
         followerId
-        owner
-      }
-      nextToken
-    }
-  }
-`;
-export const getBoyakiRecordPublic = /* GraphQL */ `
-  query GetBoyakiRecordPublic($id: ID!) {
-    getBoyakiRecordPublic(id: $id) {
-      id
-      description
-      status
-      privateRecord {
-        items {
-          id
-          description
-          status
-          parentPointer
-          secretOwnerField
-          publicField
-          timestamp
-          type
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      mixedRecord {
-        items {
-          id
-          description
-          status
-          parentPointer
-          secretOwnerField
-          privateField
-          publicField
-          timestamp
-          type
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      publicField
-      timestamp
-      type
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const listBoyakiRecordPublics = /* GraphQL */ `
-  query ListBoyakiRecordPublics(
-    $filter: ModelBoyakiRecordPublicFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listBoyakiRecordPublics(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        description
-        status
-        privateRecord {
-          nextToken
-        }
-        mixedRecord {
-          nextToken
-        }
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      nextToken
-    }
-  }
-`;
-export const listPublicRecordsSortedByTimestamp = /* GraphQL */ `
-  query ListPublicRecordsSortedByTimestamp(
-    $type: String!
-    $timestamp: ModelIntKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelBoyakiRecordPublicFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listPublicRecordsSortedByTimestamp(
-      type: $type
-      timestamp: $timestamp
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        description
-        status
-        privateRecord {
-          nextToken
-        }
-        mixedRecord {
-          nextToken
-        }
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      nextToken
-    }
-  }
-`;
-export const getBoyakiRecordMixed = /* GraphQL */ `
-  query GetBoyakiRecordMixed($id: ID!) {
-    getBoyakiRecordMixed(id: $id) {
-      id
-      description
-      status
-      parent {
-        id
-        description
-        status
-        privateRecord {
-          nextToken
-        }
-        mixedRecord {
-          nextToken
-        }
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      parentPointer
-      secretOwnerField
-      privateField
-      publicField
-      timestamp
-      type
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const listBoyakiRecordMixeds = /* GraphQL */ `
-  query ListBoyakiRecordMixeds(
-    $filter: ModelBoyakiRecordMixedFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listBoyakiRecordMixeds(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        description
-        status
-        parent {
-          id
-          description
-          status
-          publicField
-          timestamp
-          type
-          createdAt
-          updatedAt
-          owner
-        }
-        parentPointer
-        secretOwnerField
-        privateField
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      nextToken
-    }
-  }
-`;
-export const listMixedRecordsByPublicRecord = /* GraphQL */ `
-  query ListMixedRecordsByPublicRecord(
-    $parentPointer: ID!
-    $timestamp: ModelIntKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelBoyakiRecordMixedFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listMixedRecordsByPublicRecord(
-      parentPointer: $parentPointer
-      timestamp: $timestamp
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        description
-        status
-        parent {
-          id
-          description
-          status
-          publicField
-          timestamp
-          type
-          createdAt
-          updatedAt
-          owner
-        }
-        parentPointer
-        secretOwnerField
-        privateField
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      nextToken
-    }
-  }
-`;
-export const listMixedRecordsSortedByTimestamp = /* GraphQL */ `
-  query ListMixedRecordsSortedByTimestamp(
-    $type: String!
-    $timestamp: ModelIntKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelBoyakiRecordMixedFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listMixedRecordsSortedByTimestamp(
-      type: $type
-      timestamp: $timestamp
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        description
-        status
-        parent {
-          id
-          description
-          status
-          publicField
-          timestamp
-          type
-          createdAt
-          updatedAt
-          owner
-        }
-        parentPointer
-        secretOwnerField
-        privateField
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
         owner
       }
       nextToken

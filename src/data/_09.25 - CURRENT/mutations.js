@@ -191,58 +191,6 @@ export const createPost = /* GraphQL */ `
     }
   }
 `;
-export const updatePost = /* GraphQL */ `
-  mutation UpdatePost(
-    $input: UpdatePostInput!
-    $condition: ModelPostConditionInput
-  ) {
-    updatePost(input: $input, condition: $condition) {
-      id
-      content
-      owner
-      userPointer {
-        name
-        realName
-        handle
-        aliasLowerCase
-        post {
-          nextToken
-        }
-        pictureURL
-        bio
-        premium
-        payment {
-          nextToken
-        }
-        followersNumber
-        followingNumber
-        impressions
-        createdAt
-        updatedAt
-        followerId
-        owner
-      }
-      totalVisibility
-      feedVisibility
-      timestamp
-      type
-      likes {
-        items {
-          id
-          likeUserId
-          likeUserHandle
-          createdAt
-          postID
-          updatedAt
-        }
-        nextToken
-      }
-      impressions
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const deletePost = /* GraphQL */ `
   mutation DeletePost(
     $input: DeletePostInput!
@@ -684,381 +632,55 @@ export const deletePayment = /* GraphQL */ `
     }
   }
 `;
-export const createBoyakiRecordPublic = /* GraphQL */ `
-  mutation CreateBoyakiRecordPublic(
-    $input: CreateBoyakiRecordPublicInput!
-    $condition: ModelBoyakiRecordPublicConditionInput
+export const updatePost = /* GraphQL */ `
+  mutation UpdatePost(
+    $input: UpdatePostInput!
+    $condition: ModelPostConditionInput
   ) {
-    createBoyakiRecordPublic(input: $input, condition: $condition) {
+    updatePost(input: $input, condition: $condition) {
       id
-      description
-      status
-      privateRecord {
+      content
+      owner
+      userPointer {
+        name
+        realName
+        handle
+        aliasLowerCase
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        premium
+        payment {
+          nextToken
+        }
+        followersNumber
+        followingNumber
+        impressions
+        createdAt
+        updatedAt
+        followerId
+        owner
+      }
+      totalVisibility
+      feedVisibility
+      timestamp
+      type
+      likes {
         items {
           id
-          description
-          status
-          parentPointer
-          secretOwnerField
-          publicField
-          timestamp
-          type
+          likeUserId
+          likeUserHandle
           createdAt
+          postID
           updatedAt
-          owner
         }
         nextToken
       }
-      mixedRecord {
-        items {
-          id
-          description
-          status
-          parentPointer
-          secretOwnerField
-          privateField
-          publicField
-          timestamp
-          type
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      publicField
-      timestamp
-      type
+      impressions
       createdAt
       updatedAt
-      owner
-    }
-  }
-`;
-export const updateBoyakiRecordPublic = /* GraphQL */ `
-  mutation UpdateBoyakiRecordPublic(
-    $input: UpdateBoyakiRecordPublicInput!
-    $condition: ModelBoyakiRecordPublicConditionInput
-  ) {
-    updateBoyakiRecordPublic(input: $input, condition: $condition) {
-      id
-      description
-      status
-      privateRecord {
-        items {
-          id
-          description
-          status
-          parentPointer
-          secretOwnerField
-          publicField
-          timestamp
-          type
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      mixedRecord {
-        items {
-          id
-          description
-          status
-          parentPointer
-          secretOwnerField
-          privateField
-          publicField
-          timestamp
-          type
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      publicField
-      timestamp
-      type
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const deleteBoyakiRecordPublic = /* GraphQL */ `
-  mutation DeleteBoyakiRecordPublic(
-    $input: DeleteBoyakiRecordPublicInput!
-    $condition: ModelBoyakiRecordPublicConditionInput
-  ) {
-    deleteBoyakiRecordPublic(input: $input, condition: $condition) {
-      id
-      description
-      status
-      privateRecord {
-        items {
-          id
-          description
-          status
-          parentPointer
-          secretOwnerField
-          publicField
-          timestamp
-          type
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      mixedRecord {
-        items {
-          id
-          description
-          status
-          parentPointer
-          secretOwnerField
-          privateField
-          publicField
-          timestamp
-          type
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      publicField
-      timestamp
-      type
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const createBoyakiRecordPrivate = /* GraphQL */ `
-  mutation CreateBoyakiRecordPrivate(
-    $input: CreateBoyakiRecordPrivateInput!
-    $condition: ModelBoyakiRecordPrivateConditionInput
-  ) {
-    createBoyakiRecordPrivate(input: $input, condition: $condition) {
-      id
-      description
-      status
-      parent {
-        id
-        description
-        status
-        privateRecord {
-          nextToken
-        }
-        mixedRecord {
-          nextToken
-        }
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      parentPointer
-      secretOwnerField
-      publicField
-      timestamp
-      type
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const updateBoyakiRecordPrivate = /* GraphQL */ `
-  mutation UpdateBoyakiRecordPrivate(
-    $input: UpdateBoyakiRecordPrivateInput!
-    $condition: ModelBoyakiRecordPrivateConditionInput
-  ) {
-    updateBoyakiRecordPrivate(input: $input, condition: $condition) {
-      id
-      description
-      status
-      parent {
-        id
-        description
-        status
-        privateRecord {
-          nextToken
-        }
-        mixedRecord {
-          nextToken
-        }
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      parentPointer
-      secretOwnerField
-      publicField
-      timestamp
-      type
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const deleteBoyakiRecordPrivate = /* GraphQL */ `
-  mutation DeleteBoyakiRecordPrivate(
-    $input: DeleteBoyakiRecordPrivateInput!
-    $condition: ModelBoyakiRecordPrivateConditionInput
-  ) {
-    deleteBoyakiRecordPrivate(input: $input, condition: $condition) {
-      id
-      description
-      status
-      parent {
-        id
-        description
-        status
-        privateRecord {
-          nextToken
-        }
-        mixedRecord {
-          nextToken
-        }
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      parentPointer
-      secretOwnerField
-      publicField
-      timestamp
-      type
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const createBoyakiRecordMixed = /* GraphQL */ `
-  mutation CreateBoyakiRecordMixed(
-    $input: CreateBoyakiRecordMixedInput!
-    $condition: ModelBoyakiRecordMixedConditionInput
-  ) {
-    createBoyakiRecordMixed(input: $input, condition: $condition) {
-      id
-      description
-      status
-      parent {
-        id
-        description
-        status
-        privateRecord {
-          nextToken
-        }
-        mixedRecord {
-          nextToken
-        }
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      parentPointer
-      secretOwnerField
-      privateField
-      publicField
-      timestamp
-      type
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const updateBoyakiRecordMixed = /* GraphQL */ `
-  mutation UpdateBoyakiRecordMixed(
-    $input: UpdateBoyakiRecordMixedInput!
-    $condition: ModelBoyakiRecordMixedConditionInput
-  ) {
-    updateBoyakiRecordMixed(input: $input, condition: $condition) {
-      id
-      description
-      status
-      parent {
-        id
-        description
-        status
-        privateRecord {
-          nextToken
-        }
-        mixedRecord {
-          nextToken
-        }
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      parentPointer
-      secretOwnerField
-      privateField
-      publicField
-      timestamp
-      type
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const deleteBoyakiRecordMixed = /* GraphQL */ `
-  mutation DeleteBoyakiRecordMixed(
-    $input: DeleteBoyakiRecordMixedInput!
-    $condition: ModelBoyakiRecordMixedConditionInput
-  ) {
-    deleteBoyakiRecordMixed(input: $input, condition: $condition) {
-      id
-      description
-      status
-      parent {
-        id
-        description
-        status
-        privateRecord {
-          nextToken
-        }
-        mixedRecord {
-          nextToken
-        }
-        publicField
-        timestamp
-        type
-        createdAt
-        updatedAt
-        owner
-      }
-      parentPointer
-      secretOwnerField
-      privateField
-      publicField
-      timestamp
-      type
-      createdAt
-      updatedAt
-      owner
     }
   }
 `;
