@@ -684,6 +684,573 @@ export const deletePayment = /* GraphQL */ `
     }
   }
 `;
+export const createChatsAvailable = /* GraphQL */ `
+  mutation CreateChatsAvailable(
+    $input: CreateChatsAvailableInput!
+    $condition: ModelChatsAvailableConditionInput
+  ) {
+    createChatsAvailable(input: $input, condition: $condition) {
+      id
+      status
+      owner
+      userPointer {
+        name
+        realName
+        handle
+        aliasLowerCase
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        premium
+        payment {
+          nextToken
+        }
+        followersNumber
+        followingNumber
+        impressions
+        createdAt
+        updatedAt
+        followerId
+        owner
+      }
+      chatID
+      chatPointer {
+        id
+        chatOriginator
+        users {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        name
+        messages {
+          nextToken
+        }
+        type
+        timestamp
+        chatsAvailableConnection {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      type
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateChatsAvailable = /* GraphQL */ `
+  mutation UpdateChatsAvailable(
+    $input: UpdateChatsAvailableInput!
+    $condition: ModelChatsAvailableConditionInput
+  ) {
+    updateChatsAvailable(input: $input, condition: $condition) {
+      id
+      status
+      owner
+      userPointer {
+        name
+        realName
+        handle
+        aliasLowerCase
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        premium
+        payment {
+          nextToken
+        }
+        followersNumber
+        followingNumber
+        impressions
+        createdAt
+        updatedAt
+        followerId
+        owner
+      }
+      chatID
+      chatPointer {
+        id
+        chatOriginator
+        users {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        name
+        messages {
+          nextToken
+        }
+        type
+        timestamp
+        chatsAvailableConnection {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      type
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteChatsAvailable = /* GraphQL */ `
+  mutation DeleteChatsAvailable(
+    $input: DeleteChatsAvailableInput!
+    $condition: ModelChatsAvailableConditionInput
+  ) {
+    deleteChatsAvailable(input: $input, condition: $condition) {
+      id
+      status
+      owner
+      userPointer {
+        name
+        realName
+        handle
+        aliasLowerCase
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        premium
+        payment {
+          nextToken
+        }
+        followersNumber
+        followingNumber
+        impressions
+        createdAt
+        updatedAt
+        followerId
+        owner
+      }
+      chatID
+      chatPointer {
+        id
+        chatOriginator
+        users {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        name
+        messages {
+          nextToken
+        }
+        type
+        timestamp
+        chatsAvailableConnection {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      type
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createChat = /* GraphQL */ `
+  mutation CreateChat(
+    $input: CreateChatInput!
+    $condition: ModelChatConditionInput
+  ) {
+    createChat(input: $input, condition: $condition) {
+      id
+      chatOriginator
+      users {
+        name
+        realName
+        handle
+        aliasLowerCase
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        premium
+        payment {
+          nextToken
+        }
+        followersNumber
+        followingNumber
+        impressions
+        createdAt
+        updatedAt
+        followerId
+        owner
+      }
+      name
+      messages {
+        items {
+          id
+          text
+          messageOwner
+          type
+          timestamp
+          createdAt
+          updatedAt
+          chatMessagesId
+          chatMessageChatPointerId
+          owner
+        }
+        nextToken
+      }
+      type
+      timestamp
+      chatsAvailableConnection {
+        items {
+          id
+          status
+          owner
+          chatID
+          type
+          timestamp
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const updateChat = /* GraphQL */ `
+  mutation UpdateChat(
+    $input: UpdateChatInput!
+    $condition: ModelChatConditionInput
+  ) {
+    updateChat(input: $input, condition: $condition) {
+      id
+      chatOriginator
+      users {
+        name
+        realName
+        handle
+        aliasLowerCase
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        premium
+        payment {
+          nextToken
+        }
+        followersNumber
+        followingNumber
+        impressions
+        createdAt
+        updatedAt
+        followerId
+        owner
+      }
+      name
+      messages {
+        items {
+          id
+          text
+          messageOwner
+          type
+          timestamp
+          createdAt
+          updatedAt
+          chatMessagesId
+          chatMessageChatPointerId
+          owner
+        }
+        nextToken
+      }
+      type
+      timestamp
+      chatsAvailableConnection {
+        items {
+          id
+          status
+          owner
+          chatID
+          type
+          timestamp
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const deleteChat = /* GraphQL */ `
+  mutation DeleteChat(
+    $input: DeleteChatInput!
+    $condition: ModelChatConditionInput
+  ) {
+    deleteChat(input: $input, condition: $condition) {
+      id
+      chatOriginator
+      users {
+        name
+        realName
+        handle
+        aliasLowerCase
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        premium
+        payment {
+          nextToken
+        }
+        followersNumber
+        followingNumber
+        impressions
+        createdAt
+        updatedAt
+        followerId
+        owner
+      }
+      name
+      messages {
+        items {
+          id
+          text
+          messageOwner
+          type
+          timestamp
+          createdAt
+          updatedAt
+          chatMessagesId
+          chatMessageChatPointerId
+          owner
+        }
+        nextToken
+      }
+      type
+      timestamp
+      chatsAvailableConnection {
+        items {
+          id
+          status
+          owner
+          chatID
+          type
+          timestamp
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const createChatMessage = /* GraphQL */ `
+  mutation CreateChatMessage(
+    $input: CreateChatMessageInput!
+    $condition: ModelChatMessageConditionInput
+  ) {
+    createChatMessage(input: $input, condition: $condition) {
+      id
+      chatPointer {
+        id
+        chatOriginator
+        users {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        name
+        messages {
+          nextToken
+        }
+        type
+        timestamp
+        chatsAvailableConnection {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      text
+      messageOwner
+      type
+      timestamp
+      createdAt
+      updatedAt
+      chatMessagesId
+      chatMessageChatPointerId
+      owner
+    }
+  }
+`;
+export const updateChatMessage = /* GraphQL */ `
+  mutation UpdateChatMessage(
+    $input: UpdateChatMessageInput!
+    $condition: ModelChatMessageConditionInput
+  ) {
+    updateChatMessage(input: $input, condition: $condition) {
+      id
+      chatPointer {
+        id
+        chatOriginator
+        users {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        name
+        messages {
+          nextToken
+        }
+        type
+        timestamp
+        chatsAvailableConnection {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      text
+      messageOwner
+      type
+      timestamp
+      createdAt
+      updatedAt
+      chatMessagesId
+      chatMessageChatPointerId
+      owner
+    }
+  }
+`;
+export const deleteChatMessage = /* GraphQL */ `
+  mutation DeleteChatMessage(
+    $input: DeleteChatMessageInput!
+    $condition: ModelChatMessageConditionInput
+  ) {
+    deleteChatMessage(input: $input, condition: $condition) {
+      id
+      chatPointer {
+        id
+        chatOriginator
+        users {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        name
+        messages {
+          nextToken
+        }
+        type
+        timestamp
+        chatsAvailableConnection {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      text
+      messageOwner
+      type
+      timestamp
+      createdAt
+      updatedAt
+      chatMessagesId
+      chatMessageChatPointerId
+      owner
+    }
+  }
+`;
 export const createBoyakiRecordPublic = /* GraphQL */ `
   mutation CreateBoyakiRecordPublic(
     $input: CreateBoyakiRecordPublicInput!

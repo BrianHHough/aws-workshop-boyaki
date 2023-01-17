@@ -23,7 +23,7 @@ import Settings from './components/Settings';
 import Premium from "./components/Premium"
 import AuthContext from './hooks/AuthContext';
 import MessagesPage from './components/Messages';
-import MessagesTesting from "./components/Messages/indexTesting"
+import MessagesPage2 from "./components/Messages/index2"
 
 Amplify.configure(awsconfig);
 
@@ -74,7 +74,7 @@ function App() {
                     <Route path='/follow-only-feed' element={<FollowOnlyFeed/>} />
                     <Route path='/fetch-and-load' element={<FetchAndLoad/>} />
                     <Route path='/messages' element={<MessagesPage/>} />
-                    <Route path='/messages2' element={<MessagesTesting/>} />
+                    <Route path='/messages2' element={<MessagesPage2/>} />
                     <Route path='/premium' element={<Premium/>} />
                     <Route path='/settings' element={<Settings/>} />
                     <Route path='/:userId' element={<HomePage/>} />

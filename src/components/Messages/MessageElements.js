@@ -98,7 +98,8 @@ export const ChatTextRightPreviewInfo = styled.div`
 `;
 
 export const M2 = styled.div`
-  width: 50%;
+  /* width: 50%; */
+  width: 560px;
   height: 100vh;
   /* min-width: 560px; */
   background: var(--c2);
@@ -125,6 +126,23 @@ export const MessageScrollCon = styled.div`
     padding: 50px 0px 30px 0px;
     overflow-x: hidden;
     overflow-y: auto;
+
+    &::-webkit-scrollbar {
+    display: none;
+    /* width: 5px; */
+    }
+
+    &::-webkit-scrollbar-track {
+        display: none;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        display: none;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        display: none;
+    }
 `;
 
 export const MessageCon = styled.div`

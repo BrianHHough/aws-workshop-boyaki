@@ -242,12 +242,28 @@ const Sidebar = ({activeListItem, getPosts}) => {
                             navigate('/messages');
                             })
                     }}
-                    key='messaging'
+                    key='messaging1'
                     >
                         <ListItemIcon>
                             <MessageIcon htmlColor={theme.icon.fontColor}/>
                         </ListItemIcon>
-                        <ListItemText primary="Messages" />
+                        <ListItemText primary="Messages - Front-end" />
+                    </ListItemStyled>
+
+                    <ListItemStyled
+                        button
+                        selected={activeListItem === 'Messages'}
+                        onClick={() => {
+                            Auth.currentAuthenticatedUser().then((user) => {
+                            navigate('/messages2');
+                            })
+                    }}
+                    key='messaging2'
+                    >
+                        <ListItemIcon>
+                            <MessageIcon htmlColor={theme.icon.fontColor}/>
+                        </ListItemIcon>
+                        <ListItemText primary="Messages - Subscriptions" />
                     </ListItemStyled>
 
 

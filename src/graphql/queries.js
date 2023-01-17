@@ -153,6 +153,309 @@ export const listPayments = /* GraphQL */ `
     }
   }
 `;
+export const getChatsAvailable = /* GraphQL */ `
+  query GetChatsAvailable($id: ID!) {
+    getChatsAvailable(id: $id) {
+      id
+      status
+      owner
+      userPointer {
+        name
+        realName
+        handle
+        aliasLowerCase
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        premium
+        payment {
+          nextToken
+        }
+        followersNumber
+        followingNumber
+        impressions
+        createdAt
+        updatedAt
+        followerId
+        owner
+      }
+      chatID
+      chatPointer {
+        id
+        chatOriginator
+        users {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        name
+        messages {
+          nextToken
+        }
+        type
+        timestamp
+        chatsAvailableConnection {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      type
+      timestamp
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listChatsAvailables = /* GraphQL */ `
+  query ListChatsAvailables(
+    $filter: ModelChatsAvailableFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatsAvailables(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        status
+        owner
+        userPointer {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        chatID
+        chatPointer {
+          id
+          chatOriginator
+          name
+          type
+          timestamp
+          createdAt
+          updatedAt
+          owner
+        }
+        type
+        timestamp
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getChat = /* GraphQL */ `
+  query GetChat($id: ID!) {
+    getChat(id: $id) {
+      id
+      chatOriginator
+      users {
+        name
+        realName
+        handle
+        aliasLowerCase
+        post {
+          nextToken
+        }
+        pictureURL
+        bio
+        premium
+        payment {
+          nextToken
+        }
+        followersNumber
+        followingNumber
+        impressions
+        createdAt
+        updatedAt
+        followerId
+        owner
+      }
+      name
+      messages {
+        items {
+          id
+          text
+          messageOwner
+          type
+          timestamp
+          createdAt
+          updatedAt
+          chatMessagesId
+          chatMessageChatPointerId
+          owner
+        }
+        nextToken
+      }
+      type
+      timestamp
+      chatsAvailableConnection {
+        items {
+          id
+          status
+          owner
+          chatID
+          type
+          timestamp
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const listChats = /* GraphQL */ `
+  query ListChats(
+    $filter: ModelChatFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChats(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        chatOriginator
+        users {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        name
+        messages {
+          nextToken
+        }
+        type
+        timestamp
+        chatsAvailableConnection {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+  }
+`;
+export const getChatMessage = /* GraphQL */ `
+  query GetChatMessage($id: ID!) {
+    getChatMessage(id: $id) {
+      id
+      chatPointer {
+        id
+        chatOriginator
+        users {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        name
+        messages {
+          nextToken
+        }
+        type
+        timestamp
+        chatsAvailableConnection {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      text
+      messageOwner
+      type
+      timestamp
+      createdAt
+      updatedAt
+      chatMessagesId
+      chatMessageChatPointerId
+      owner
+    }
+  }
+`;
+export const listChatMessages = /* GraphQL */ `
+  query ListChatMessages(
+    $filter: ModelChatMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        chatPointer {
+          id
+          chatOriginator
+          name
+          type
+          timestamp
+          createdAt
+          updatedAt
+          owner
+        }
+        text
+        messageOwner
+        type
+        timestamp
+        createdAt
+        updatedAt
+        chatMessagesId
+        chatMessageChatPointerId
+        owner
+      }
+      nextToken
+    }
+  }
+`;
 export const getBoyakiRecordPrivate = /* GraphQL */ `
   query GetBoyakiRecordPrivate($id: ID!) {
     getBoyakiRecordPrivate(id: $id) {
@@ -370,6 +673,369 @@ export const listPaymentsSortedByTimestamp = /* GraphQL */ `
         timestamp
         createdAt
         updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const listChatsAvailableByUser = /* GraphQL */ `
+  query ListChatsAvailableByUser(
+    $owner: String!
+    $timestamp: ModelIntKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelChatsAvailableFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatsAvailableByUser(
+      owner: $owner
+      timestamp: $timestamp
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        status
+        owner
+        userPointer {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        chatID
+        chatPointer {
+          id
+          chatOriginator
+          name
+          type
+          timestamp
+          createdAt
+          updatedAt
+          owner
+        }
+        type
+        timestamp
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const listChatsAvailableByConnection = /* GraphQL */ `
+  query ListChatsAvailableByConnection(
+    $chatID: ID!
+    $timestampOwner: ModelChatsAvailableChatsAvailableConnectionCompositeKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelChatsAvailableFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatsAvailableByConnection(
+      chatID: $chatID
+      timestampOwner: $timestampOwner
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        status
+        owner
+        userPointer {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        chatID
+        chatPointer {
+          id
+          chatOriginator
+          name
+          type
+          timestamp
+          createdAt
+          updatedAt
+          owner
+        }
+        type
+        timestamp
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const listChatsAvailableSortedByTimestamp = /* GraphQL */ `
+  query ListChatsAvailableSortedByTimestamp(
+    $type: String!
+    $timestampOwner: ModelChatsAvailableSortChatsAvailableByTimestampCompositeKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelChatsAvailableFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatsAvailableSortedByTimestamp(
+      type: $type
+      timestampOwner: $timestampOwner
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        status
+        owner
+        userPointer {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        chatID
+        chatPointer {
+          id
+          chatOriginator
+          name
+          type
+          timestamp
+          createdAt
+          updatedAt
+          owner
+        }
+        type
+        timestamp
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const listChatsSortedByOwner = /* GraphQL */ `
+  query ListChatsSortedByOwner(
+    $chatOriginator: String!
+    $timestamp: ModelIntKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelChatFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatsSortedByOwner(
+      chatOriginator: $chatOriginator
+      timestamp: $timestamp
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        chatOriginator
+        users {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        name
+        messages {
+          nextToken
+        }
+        type
+        timestamp
+        chatsAvailableConnection {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+  }
+`;
+export const listChatsSortedByTimestamp = /* GraphQL */ `
+  query ListChatsSortedByTimestamp(
+    $type: String!
+    $timestamp: ModelIntKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelChatFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatsSortedByTimestamp(
+      type: $type
+      timestamp: $timestamp
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        chatOriginator
+        users {
+          name
+          realName
+          handle
+          aliasLowerCase
+          pictureURL
+          bio
+          premium
+          followersNumber
+          followingNumber
+          impressions
+          createdAt
+          updatedAt
+          followerId
+          owner
+        }
+        name
+        messages {
+          nextToken
+        }
+        type
+        timestamp
+        chatsAvailableConnection {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+  }
+`;
+export const listChatMessagesByOwner = /* GraphQL */ `
+  query ListChatMessagesByOwner(
+    $messageOwner: String!
+    $timestamp: ModelIntKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelChatMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatMessagesByOwner(
+      messageOwner: $messageOwner
+      timestamp: $timestamp
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        chatPointer {
+          id
+          chatOriginator
+          name
+          type
+          timestamp
+          createdAt
+          updatedAt
+          owner
+        }
+        text
+        messageOwner
+        type
+        timestamp
+        createdAt
+        updatedAt
+        chatMessagesId
+        chatMessageChatPointerId
+        owner
+      }
+      nextToken
+    }
+  }
+`;
+export const listChatMessagesSortedByTimestamp = /* GraphQL */ `
+  query ListChatMessagesSortedByTimestamp(
+    $type: String!
+    $timestamp: ModelIntKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelChatMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatMessagesSortedByTimestamp(
+      type: $type
+      timestamp: $timestamp
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        chatPointer {
+          id
+          chatOriginator
+          name
+          type
+          timestamp
+          createdAt
+          updatedAt
+          owner
+        }
+        text
+        messageOwner
+        type
+        timestamp
+        createdAt
+        updatedAt
+        chatMessagesId
+        chatMessageChatPointerId
+        owner
       }
       nextToken
     }

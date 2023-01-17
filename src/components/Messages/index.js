@@ -6,7 +6,7 @@ import Amplify from "aws-amplify";
 import {Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { createUserInfo } from '../../graphql/mutations';
-import { getUserInfo, listUserInfos } from '../../graphql/queries';
+import { getUserInfo, listChatsAvailableByConnection, listChatsAvailableByUser, listUserInfos } from '../../graphql/queries';
 import { updateUserInfo } from '../../graphql/mutations';
 
 import Sidebar from "../../containers/Sidebar"
@@ -138,7 +138,7 @@ const MessagesPage = () => {
           return "message-right";
         }
       }
-      console.log(myHandle);
+      // console.log(myHandle);
     
     const [messages, setMessages] = useState([]);
     useEffect(() => {
@@ -180,6 +180,8 @@ const MessagesPage = () => {
     const handleNewMessage = (e) => {
         setNewMessage({...newMessage, [e.target.name]: e.target.value})
     }
+    
+    
     
 
     return (

@@ -27,7 +27,7 @@
         },
         "createPostAndTimelineLambda": {
           "deploymentBucketName": "amplify-boyaki-dev-04540-deployment",
-          "s3Key": "amplify-builds/createPostAndTimelineLambda-343554415a4b34744f44-build.zip"
+          "s3Key": "amplify-builds/createPostAndTimelineLambda-38465958563553467151-build.zip"
         },
         "boyakitestlambdaroot": {
           "deploymentBucketName": "amplify-boyaki-dev-04540-deployment",

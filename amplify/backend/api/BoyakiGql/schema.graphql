@@ -221,6 +221,109 @@ type Payment @model
 #   key: String!
 # }
 
+
+
+
+# ============================= #
+#           MESSAGING           #
+# ============================= #
+
+type ChatsAvailable 
+  @model
+  @auth(rules: [
+    { allow: owner, provider: userPools, operations:[read, create, update, delete] },
+  ])
+{
+  id: ID!
+  status: ChatsAvailableReadStatus @default(value: "OPENED")
+  owner: String!
+    @index(
+        name: "ChatsAvailableByUser",
+        queryField: "listChatsAvailableByUser",
+        sortKeyFields: ["timestamp"] #
+    )
+  userPointer: UserInfo # Query UserInfo for the name that is equal to the owner username
+  
+  chatID: ID!
+    @index(
+      name: "ChatsAvailableConnection",
+      queryField: "listChatsAvailableByConnection",
+      sortKeyFields: ["timestamp", "owner"]
+    )
+  chatPointer: Chat @belongsTo(fields: ["chatID"]) # ID of chat
+
+  type: String!  # always should be `Payment` - used in SortByTimestamp GSI
+    @index(
+        name: "SortChatsAvailableByTimestamp"
+        queryField: "listChatsAvailableSortedByTimestamp"
+        sortKeyFields: ["timestamp", "owner"] # sort posts by time overall
+    )
+  timestamp: Int!
+}
+
+type Chat 
+  @model
+  @auth(rules: [
+    { allow: owner, provider: userPools, operations:[read, create, update, delete] },
+    { allow: private, provider: userPools, operations:[read]}
+  ])
+{
+  id: ID!
+  chatOriginator: String    # your cognito username (the owner)
+    @index(
+      name: "SortChatsByOwner"
+      queryField: "listChatsSortedByOwner"
+      sortKeyFields: ["timestamp"]
+
+    )
+  users: [UserInfo]
+  # chatRecipient: String      # someone else's cognito username
+  name: String                       # name of chat
+  messages: [ChatMessage] @hasMany
+  type: String!  # always should be `Payment` - used in SortByTimestamp GSI
+    @index(
+        name: "SortChatsByTimestamp"
+        queryField: "listChatsSortedByTimestamp"
+        sortKeyFields: ["timestamp"] # sort posts by time overall
+    )
+  timestamp: Int!
+  chatsAvailableConnection: [ChatsAvailable] @hasMany(indexName: "ChatsAvailableConnection", fields: ["id"])
+}
+
+type ChatMessage
+  @model
+  @auth(rules: [
+    { allow: owner, provider: userPools, operations:[read, create, update, delete] },
+    { allow: private, provider: userPools, operations:[read]}
+  ])
+{
+  id: ID!
+  chatPointer: Chat @hasOne
+  text: String 
+  messageOwner: String     # Cognito Username
+    @index(
+      name: "ChatMessagesByOwner"
+        queryField: "listChatMessagesByOwner"
+        sortKeyFields: ["timestamp"] # sort posts by time overall
+    )
+  type: String!  # always should be `Payment` - used in SortByTimestamp GSI
+    @index(
+        name: "ChatMessagesByTimestamp"
+        queryField: "listChatMessagesSortedByTimestamp"
+        sortKeyFields: ["timestamp"] # sort posts by time overall
+    )
+  timestamp: Int! 
+}
+
+enum ChatsAvailableReadStatus {
+  OPENED
+  UNOPENED
+}
+
+
+
+
+
 # ============================= #
 #   TESTING @AUTH DIRECTIVES    #
 # ============================= #
@@ -355,4 +458,4 @@ enum RECORDSTATUS {
     SHARED
     PRIVATE
 }
-            
+                

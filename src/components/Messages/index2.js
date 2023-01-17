@@ -6,7 +6,7 @@ import Amplify from "aws-amplify";
 import {Auth, API, graphqlOperation, Storage } from 'aws-amplify';
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { createUserInfo } from '../../graphql/mutations';
-import { getUserInfo, listUserInfos } from '../../graphql/queries';
+import { getUserInfo, listChatsAvailableByUser, listUserInfos } from '../../graphql/queries';
 import { updateUserInfo } from '../../graphql/mutations';
 
 import Sidebar from "../../containers/Sidebar"
@@ -88,6 +88,9 @@ const theme = createTheme({
 const MessagesPage = () => {
     const { user } = useAuthenticator();
     const [selectedChat, setSelectedChat] = useState(null);
+
+
+    const [chatsAvailableForUser, setChatsAvailableForUser] = useState([]);
     
 
     // AVATAR 
@@ -138,7 +141,22 @@ const MessagesPage = () => {
           return "message-right";
         }
       }
-      console.log(myHandle);
+    
+      async function fetchChatsAvailableForUser() {
+        const { username } = await Auth.currentAuthenticatedUser();
+        try {
+          const chatsAvailableFetched = await API.graphql({
+            query: listChatsAvailableByUser,
+            variables: { owner: username },
+          });
+          console.log("chatsAvailableFetched", chatsAvailableFetched.data.listChatsAvailableByUser.items);
+          setChatsAvailableForUser(chatsAvailableFetched.data.listChatsAvailableByUser.items)
+        } catch (error) {console.log('error getting available chats:', error)}
+      }
+  
+      useEffect(() => {
+        fetchChatsAvailableForUser();
+      }, [])
     
 
     return (
@@ -149,42 +167,29 @@ const MessagesPage = () => {
             <M1>
               <M1Title>My DMs (Testing)</M1Title>
 
-              <ChatSelectCon onClick={handleSelectedChat}>
-                <ChatSelectPic>
-                  <Avatar {...stringAvatar("Bobby")} />
-                </ChatSelectPic>
-                <ChatTextRightCon>
-                  <ChatTextRightNameInfo>
-                    Bobby{" "}
-                    <ChatTextRightNameSubtitle>
-                      @bob • 2h
-                    </ChatTextRightNameSubtitle>
-                  </ChatTextRightNameInfo>
+              {chatsAvailableForUser.length > 0 && chatsAvailableForUser.map((chat, index) => (
+                <ChatSelectCon 
+                  key={chat.id}
+                  onClick={handleSelectedChat}>
+                  <ChatSelectPic>
+                    <Avatar {...stringAvatar("Bobby")} />
+                  </ChatSelectPic>
+                  <ChatTextRightCon>
+                    <ChatTextRightNameInfo>
+                      Bobby{" "}
+                      <ChatTextRightNameSubtitle>
+                        @bob • 2h
+                      </ChatTextRightNameSubtitle>
+                    </ChatTextRightNameInfo>
 
-                  <ChatTextRightPreviewInfo>
-                    This is our first conversation and it keeps going but we
-                    need to cut it off at some point
-                  </ChatTextRightPreviewInfo>
-                </ChatTextRightCon>
-              </ChatSelectCon>
-
-              <ChatSelectCon onClick={handleSelectedChat}>
-                <ChatSelectPic>
-                  <Avatar {...stringAvatar("Jimmy")} />
-                </ChatSelectPic>
-                <ChatTextRightCon>
-                  <ChatTextRightNameInfo>
-                    Jimmy{" "}
-                    <ChatTextRightNameSubtitle>
-                      @bob • 2h
-                    </ChatTextRightNameSubtitle>
-                  </ChatTextRightNameInfo>
-
-                  <ChatTextRightPreviewInfo>
-                    We need to start another chat with this platform so we can work on the 
-                  </ChatTextRightPreviewInfo>
-                </ChatTextRightCon>
-              </ChatSelectCon>
+                    <ChatTextRightPreviewInfo>
+                      This is our first conversation and it keeps going but we
+                      need to cut it off at some point
+                    </ChatTextRightPreviewInfo>
+                  </ChatTextRightCon>
+                </ChatSelectCon>
+              ))}
+              
             </M1>
 
             <M2>
