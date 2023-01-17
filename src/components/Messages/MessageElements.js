@@ -111,15 +111,18 @@ export const MessageInfoCon = styled.div`
     top: 0px;
     position: absolute;
     display: flex;
-    background: rgba( 0, 0, 0, 0.3 );
+    background: rgb(24, 25, 42, 0.6); // rgba( 0, 0, 0, 0.3 );
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-    backdrop-filter: blur( 4px );
-    -webkit-backdrop-filter: blur( 4px );
+    backdrop-filter: blur( 15px );
+    -webkit-backdrop-filter: blur( 15px );
+    z-index: 99999;
 `;
 
 export const MessageScrollCon = styled.div`
-    height: calc(100% - 120px);
-    margin-top: 50px;
+    // height: calc(100% - 120px);
+    /* margin-top: 50px; */
+    height: calc(100% - 80px);
+    padding: 50px 0px 30px 0px;
     overflow-x: hidden;
     overflow-y: auto;
 `;
@@ -235,4 +238,9 @@ export const SendIconStyled = styled(SendIcon)`
   left: 50%;
   transform: translate(-50%, -50%);
   position: relative;
+`;
+
+export const TypingDotsCon = styled.div`
+    height: 20px;
+    width: 100%;
 `;

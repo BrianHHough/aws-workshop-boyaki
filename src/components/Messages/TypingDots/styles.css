@@ -1,0 +1,24 @@
+.dots {
+    display: flex;
+    justify-content: center;
+    height: 20px;
+    width: auto;
+    padding: 6px 0;
+    position: absolute;
+    float: left;
+    margin-left: 20px;
+    bottom: 80px;
+  }
+  
+  .dot {
+    background: red;
+    border-radius: 6px;
+    margin-left: 8px;
+    height: 12px;
+    width: 12px;
+  }
+  
+  .dot:first-child {
+    margin-left: 0;
+  }
+  

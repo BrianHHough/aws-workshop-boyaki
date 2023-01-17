@@ -1,0 +1,358 @@
+# input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+
+
+type Timeline @model {
+  userId: ID! 
+    # @primaryKey(sortKeyFields: ["timestamp"])
+  timestamp: Int!
+  postId: ID!
+  post: Post @hasOne(fields: ["postId"])
+}
+
+# ====================== #
+#          POST          #
+# ====================== #
+
+type Post @model
+@auth(rules: [
+  { allow: groups, groups: ["Admin"], operations: [read, update, delete] }
+  { allow: groups, groups: ["Moderator"], operations: [read, update] }
+  { allow: groups, groups: ["Analyst"], operations: [read] }
+  { allow: owner, ownerField: "owner", provider: userPools, operations: [read, create, delete] }
+  { allow: private, provider: userPools, operations: [read] }
+  { allow: public, operations: [read] }
+])
+{
+  id: ID
+  content: String!
+  owner: String
+    @index(
+        name: "BySpecificOwner",
+        queryField: "listPostsBySpecificOwner",
+        sortKeyFields: ["timestamp"] # sort posts-by-owner by time
+    )
+  userPointer: UserInfo @belongsTo(fields: ["owner"]) # Query UserInfo for the name that is equal to the owner username
+  
+  totalVisibility: Boolean # @auth(rules: [{ allow: groups, groups: ["Admin", "Moderator"],operations: [ update]  }]) # Remove from site or not
+  feedVisibility: Boolean # @auth(rules: [{ allow: groups, groups: ["Admin", "Moderator"],operations: [ update]  }])  # Show public or not
+
+  timestamp: Int!
+  type: String! # always should be `Post` - used in SortByTimestamp GSI
+    @index(
+        name: "SortByTimestamp"
+        queryField: "listPostsSortedByTimestamp"
+        sortKeyFields: ["timestamp"] # sort posts by time overall
+    )
+  likes: [Like] @hasMany(
+    indexName: "LikesByPost",
+    fields: ["id"]
+    ) 
+
+  impressions: Int
+}
+
+
+# ====================== #
+#          LIKE          #
+# ====================== #
+
+type Like @model 
+@auth(rules: [
+  { allow: owner, ownerField: "likeUserId", provider: userPools, operations: [create, read, update, delete] }
+  { allow: private, provider: userPools, operations: [read] }
+  { allow: public, operations: [read] }
+])
+{
+  id: ID
+  likeUserId: String # get likes by owner
+    @index(
+      name: "LikesByOwner"
+      queryField: "listLikesByOwner"
+      # sortKeyFields: ["postID"]
+    )
+  likeUserHandle: String
+  createdAt: AWSDateTime
+  post: Post @belongsTo(fields: ["postID"])
+  postID: ID! @index( # get likes by posts
+    name: "LikesByPost"
+  )
+}
+
+# ====================== #
+#   FOLLOW RELATIONSHIP  #
+# ====================== #
+
+type FollowRelationship @model
+	@auth(rules: [
+		{allow: owner, ownerField: "followerId", provider: userPools, operations:[read, create, delete]},
+		{allow: private, provider: userPools, operations:[read]}
+	])
+{
+  # id: ID
+
+  followerId: ID! @primaryKey(sortKeyFields: ["followeeId"]) # you are the follower
+    @index (
+      name: "SortByFollowerId"
+      queryField: "listFollowsByFollowerId"
+      # sortKeyFields: ["followeeId"]
+    )
+  # followerIdUserPointer: UserInfo @belongsTo(fields: ["followerId"]) # Query UserInfo for the name that is equal to the owner username
+
+  followeeId: ID! # you are being followed
+    @index ( 
+      name: "SortByFolloweeId"
+      queryField: "listFollowsByFolloweeId"
+      sortKeyFields: ["followerId"]
+    )
+  # followeeIdUserPointer: UserInfo @belongsTo(fields: ["followeeId"]) # Query UserInfo for the name that is equal to the owner username
+	
+  
+  # followerId: ID! @index (  # username of person doing the following (me)
+  #     name: "SortByFollowerId"
+  #     sortKeyFields: ["followeeId"]
+  #   )
+	timestamp: Int! 
+  type: String! # always should be `Post` - used in SortByTimestamp GSI
+    @index(
+        name: "SortFollowRelationshipsByTimestamp"
+        queryField: "listFollowRelationshipsSortedByTimestamp"
+        sortKeyFields: ["timestamp"] # sort posts by time overall
+    )
+}
+
+# Attempt
+type FollowObject @model 
+@auth(rules: [
+  { allow: owner, ownerField: "followHead", provider: userPools, operations: [create, read, delete] }
+  { allow: private, provider: userPools, operations: [read] }
+  { allow: public, operations: [read] }
+])
+{
+  id: ID
+  followerID: ID! # user
+    @index(
+      name: "FollowsMadeBySpecificOwner"
+      queryField: "listFollowsBySpecificOwner"
+      # sortKeyFields: ["postID"]
+    )
+  followeeID: ID! # someone else's account
+    @index(
+      name: "FollowersOfSpecificOwner"
+      queryField: "listOfFollowedAccounts"
+      # sortKeyFields: ["postID"]
+    )
+
+  timestamp: Int
+
+  createdAt: AWSDateTime
+  
+ 
+}
+
+# ====================== #
+#         USERS          #
+# ====================== #
+
+type UserInfo @model  
+  @auth(rules: [
+    {allow: owner, ownerField: "followerId", provider: userPools, operations:[read, create, update]}, #followerId - previous ownerField
+		{allow: private, provider: userPools, operations:[read, update]}
+    {allow: public, operations: [read, update]}
+  ])
+{
+  name: String! @primaryKey
+  realName: String
+  handle: String
+    @index(name: "byHandle", queryField: "userByHandle")
+  aliasLowerCase: String
+    @index(name: "handleLowerCaseCheck", queryField: "userByHandleLowerCaseCheck")
+  post: [Post] @hasMany(indexName: "BySpecificOwner", fields: ["name"])
+  pictureURL: String
+  bio: String
+  premium: Boolean
+  payment: [Payment] 
+    @hasMany(indexName: "PaymentsBySpecificOwner", fields: ["name"]) 
+    @auth(rules: [{ allow: owner }])
+  
+  # Who Follows a User (i.e. 10 people follow you) - FollowersOfSpecificOwner
+  followersNumber: Int
+  # followers: [FollowObject] 
+  #   @hasMany(indexName: "FollowersOfSpecificOwner", fields: ["name"])
+
+  # Who the User Follows (i.e. you follow 10 people) - FollowsMadeBySpecificOwner
+  followingNumber: Int
+  # following: [FollowObject]
+  #   @hasMany(indexName: "FollowsMadeBySpecificOwner", fields: ["name"])
+  impressions: Int
+}
+
+# ====================== #
+#         PAYMENT        #
+# ====================== #
+
+type Payment @model 
+  @auth(rules: [
+    {allow: owner, ownerField: "owner", provider: userPools, operations:[read, create, update] }
+  ])
+  {
+  id: ID!
+  owner: String! # username of user
+    @index(
+        name: "PaymentsBySpecificOwner",
+        queryField: "listPaymentsBySpecificOwner",
+        sortKeyFields: ["timestamp"] # sort posts-by-owner by time
+    )
+  typeOfPayment: String # monthly, yearly, lifetime
+  costOfPayment: Int # cost of payment
+  invoiceURL: String
+  type: String!  # always should be `Payment` - used in SortByTimestamp GSI
+    @index(
+        name: "SortPaymentsByTimestamp"
+        queryField: "listPaymentsSortedByTimestamp"
+        sortKeyFields: ["timestamp"] # sort posts by time overall
+    )
+  timestamp: Int!  
+  } 
+
+# type UserInfoS3Bucket {
+#   bucket: String!
+#   region: String!
+#   key: String!
+# }
+
+# ============================= #
+#   TESTING @AUTH DIRECTIVES    #
+# ============================= #
+
+# PUBLIC RECORD
+type BoyakiRecordPublic
+    @model  
+    @auth(rules: [
+        { allow: owner, ownerField: "owner", provider: userPools}
+        { allow: private, provider: userPools, operations: [read] }
+        { allow: public, operations: [read] }
+    ])
+{
+    id: ID!
+    description: String
+    status: RECORDSTATUS @default(value: "PUBLIC")
+    
+    # Connect this record to an array of Private Record(s)
+    privateRecord: [BoyakiRecordPrivate] 
+        @hasMany(
+            indexName: "PrivateRecordsByPublicParent",
+            fields: ["id"]
+        )
+
+    # Connect this record to an array of Records with some public/private/owner data
+    mixedRecord: [BoyakiRecordMixed] 
+        @hasMany(
+            indexName: "MixedRecordsByPublicParent",
+            fields: ["id"]
+        )
+
+    # Allow anyone to access this field
+    publicField: String
+
+    # Sort by Time
+    timestamp: Int!
+    type: String! # always should be `Post` - used in SortPostsByTimestamp GSI
+        @index(
+            name: "PublicRecordsByTimestamp"
+            queryField: "listPublicRecordsSortedByTimestamp"
+            sortKeyFields: ["timestamp"] # sort posts by time overall
+        )
+
+}
+
+# PRIVATE RECORD
+type BoyakiRecordPrivate # Owner-only
+    @model
+    @auth(rules: [
+        { allow: owner, ownerField: "owner", provider: userPools}
+    ])
+{
+    id: ID! # @auth(rules: [{ allow: owner }])
+    description: String 
+    status: RECORDSTATUS @default(value: "PRIVATE")
+
+    # Connect this record to the Public Record
+    parent: BoyakiRecordPublic @belongsTo(fields: ["parentPointer"])
+    parentPointer: ID!
+        @index(
+            name: "PrivateRecordsByPublicParent",
+            queryField: "listPrivateRecordsByPublicRecord",
+            sortKeyFields: ["timestamp"]
+        )
+        # @auth(rules: [{ allow: owner }])
+
+    # Only allow the owner of the parent to access this field
+    secretOwnerField: String # @auth(rules: [{ allow: owner }])
+    
+    # Allow any authenticated user to access this field
+    # privateField: String @auth(rules: [{ allow: private }])
+
+    # Allow anyone to access this field
+    publicField: String
+
+    # Sort by Time
+    timestamp: Int! # @auth(rules: [{ allow: owner }])
+    type: String! # always should be `Post` - used in SortPostsByTimestamp GSI
+        @index(
+            name: "PrivateRecordsByTimestamp"
+            queryField: "listPrivateRecordsSortedByTimestamp"
+            sortKeyFields: ["timestamp"] # sort posts by time overall
+        )
+        # @auth(rules: [{ allow: owner }])
+}
+
+# MIXED RECORD
+type BoyakiRecordMixed
+    @model
+    @auth(rules: [
+        # { allow: owner, ownerField: "owner", provider: userPools}
+        { allow: owner, ownerField: "owner", provider: userPools}
+        { allow: private, provider: userPools, operations:[read]}
+        { allow: public, operations:[read]}
+    ]) 
+{
+    id: ID!
+    description: String
+    status: RECORDSTATUS @default(value: "MIXED")
+    
+    # Connect this record to the Public Record
+    parent: BoyakiRecordPublic @belongsTo(fields: ["parentPointer"])
+    parentPointer: ID!
+        @index(
+            name: "MixedRecordsByPublicParent",
+            queryField: "listMixedRecordsByPublicRecord",
+            sortKeyFields: ["timestamp"]
+        )
+
+    # Only allow the owner of the parent to access this field
+    secretOwnerField: String @auth(rules: [{ allow: owner }])
+    
+    # Allow any authenticated user to access this field
+    privateField: String @auth(rules: [{ allow: private }])
+
+    # Allow anyone to access this field
+    publicField: String
+
+    # Sort by Time
+    timestamp: Int!
+    type: String! # always should be `Post` - used in SortPostsByTimestamp GSI
+        @index(
+            name: "MixedRecordsByTimestamp"
+            queryField: "listMixedRecordsSortedByTimestamp"
+            sortKeyFields: ["timestamp"] # sort posts by time overall
+        )
+}
+
+enum RECORDSTATUS {
+    PUBLIC
+    MIXED
+    SHARED
+    PRIVATE
+}
+            

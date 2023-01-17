@@ -10,8 +10,9 @@ import { getUserInfo, listUserInfos } from '../../graphql/queries';
 import { updateUserInfo } from '../../graphql/mutations';
 
 import Sidebar from "../../containers/Sidebar"
-import { AddImageCon, ChatSelectCon, ChatSelectPic, ChatTextRightCon, ChatTextRightNameInfo, ChatTextRightNameSubtitle, ChatTextRightPreviewInfo, ImageIconStyled, M1, M1Title, M2, MessageCon, MessageInfoCon, MessageInfoConRightNameInfo, MessageInput, MessageInputCon, MessageScrollCon, MessageTextCon, MessageTimestamp, OuterCon, SendButtonCon, SendIconStyled } from './MessageElements';
+import { AddImageCon, ChatSelectCon, ChatSelectPic, ChatTextRightCon, ChatTextRightNameInfo, ChatTextRightNameSubtitle, ChatTextRightPreviewInfo, ImageIconStyled, M1, M1Title, M2, MessageCon, MessageInfoCon, MessageInfoConRightNameInfo, MessageInput, MessageInputCon, MessageScrollCon, MessageTextCon, MessageTimestamp, OuterCon, SendButtonCon, SendIconStyled, TypingDotsCon } from './MessageElements';
 import { Avatar } from '@mui/material';
+import TypingDots from "./TypingDots";
 
 // TestData
 import messages1 from "./MessageTestData1.json";
@@ -87,7 +88,7 @@ const theme = createTheme({
 const MessagesPage = () => {
     const { user } = useAuthenticator();
     const [selectedChat, setSelectedChat] = useState(null);
-    
+    const [someoneTypingToYou, setSomeoneTypingToYou] = useState(true);
 
     // AVATAR 
     function stringToColor(string) {
@@ -221,86 +222,86 @@ const MessagesPage = () => {
                   </ChatTextRightNameInfo>
 
                   <ChatTextRightPreviewInfo>
-                    We need to start another chat with this platform so we can work on the 
+                    We need to start another chat with this platform so we can
+                    work on the
                   </ChatTextRightPreviewInfo>
                 </ChatTextRightCon>
               </ChatSelectCon>
             </M1>
 
             <M2>
-                <MessageInfoCon>
-                    <ChatSelectPic>
-                    <Avatar {...stringAvatar("Kent Dodds")} />
-                    </ChatSelectPic>
-                    <ChatTextRightCon>
-                    <MessageInfoConRightNameInfo>
-                        Bobby {" "}
-                    </MessageInfoConRightNameInfo>
-                    </ChatTextRightCon>
-                </MessageInfoCon>
+              <MessageInfoCon>
+                <ChatSelectPic>
+                  <Avatar {...stringAvatar("Kent Dodds")} />
+                </ChatSelectPic>
+                <ChatTextRightCon>
+                  <MessageInfoConRightNameInfo>
+                    Bobby{" "}
+                  </MessageInfoConRightNameInfo>
+                </ChatTextRightCon>
+              </MessageInfoCon>
 
-                <MessageScrollCon
-                    ref={messagesEndRef}
-                >
-                    
-                {messages.length > 0 && messages.map((message, index) => {
-                let timestamp = null;
-                // console.log(message.id + 1, prevHandle.current);
-                console.log(messages1.length - 1);
-                // if (message.id === index[0]) {
-                //     timestamp = <MessageTimestamp>{message.timestamp}</MessageTimestamp>;
-                // }
-                // else if (message.id === messages.length - 1) {
-                //     timestamp = <MessageTimestamp>{message.timestamp}</MessageTimestamp>;
-                // }
-                // if (prevHandle.current === null || prevHandle.current !== message.handle) {
-                //     prevHandle.current = message.handle;
-                //     sameHandleCount = 0;
-                //     timestamp = <MessageTimestamp>{message.timestamp}</MessageTimestamp>;
-                // } else {
-                //     sameHandleCount++;
-                //     if (sameHandleCount > 2) {
-                //         timestamp = <MessageTimestamp>{message.timestamp}</MessageTimestamp>;
-                //     }
-                // }
-                return (
-                    <MessageCon
+              <MessageScrollCon ref={messagesEndRef}>
+                {messages.length > 0 &&
+                  messages.map((message, index) => {
+                    let timestamp = null;
+                    // console.log(message.id + 1, prevHandle.current);
+                    console.log(messages1.length - 1);
+                    // if (message.id === index[0]) {
+                    //     timestamp = <MessageTimestamp>{message.timestamp}</MessageTimestamp>;
+                    // }
+                    // else if (message.id === messages.length - 1) {
+                    //     timestamp = <MessageTimestamp>{message.timestamp}</MessageTimestamp>;
+                    // }
+                    // if (prevHandle.current === null || prevHandle.current !== message.handle) {
+                    //     prevHandle.current = message.handle;
+                    //     sameHandleCount = 0;
+                    //     timestamp = <MessageTimestamp>{message.timestamp}</MessageTimestamp>;
+                    // } else {
+                    //     sameHandleCount++;
+                    //     if (sameHandleCount > 2) {
+                    //         timestamp = <MessageTimestamp>{message.timestamp}</MessageTimestamp>;
+                    //     }
+                    // }
+                    return (
+                      <MessageCon
                         yourMessage={message.handle === myHandle ? true : false}
                         className={handleRender(myHandle)}
                         key={message.index}
-                    >
-                    <MessageTextCon>
-                        {message.text}
-                    </MessageTextCon> 
-                    {/* {timestamp} */}
-                    <MessageTimestamp>{moment(message.timestamp).format("MMM DD, YYYY hh:mm a")}</MessageTimestamp>
-                    </MessageCon>
-                );
-                })}
+                      >
+                        <MessageTextCon>{message.text}</MessageTextCon>
+                        {/* {timestamp} */}
+                        <MessageTimestamp>
+                          {moment(message.timestamp).format(
+                            "MMM DD, YYYY hh:mm a"
+                          )}
+                        </MessageTimestamp>
+                      </MessageCon>
+                    );
+                  })}
 
                 {/* <div ref={messagesEndRef}></div> */}
+                {someoneTypingToYou && 
+                  <TypingDots />
+                }
+              </MessageScrollCon>
 
-                </MessageScrollCon>
+              <MessageInputCon>
+                <AddImageCon>
+                  <ImageIconStyled />
+                </AddImageCon>
+                <MessageInput
+                  key="text"
+                  name="text"
+                  value={newMessage.text}
+                  onChange={handleNewMessage}
+                  placeholder="Type a message..."
+                />
 
-
-                <MessageInputCon>
-                    <AddImageCon>
-                        <ImageIconStyled/>
-                    </AddImageCon>
-                    <MessageInput 
-                        key="text"
-                        name="text"
-                        value={newMessage.text}
-                        onChange={handleNewMessage}
-                        placeholder="Type a message..." 
-                    />
-                    
-                    <SendButtonCon
-                        onClick={sendNewMessage}
-                    >
-                        <SendIconStyled />
-                    </SendButtonCon>
-                </MessageInputCon>
+                <SendButtonCon onClick={sendNewMessage}>
+                  <SendIconStyled />
+                </SendButtonCon>
+              </MessageInputCon>
             </M2>
           </OuterCon>
         </ThemeProvider>
